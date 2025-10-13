@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  *
  * @author dieca
  */
-public class Login extends javax.swing.JFrame {
+public class PassRecover extends javax.swing.JFrame {
 
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
@@ -21,7 +21,7 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    public Login() {
+    public PassRecover() {
         initComponents();
         setLocationRelativeTo(null);
         escalar.escalarLabel(imgKintLogo, "/pck_img/kintLogo.png");
@@ -61,7 +61,7 @@ public class Login extends javax.swing.JFrame {
         pan_cabecera = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("KINT - Login");
+        setTitle("KINT - Recuperación de contraseña");
         setUndecorated(true);
         setResizable(false);
 
@@ -107,13 +107,12 @@ public class Login extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 36)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 43, 73));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("IN");
-        pan_background.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 60, 40));
+        pan_background.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 170, 70, 40));
 
         jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 36)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 178, 226));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("LOG");
+        jLabel5.setText("RECUPERACIÓN");
         pan_background.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, -1, 40));
 
         tf_user.setBackground(new java.awt.Color(240, 240, 240));
@@ -187,7 +186,7 @@ public class Login extends javax.swing.JFrame {
         lbl_user.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
         lbl_user.setForeground(new java.awt.Color(0, 0, 0));
         lbl_user.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lbl_user.setText("USUARIO");
+        lbl_user.setText("CORREO");
         pan_background.add(lbl_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 250, 80, 30));
 
         lbl_exit.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
@@ -337,21 +336,23 @@ public class Login extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PassRecover.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PassRecover.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PassRecover.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PassRecover.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+                new PassRecover().setVisible(true);
             }
         });
     }
