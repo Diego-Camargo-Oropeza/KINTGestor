@@ -75,6 +75,7 @@ public class Login extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(0, 43, 73));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        imgLogin.setBackground(new java.awt.Color(64, 219, 255));
         imgLogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         imgLogin.setToolTipText("");
         jPanel2.add(imgLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 140, 400, 370));
@@ -94,7 +95,7 @@ public class Login extends javax.swing.JFrame {
         pan_background.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 30, 550, 700));
 
         filler3.setBackground(new java.awt.Color(0, 178, 226));
-        filler3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 178, 226), 5));
+        filler3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 178, 226), 10));
         filler3.setForeground(new java.awt.Color(0, 0, 0));
         pan_background.add(filler3, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 30, 10, 700));
 
@@ -191,7 +192,7 @@ public class Login extends javax.swing.JFrame {
         pan_background.add(lbl_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 250, 80, 30));
 
         lbl_exit.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        lbl_exit.setForeground(new java.awt.Color(255, 255, 255));
+        lbl_exit.setForeground(new java.awt.Color(0, 0, 0));
         lbl_exit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbl_exit.setText("X");
         lbl_exit.setToolTipText("Salir");
@@ -212,7 +213,7 @@ public class Login extends javax.swing.JFrame {
         });
         pan_background.add(lbl_exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 0, 40, 30));
 
-        pan_cabecera.setBackground(new java.awt.Color(99, 101, 105));
+        pan_cabecera.setBackground(new java.awt.Color(64, 219, 255));
         pan_cabecera.setForeground(new java.awt.Color(99, 101, 105));
         pan_cabecera.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {

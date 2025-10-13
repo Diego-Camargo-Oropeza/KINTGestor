@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 
 public class CustomButton extends JButton {
@@ -17,10 +19,33 @@ public class CustomButton extends JButton {
 
     public CustomButton() {
         //Init color
+        this.radius = 0;
         setColor(Color.WHITE);
         colorOver = new Color(220, 231, 239);
+        colorClick = new Color(60, 106, 169);
+        borderColor = new Color(162, 186, 214);
         setContentAreaFilled(false);
-        this.radius = 0;
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                over = true;
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me) {
+                super.mouseExited(me);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent me) {
+                super.mousePressed(me);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent me) {
+                super.mouseReleased(me);
+            }
+        });
     }
 
     public boolean isOver() {
@@ -79,8 +104,8 @@ public class CustomButton extends JButton {
         //Pintar borde
         g2.setColor(borderColor);
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
-        //Borde de 2px
         g2.setColor(getBackground());
+        //Borde de 2px
         g2.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, radius, radius);
         super.paintComponent(graphics);
     }

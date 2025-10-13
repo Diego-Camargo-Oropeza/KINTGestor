@@ -50,7 +50,9 @@ public class DashboardView extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Recuperación de contraseña");
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(1200, 800));
         setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pan_bg.setBackground(new java.awt.Color(245, 245, 245));
         pan_bg.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -59,12 +61,19 @@ public class DashboardView extends javax.swing.JFrame {
         pan_menuLatIzq.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         imgKintLogo.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        pan_menuLatIzq.add(imgKintLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 160, 60));
+        pan_menuLatIzq.add(imgKintLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 170, 60));
 
-        customButton1.setText("customButton1");
-        pan_menuLatIzq.add(customButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, -1, -1));
+        customButton1.setText("Dashboard");
+        customButton1.setOver(true);
+        customButton1.setRadius(50);
+        customButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customButton1ActionPerformed(evt);
+            }
+        });
+        pan_menuLatIzq.add(customButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 100, 40));
 
-        pan_bg.add(pan_menuLatIzq, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 830));
+        pan_bg.add(pan_menuLatIzq, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 830));
 
         pan_cabecera.setBackground(new java.awt.Color(64, 219, 255));
         pan_cabecera.setForeground(new java.awt.Color(99, 101, 105));
@@ -83,31 +92,23 @@ public class DashboardView extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Dashboard  /");
-        pan_cabecera.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 0, 440, 30));
+        pan_cabecera.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Symbol", 1, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("🏠 / ");
-        pan_cabecera.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 435, 30));
+        pan_cabecera.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 30, 30));
 
-        pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1420, 30));
+        pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 0, 1410, 30));
 
         jSeparator1.setBackground(new java.awt.Color(184, 184, 184));
         jSeparator1.setForeground(new java.awt.Color(184, 184, 184));
         pan_bg.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 1420, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pan_bg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pan_bg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void pan_cabeceraMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_cabeceraMouseDragged
@@ -120,6 +121,10 @@ public class DashboardView extends javax.swing.JFrame {
         mouseinX = evt.getX();
         mouseinY = evt.getY();
     }//GEN-LAST:event_pan_cabeceraMousePressed
+
+    private void customButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_customButton1ActionPerformed
 
     /**
      * @param args the command line arguments
