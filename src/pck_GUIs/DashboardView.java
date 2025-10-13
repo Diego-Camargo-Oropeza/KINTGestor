@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package pck_interfaces;
+package pck_GUIs;
 
 import java.awt.Color;
 import static java.awt.Color.WHITE;

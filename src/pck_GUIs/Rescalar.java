@@ -1,4 +1,4 @@
-package pck_interfaces;
+package pck_GUIs;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
