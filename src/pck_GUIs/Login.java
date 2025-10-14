@@ -24,8 +24,28 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         setLocationRelativeTo(null);
-        escalar.escalarLabel(imgKintLogo, "/pck_img/kintLogo.png");
-        escalar.escalarLabel(imgLogin, "/pck_img/imgLogin.png");
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                escalar.escalarLabel(imgKintLogo, "/pck_img/kintLogo.png");
+                escalar.escalarLabel(imgLogin, "/pck_img/imgLogin.png");
+            }
+        });
+
+        // 2) Re-escala si los labels cambian de tamaño
+        java.awt.event.ComponentAdapter resizeListener = new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                if (e.getComponent() == imgKintLogo) {
+                    escalar.escalarLabel(imgKintLogo, "/pck_img/kintLogo.png");
+                } else if (e.getComponent() == imgLogin) {
+                    escalar.escalarLabel(imgLogin, "/pck_img/imgLogin.png");
+                }
+            }
+        };
+        imgKintLogo.addComponentListener(resizeListener);
+        imgLogin.addComponentListener(resizeListener);
+
         setIconImage(new ImageIcon(getClass().getResource("/pck_img/favicon.png")).getImage());
 
     }
@@ -50,7 +70,6 @@ public class Login extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         tf_user = new javax.swing.JTextField();
-        lbl_recuperar = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         tf_pass = new javax.swing.JPasswordField();
         jSeparator2 = new javax.swing.JSeparator();
@@ -135,13 +154,6 @@ public class Login extends javax.swing.JFrame {
             }
         });
         pan_background.add(tf_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 290, 230, 20));
-
-        lbl_recuperar.setFont(new java.awt.Font("Nirmala UI", 1, 10)); // NOI18N
-        lbl_recuperar.setForeground(new java.awt.Color(0, 178, 226));
-        lbl_recuperar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lbl_recuperar.setText("Olvidé mi contraseña");
-        lbl_recuperar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        pan_background.add(lbl_recuperar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 390, 190, 10));
         pan_background.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 380, 230, 10));
 
         tf_pass.setBackground(new java.awt.Color(240, 240, 240));
@@ -292,7 +304,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_lbl_exitMouseEntered
 
     private void lbl_exitMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_exitMouseExited
-        lbl_exit.setForeground(Color.WHITE);
+        lbl_exit.setForeground(Color.BLACK);
     }//GEN-LAST:event_lbl_exitMouseExited
 
     private void tf_userMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tf_userMousePressed
@@ -370,7 +382,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_password;
-    private javax.swing.JLabel lbl_recuperar;
     private javax.swing.JLabel lbl_user;
     private javax.swing.JPanel pan_background;
     private javax.swing.JPanel pan_cabecera;
