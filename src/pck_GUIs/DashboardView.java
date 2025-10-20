@@ -71,8 +71,9 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_icon = new javax.swing.JLabel();
         lbl_exit = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        lbl_username = new javax.swing.JLabel();
+        lbl_nameholder = new javax.swing.JLabel();
         lbl_userSVG = new javax.swing.JLabel();
+        lbl_username = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Recuperación de contraseña");
@@ -272,13 +273,16 @@ public class DashboardView extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(184, 184, 184));
         pan_bg.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 1420, -1));
 
-        lbl_username.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        lbl_username.setText("Usuario:");
-        pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 170, 40));
+        lbl_nameholder.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        pan_bg.add(lbl_nameholder, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 40, 80, 40));
 
         lbl_userSVG.setToolTipText("Mi usuario");
         lbl_userSVG.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         pan_bg.add(lbl_userSVG, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 40, 40, 40));
+
+        lbl_username.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        lbl_username.setText("Usuario:");
+        pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -436,6 +440,7 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_icon;
     private javax.swing.JLabel lbl_logout;
+    private javax.swing.JLabel lbl_nameholder;
     private javax.swing.JLabel lbl_navegador;
     private javax.swing.JLabel lbl_userSVG;
     private javax.swing.JLabel lbl_username;

@@ -1,0 +1,189 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema kint_inv
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema kint_inv
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `kint_inv` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `kint_inv` ;
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`producto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`producto` (
+  `id_producto` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sku` VARCHAR(80) NOT NULL,
+  `nombre` VARCHAR(160) NOT NULL,
+  `descripcion` TEXT NULL DEFAULT NULL,
+  `tipo` ENUM('MATERIAL', 'HERRAMIENTA', 'DISPOSITIVO') NOT NULL,
+  `marca` VARCHAR(120) NULL DEFAULT NULL,
+  `categoria` VARCHAR(120) NULL DEFAULT NULL,
+  `u_medida` VARCHAR(20) NULL DEFAULT NULL,
+  `codigo_barras` VARCHAR(128) NOT NULL,
+  `activo` TINYINT(1) NOT NULL DEFAULT '1',
+  `fecha_creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_edicion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_producto`),
+  UNIQUE INDEX `sku` (`sku` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`rol`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`rol` (
+  `id_rol` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(50) NOT NULL,
+  `descripcion` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`id_rol`),
+  UNIQUE INDEX `nombre` (`nombre` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`usuario` (
+  `id_usuario` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_rol` INT UNSIGNED NOT NULL,
+  `nombre` VARCHAR(120) NOT NULL,
+  `correo` VARCHAR(160) NOT NULL,
+  `contrasena_hash` VARCHAR(255) NOT NULL,
+  `activo` TINYINT NOT NULL DEFAULT '1',
+  `fecha_creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_actualizacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_usuario`),
+  UNIQUE INDEX `correo` (`correo` ASC) VISIBLE,
+  INDEX `fk_usuario_rol` (`id_rol` ASC) VISIBLE,
+  CONSTRAINT `fk_usuario_rol`
+    FOREIGN KEY (`id_rol`)
+    REFERENCES `kint_inv`.`rol` (`id_rol`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`solicitud`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`solicitud` (
+  `id_solicitud` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_usuario` INT UNSIGNED NOT NULL,
+  `folio` VARCHAR(40) NOT NULL,
+  `estado` ENUM('BORRADOR', 'ENVIADA', 'APROBADA', 'RECHAZADA', 'ENTREGADA') NOT NULL DEFAULT 'BORRADOR',
+  `prioridad` ENUM('BAJA', 'MEDIA', 'ALTA', 'URGENTE') NOT NULL DEFAULT 'MEDIA',
+  `comentarios` VARCHAR(255) NULL DEFAULT NULL,
+  `fecha_creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_edicion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_solicitud`),
+  UNIQUE INDEX `folio` (`folio` ASC) VISIBLE,
+  INDEX `ix_solicitud_estado` (`estado` ASC) VISIBLE,
+  INDEX `ix_solicitud_usuario` (`id_usuario` ASC) VISIBLE,
+  CONSTRAINT `fk_solicitud_usuario`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `kint_inv`.`usuario` (`id_usuario`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`detalle`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`detalle` (
+  `id_detalle` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_solicitud` INT UNSIGNED NOT NULL,
+  `id_producto` INT UNSIGNED NOT NULL,
+  `cantidad` INT NOT NULL,
+  `observaciones` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`id_detalle`),
+  UNIQUE INDEX `uq_detalle` (`id_solicitud` ASC, `id_producto` ASC) VISIBLE,
+  INDEX `ix_detalle_producto` (`id_producto` ASC) VISIBLE,
+  CONSTRAINT `fk_detalle_producto`
+    FOREIGN KEY (`id_producto`)
+    REFERENCES `kint_inv`.`producto` (`id_producto`),
+  CONSTRAINT `fk_detalle_solicitud`
+    FOREIGN KEY (`id_solicitud`)
+    REFERENCES `kint_inv`.`solicitud` (`id_solicitud`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`imagen`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`imagen` (
+  `id_imagen` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_producto` INT UNSIGNED NOT NULL,
+  `ruta` VARCHAR(255) NOT NULL,
+  `principal` TINYINT NOT NULL DEFAULT '0',
+  `descripcion` VARCHAR(255) NULL DEFAULT NULL,
+  `fecha_subida` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_imagen`),
+  INDEX `ix_imagen_producto` (`id_producto` ASC) VISIBLE,
+  CONSTRAINT `fk_imagen_producto`
+    FOREIGN KEY (`id_producto`)
+    REFERENCES `kint_inv`.`producto` (`id_producto`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`proveedor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`proveedor` (
+  `id_proveedor` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(160) NOT NULL,
+  `rfc` VARCHAR(20) NULL DEFAULT NULL,
+  `telefono` VARCHAR(40) NULL DEFAULT NULL,
+  `email` VARCHAR(160) NULL DEFAULT NULL,
+  `direccion` VARCHAR(255) NULL DEFAULT NULL,
+  `activo` TINYINT(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_proveedor`),
+  UNIQUE INDEX `nombre` (`nombre` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `kint_inv`.`producto_proveedor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `kint_inv`.`producto_proveedor` (
+  `id_producto` INT UNSIGNED NOT NULL,
+  `id_proveedor` INT UNSIGNED NOT NULL,
+  `codigo_proveedor` VARCHAR(120) NULL DEFAULT NULL,
+  `precio_compra` DECIMAL(12,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`id_producto`, `id_proveedor`),
+  INDEX `fk_pp_proveedor` (`id_proveedor` ASC) VISIBLE,
+  CONSTRAINT `fk_pp_producto`
+    FOREIGN KEY (`id_producto`)
+    REFERENCES `kint_inv`.`producto` (`id_producto`),
+  CONSTRAINT `fk_pp_proveedor`
+    FOREIGN KEY (`id_proveedor`)
+    REFERENCES `kint_inv`.`proveedor` (`id_proveedor`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
