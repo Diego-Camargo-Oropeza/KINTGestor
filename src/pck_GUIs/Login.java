@@ -5,7 +5,6 @@
 package pck_GUIs;
 
 import java.awt.Color;
-import static java.awt.Color.WHITE;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -73,11 +72,10 @@ public class Login extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         tf_pass = new javax.swing.JPasswordField();
         jSeparator2 = new javax.swing.JSeparator();
-        tf_entrar = new javax.swing.JLabel();
-        pan_entrar = new javax.swing.JPanel();
         lbl_user = new javax.swing.JLabel();
         lbl_exit = new javax.swing.JLabel();
         pan_cabecera = new javax.swing.JPanel();
+        btn_login = new pck_customBtn.CustomButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Login");
@@ -143,6 +141,11 @@ public class Login extends javax.swing.JFrame {
         tf_user.setToolTipText("Ingrese su nombre de usuario");
         tf_user.setBorder(null);
         tf_user.setNextFocusableComponent(tf_pass);
+        tf_user.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_userFocusGained(evt);
+            }
+        });
         tf_user.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tf_userMousePressed(evt);
@@ -161,6 +164,11 @@ public class Login extends javax.swing.JFrame {
         tf_pass.setText("********************");
         tf_pass.setToolTipText("Ingrese su contraseña");
         tf_pass.setBorder(null);
+        tf_pass.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_passFocusGained(evt);
+            }
+        });
         tf_pass.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tf_passMousePressed(evt);
@@ -173,29 +181,6 @@ public class Login extends javax.swing.JFrame {
         });
         pan_background.add(tf_pass, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 230, 20));
         pan_background.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 230, 10));
-
-        tf_entrar.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        tf_entrar.setForeground(new java.awt.Color(255, 255, 255));
-        tf_entrar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        tf_entrar.setText("Entrar");
-        tf_entrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        pan_background.add(tf_entrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 460, 100, 40));
-
-        pan_entrar.setBackground(new java.awt.Color(0, 43, 73));
-        pan_entrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        javax.swing.GroupLayout pan_entrarLayout = new javax.swing.GroupLayout(pan_entrar);
-        pan_entrar.setLayout(pan_entrarLayout);
-        pan_entrarLayout.setHorizontalGroup(
-            pan_entrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        pan_entrarLayout.setVerticalGroup(
-            pan_entrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
-
-        pan_background.add(pan_entrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 460, -1, 40));
 
         lbl_user.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
         lbl_user.setForeground(new java.awt.Color(0, 0, 0));
@@ -251,6 +236,25 @@ public class Login extends javax.swing.JFrame {
 
         pan_background.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1010, 30));
 
+        btn_login.setBackground(new java.awt.Color(0, 43, 73));
+        btn_login.setForeground(new java.awt.Color(255, 255, 255));
+        btn_login.setText("Entrar");
+        btn_login.setColor(new java.awt.Color(0, 43, 73));
+        btn_login.setColorOver(new java.awt.Color(0, 43, 73));
+        btn_login.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        btn_login.setFontColorOver(new java.awt.Color(255, 255, 255));
+        btn_login.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn_loginMouseExited(evt);
+            }
+        });
+        btn_login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_loginActionPerformed(evt);
+            }
+        });
+        pan_background.add(btn_login, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 430, 90, 40));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -270,7 +274,6 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_userActionPerformed
 
     private void tf_passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_passActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_tf_passActionPerformed
 
     private void pan_cabeceraMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_cabeceraMousePressed
@@ -329,9 +332,75 @@ public class Login extends javax.swing.JFrame {
             tf_user.setText("Ingrese su nombre de usuario");
             tf_user.setForeground(new java.awt.Color(153, 153, 153));
         }
-
-
     }//GEN-LAST:event_tf_passMousePressed
+
+    private void btn_loginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_loginMouseExited
+        btn_login.setForeground(Color.white);
+    }//GEN-LAST:event_btn_loginMouseExited
+
+    private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
+        doLogin();
+    }//GEN-LAST:event_btn_loginActionPerformed
+
+    private void tf_userFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_userFocusGained
+        tf_user.setText("");
+        if (tf_user.getText().equals("Ingrese su nombre de usuario")) {
+            tf_user.setText("");
+            tf_user.setForeground(Color.BLACK);
+        }
+        if (String.valueOf(tf_pass.getPassword()).isEmpty()) {
+            tf_pass.setText("********************");
+            tf_pass.setForeground(new java.awt.Color(153, 153, 153));
+        }
+
+    }//GEN-LAST:event_tf_userFocusGained
+
+    private void tf_passFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_passFocusGained
+        tf_pass.setText("");
+        if (String.valueOf(tf_pass.getPassword()).equals("********************")) {
+            tf_pass.setText("");
+            tf_pass.setForeground(Color.BLACK);
+        }
+        if (tf_user.getText().isEmpty()) {
+            tf_user.setText("Ingrese su nombre de usuario");
+            tf_user.setForeground(new java.awt.Color(153, 153, 153));
+        }
+    }//GEN-LAST:event_tf_passFocusGained
+
+    private void doLogin() {
+        String correo = tf_user.getText().trim();
+        String passIngresado = new String(tf_pass.getPassword());
+        if (correo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese su correo.");
+            return;
+        }
+        if (passIngresado.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese su contraseña.");
+            return;
+        }
+
+        pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
+        pck_model.Usuario u = dao.findByCorreo(correo);
+
+        if (u == null) {
+            JOptionPane.showMessageDialog(this, "Usuario no encontrado o inactivo.");
+            return;
+        }
+        //hasheo del pass ingresado
+        String hashIngresado = pck_security.HashUtil.sha256Hex(passIngresado);
+        //validación
+        if (hashIngresado.equalsIgnoreCase(u.getContrasenaHash())) {
+
+            JOptionPane.showMessageDialog(null, "Bienvenido, " + u.getNombre(), "Éxito al iniciar sesión", JOptionPane.INFORMATION_MESSAGE);
+            new pck_GUIs.DashboardView().setVisible(true);
+            this.dispose();
+
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Contraseña incorrecta.");
+            tf_pass.setText("");
+            tf_pass.requestFocus();
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -370,6 +439,7 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private pck_customBtn.CustomButton btn_login;
     private javax.swing.Box.Filler filler3;
     private javax.swing.JLabel imgKintLogo;
     private javax.swing.JLabel imgLogin;
@@ -385,8 +455,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_user;
     private javax.swing.JPanel pan_background;
     private javax.swing.JPanel pan_cabecera;
-    private javax.swing.JPanel pan_entrar;
-    private javax.swing.JLabel tf_entrar;
     private javax.swing.JPasswordField tf_pass;
     private javax.swing.JTextField tf_user;
     // End of variables declaration//GEN-END:variables
