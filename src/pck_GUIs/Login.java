@@ -75,7 +75,7 @@ public class Login extends javax.swing.JFrame {
         lbl_user = new javax.swing.JLabel();
         lbl_exit = new javax.swing.JLabel();
         pan_cabecera = new javax.swing.JPanel();
-        btn_login = new pck_customBtn.CustomButton();
+        btn_login = new pck_customComponents.CustomButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Login");
@@ -185,8 +185,8 @@ public class Login extends javax.swing.JFrame {
         lbl_user.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
         lbl_user.setForeground(new java.awt.Color(0, 0, 0));
         lbl_user.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lbl_user.setText("USUARIO");
-        pan_background.add(lbl_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 250, 80, 30));
+        lbl_user.setText("USUARIO (CORREO ELECTRÓNICO)");
+        pan_background.add(lbl_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 250, 230, 30));
 
         lbl_exit.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         lbl_exit.setForeground(new java.awt.Color(0, 0, 0));
@@ -294,7 +294,7 @@ public class Login extends javax.swing.JFrame {
     private void lbl_exitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_exitMouseClicked
         // TODO add your handling code here:
         int res;
-        res = JOptionPane.showConfirmDialog(null, "¿Desea salir? \n", "Salir", JOptionPane.YES_NO_OPTION);
+        res = JOptionPane.showConfirmDialog(this, "¿Desea salir? \n", "Salir", JOptionPane.YES_NO_OPTION);
         if (res == 1) {
             return;
         } else {
@@ -339,66 +339,82 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_loginMouseExited
 
     private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
-        doLogin();
+        loggear();
     }//GEN-LAST:event_btn_loginActionPerformed
 
     private void tf_userFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_userFocusGained
-        tf_user.setText("");
-        if (tf_user.getText().equals("Ingrese su nombre de usuario")) {
+        if (!(tf_user.getText().equals("") || tf_user.getText().equals("Ingrese su nombre de usuario"))) {
+        } else {
+            tf_user.setForeground(Color.black);
             tf_user.setText("");
-            tf_user.setForeground(Color.BLACK);
-        }
-        if (String.valueOf(tf_pass.getPassword()).isEmpty()) {
-            tf_pass.setText("********************");
-            tf_pass.setForeground(new java.awt.Color(153, 153, 153));
+            if (tf_user.getText().equals("Ingrese su nombre de usuario")) {
+                tf_user.setText("");
+                tf_user.setForeground(Color.BLACK);
+            }
+            if (String.valueOf(tf_pass.getPassword()).isEmpty()) {
+                tf_pass.setText("********************");
+                tf_pass.setForeground(new java.awt.Color(153, 153, 153));
+            }
         }
 
     }//GEN-LAST:event_tf_userFocusGained
 
     private void tf_passFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_passFocusGained
-        tf_pass.setText("");
-        if (String.valueOf(tf_pass.getPassword()).equals("********************")) {
+        if (!(String.valueOf(tf_pass.getPassword()).equals("") || String.valueOf(tf_pass.getPassword()).equals("********************"))) {
+        } else {
+            tf_pass.setForeground(Color.black);
             tf_pass.setText("");
-            tf_pass.setForeground(Color.BLACK);
-        }
-        if (tf_user.getText().isEmpty()) {
-            tf_user.setText("Ingrese su nombre de usuario");
-            tf_user.setForeground(new java.awt.Color(153, 153, 153));
+            if (String.valueOf(tf_pass.getPassword()).equals("********************")) {
+                tf_pass.setText("");
+                tf_pass.setForeground(Color.BLACK);
+            }
+            if (tf_user.getText().isEmpty()) {
+                tf_user.setText("Ingrese su nombre de usuario");
+                tf_user.setForeground(new java.awt.Color(153, 153, 153));
+            }
         }
     }//GEN-LAST:event_tf_passFocusGained
 
-    private void doLogin() {
+    private void loggear() {
         String correo = tf_user.getText().trim();
-        String passIngresado = new String(tf_pass.getPassword());
+        char[] passChars = tf_pass.getPassword();
         if (correo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese su correo.");
+            JOptionPane.showMessageDialog(this, "Ingrese su correo.", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (passIngresado.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese su contraseña.");
+        if (passChars.length == 0) {
+            JOptionPane.showMessageDialog(this, "Ingrese su contraseña.", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
-        pck_model.Usuario u = dao.findByCorreo(correo);
+        try {
+            pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
+            pck_model.Usuario u = dao.findByCorreo(correo);
 
-        if (u == null) {
-            JOptionPane.showMessageDialog(this, "Usuario no encontrado o inactivo.");
-            return;
-        }
-        //hasheo del pass ingresado
-        String hashIngresado = pck_security.HashUtil.sha256Hex(passIngresado);
-        //validación
-        if (hashIngresado.equalsIgnoreCase(u.getContrasenaHash())) {
+            if (u == null) {
+                JOptionPane.showMessageDialog(this, "Usuario no encontrado o inactivo.", "Login", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            JOptionPane.showMessageDialog(null, "Bienvenido, " + u.getNombre(), "Éxito al iniciar sesión", JOptionPane.INFORMATION_MESSAGE);
-            new pck_GUIs.DashboardView().setVisible(true);
-            this.dispose();
+            String passIngresado = new String(passChars);
+            String hashIngresado = pck_security.HashUtil.sha256Hex(passIngresado);
 
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Contraseña incorrecta.");
-            tf_pass.setText("");
-            tf_pass.requestFocus();
+            if (hashIngresado.equalsIgnoreCase(u.getContrasenaHash())) {
+                pck_service.Session.login(u); //se guarda en "sesion" el usuario
+                JOptionPane.showMessageDialog(this, "Bienvenido, " + u.getNombre() + ".", "Éxito al iniciar sesión", JOptionPane.INFORMATION_MESSAGE);
+                new pck_GUIs.DashboardView().setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Contraseña incorrecta.", "Login", JOptionPane.ERROR_MESSAGE);
+                tf_pass.setText("");
+                tf_pass.requestFocusInWindow();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "No se pudo validar en la BD.\nDetalle: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            java.util.Arrays.fill(passChars, '\0'); //borra el pass de la memoria
         }
     }
 
@@ -439,7 +455,7 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private pck_customBtn.CustomButton btn_login;
+    private pck_customComponents.CustomButton btn_login;
     private javax.swing.Box.Filler filler3;
     private javax.swing.JLabel imgKintLogo;
     private javax.swing.JLabel imgLogin;

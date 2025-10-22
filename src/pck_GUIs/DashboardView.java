@@ -2,18 +2,29 @@ package pck_GUIs;
 
 import java.awt.Color;
 import static java.awt.Color.WHITE;
+import java.time.LocalDate;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import pck_model.Usuario;
+import pck_service.Session;
 
 /**
  *
  * @author dieca
  */
 public class DashboardView extends javax.swing.JFrame {
-
+    
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
+    Usuario u = Session.get();
+    String nombreUsuario = u.getNombre();
+    String tarea = u.getTarea();
+    String correo = u.getCorreo();
+    String rol = u.getRolNombre();
+    int id = u.getIdUsuario();
+    LocalDate currentDate = LocalDate.now();
 
     /**
      * Creates new form login
@@ -26,9 +37,10 @@ public class DashboardView extends javax.swing.JFrame {
             public void windowOpened(java.awt.event.WindowEvent e) {
                 escalar.escalarLabel(imgKintLogo, "/pck_img/kintLogo.png");
                 escalar.escalarLabel(lbl_userSVG, "/pck_img/avatarIcon.png");
+                escalar.escalarLabel(lbl_squareAvatar, "/pck_img/square_avatar.png");
             }
         });
-
+        
         java.awt.event.ComponentAdapter resizeListener = new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
@@ -41,9 +53,9 @@ public class DashboardView extends javax.swing.JFrame {
         };
         imgKintLogo.addComponentListener(resizeListener);
         lbl_userSVG.addComponentListener(resizeListener);
-
+        
         setIconImage(new ImageIcon(getClass().getResource("/pck_img/favicon.png")).getImage());
-
+        
     }
 
     /**
@@ -58,12 +70,12 @@ public class DashboardView extends javax.swing.JFrame {
         pan_bg = new javax.swing.JPanel();
         pan_menuLatIzq = new javax.swing.JPanel();
         imgKintLogo = new javax.swing.JLabel();
-        btn_dashboard = new pck_customBtn.CustomButton();
-        btn_inventario = new pck_customBtn.CustomButton();
-        btn_solicitudes = new pck_customBtn.CustomButton();
-        btn_usuarios = new pck_customBtn.CustomButton();
-        btn_reportes = new pck_customBtn.CustomButton();
-        btn_ayuda = new pck_customBtn.CustomButton();
+        btn_dashboard = new pck_customComponents.CustomButton();
+        btn_inventario = new pck_customComponents.CustomButton();
+        btn_solicitudes = new pck_customComponents.CustomButton();
+        btn_usuarios = new pck_customComponents.CustomButton();
+        btn_reportes = new pck_customComponents.CustomButton();
+        btn_ayuda = new pck_customComponents.CustomButton();
         lbl_configuracion = new javax.swing.JLabel();
         lbl_logout = new javax.swing.JLabel();
         pan_cabecera = new javax.swing.JPanel();
@@ -74,11 +86,30 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_nameholder = new javax.swing.JLabel();
         lbl_userSVG = new javax.swing.JLabel();
         lbl_username = new javax.swing.JLabel();
+        tarjetaUsuario = new pck_customComponents.RoundedPanel();
+        pill_estado = new pck_customComponents.PillLabel();
+        lbl_squareAvatar = new javax.swing.JLabel();
+        lbl_rol = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        lbl_idHolder = new javax.swing.JLabel();
+        lbl_date = new javax.swing.JLabel();
+        lbl_email = new javax.swing.JLabel();
+        lbl_rol2 = new javax.swing.JLabel();
+        lbl_rol3 = new javax.swing.JLabel();
+        lbl_tarea = new javax.swing.JLabel();
+        lbl_rol4 = new javax.swing.JLabel();
+        lbl_cardName = new javax.swing.JLabel();
+        roundedPanel1 = new pck_customComponents.RoundedPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("KINT - Recuperación de contraseña");
+        setTitle("KINT - Dashboard");
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pan_bg.setBackground(new java.awt.Color(245, 245, 245));
@@ -111,7 +142,7 @@ public class DashboardView extends javax.swing.JFrame {
         });
 
         btn_solicitudes.setText("📩  Solicitudes");
-        btn_solicitudes.setToolTipText("Click para ver Solicitudes");
+        btn_solicitudes.setToolTipText("Click para ver Solicitudes (solo administradores)");
         btn_solicitudes.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         btn_solicitudes.setOver(true);
         btn_solicitudes.setRadius(30);
@@ -122,7 +153,7 @@ public class DashboardView extends javax.swing.JFrame {
         });
 
         btn_usuarios.setText("‍👨 Usuarios");
-        btn_usuarios.setToolTipText("Click para ver usuarios");
+        btn_usuarios.setToolTipText("Click para ver usuarios (solo administradores)");
         btn_usuarios.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         btn_usuarios.setOver(true);
         btn_usuarios.setRadius(30);
@@ -133,7 +164,7 @@ public class DashboardView extends javax.swing.JFrame {
         });
 
         btn_reportes.setText("📋 Reportes");
-        btn_reportes.setToolTipText("Click para ver los Reportes");
+        btn_reportes.setToolTipText("Click para ver los Reportes (solo administradores)");
         btn_reportes.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         btn_reportes.setOver(true);
         btn_reportes.setRadius(30);
@@ -156,6 +187,7 @@ public class DashboardView extends javax.swing.JFrame {
 
         lbl_configuracion.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         lbl_configuracion.setText("⚙️ ️Configuración");
+        lbl_configuracion.setToolTipText("Accede a la configuración general");
         lbl_configuracion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lbl_configuracion.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -168,6 +200,7 @@ public class DashboardView extends javax.swing.JFrame {
 
         lbl_logout.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         lbl_logout.setText("📲 Cerrar Sesión");
+        lbl_logout.setToolTipText("Cerrar sesión actual");
         lbl_logout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout pan_menuLatIzqLayout = new javax.swing.GroupLayout(pan_menuLatIzq);
@@ -271,18 +304,148 @@ public class DashboardView extends javax.swing.JFrame {
 
         jSeparator1.setBackground(new java.awt.Color(184, 184, 184));
         jSeparator1.setForeground(new java.awt.Color(184, 184, 184));
-        pan_bg.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 1420, -1));
+        pan_bg.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 103, 1420, 10));
 
         lbl_nameholder.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         pan_bg.add(lbl_nameholder, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 40, 80, 40));
 
-        lbl_userSVG.setToolTipText("Mi usuario");
+        lbl_userSVG.setToolTipText("Ver perfil");
         lbl_userSVG.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         pan_bg.add(lbl_userSVG, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 40, 40, 40));
 
         lbl_username.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         lbl_username.setText("Usuario:");
         pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
+
+        pill_estado.setText("Activo");
+
+        lbl_rol.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_rol.setForeground(new java.awt.Color(148, 148, 148));
+        lbl_rol.setText("ROL");
+
+        jLabel2.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(148, 148, 148));
+        jLabel2.setText("ID: ");
+
+        lbl_idHolder.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_idHolder.setForeground(new java.awt.Color(148, 148, 148));
+        lbl_idHolder.setText("1");
+
+        lbl_date.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_date.setForeground(new java.awt.Color(148, 148, 148));
+        lbl_date.setText("1");
+
+        lbl_email.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_email.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_email.setText("lbl");
+
+        lbl_rol2.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_rol2.setForeground(new java.awt.Color(148, 148, 148));
+        lbl_rol2.setText("Tarea en curso");
+
+        lbl_rol3.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_rol3.setForeground(new java.awt.Color(148, 148, 148));
+        lbl_rol3.setText("Nombre:");
+
+        lbl_tarea.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_tarea.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_tarea.setText("lbl");
+
+        lbl_rol4.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_rol4.setForeground(new java.awt.Color(148, 148, 148));
+        lbl_rol4.setText("Correo:");
+
+        lbl_cardName.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        lbl_cardName.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_cardName.setText("lbl");
+
+        javax.swing.GroupLayout tarjetaUsuarioLayout = new javax.swing.GroupLayout(tarjetaUsuario);
+        tarjetaUsuario.setLayout(tarjetaUsuarioLayout);
+        tarjetaUsuarioLayout.setHorizontalGroup(
+            tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_tarea, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                        .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                                .addComponent(lbl_rol, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(102, 102, 102)
+                                .addComponent(pill_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lbl_idHolder, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(lbl_date, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(lbl_rol3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                        .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lbl_cardName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbl_rol2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                        .addGap(44, 44, 44)
+                        .addComponent(lbl_email, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22))
+            .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tarjetaUsuarioLayout.createSequentialGroup()
+                    .addContainerGap(234, Short.MAX_VALUE)
+                    .addComponent(lbl_rol4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(110, 110, 110)))
+        );
+        tarjetaUsuarioLayout.setVerticalGroup(
+            tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(pill_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                            .addGap(18, 18, 18)
+                            .addComponent(lbl_rol)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel2)
+                                .addComponent(lbl_idHolder)
+                                .addComponent(lbl_date)))
+                        .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                            .addGap(19, 19, 19)
+                            .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(60, 60, 60)
+                .addComponent(lbl_rol3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_cardName)
+                    .addComponent(lbl_email))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbl_rol2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbl_tarea)
+                .addContainerGap(46, Short.MAX_VALUE))
+            .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                    .addGap(115, 115, 115)
+                    .addComponent(lbl_rol4)
+                    .addContainerGap(145, Short.MAX_VALUE)))
+        );
+
+        pan_bg.add(tarjetaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 400, 280));
+
+        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
+        roundedPanel1.setLayout(roundedPanel1Layout);
+        roundedPanel1Layout.setHorizontalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 960, Short.MAX_VALUE)
+        );
+        roundedPanel1Layout.setVerticalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 380, Short.MAX_VALUE)
+        );
+
+        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 400, 960, 380));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -303,7 +466,10 @@ public class DashboardView extends javax.swing.JFrame {
     }//GEN-LAST:event_pan_cabeceraMousePressed
 
     private void btn_reportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reportesActionPerformed
-        // TODO add your handling code here:
+        if (!requerirRolPorId(1, 2)) {
+            return;
+        }
+        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dashboardActionPerformed
@@ -315,11 +481,17 @@ public class DashboardView extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_inventarioActionPerformed
 
     private void btn_solicitudesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_solicitudesActionPerformed
-        // TODO add your handling code here:
+        if (!requerirRolPorId(1, 2)) {
+            return;
+        }
+        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
     }//GEN-LAST:event_btn_solicitudesActionPerformed
 
     private void btn_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_usuariosActionPerformed
-        // TODO add your handling code here:
+        if (!requerirRolPorId(1)) {
+            return;
+        }
+        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
     }//GEN-LAST:event_btn_usuariosActionPerformed
 
     private void btn_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ayudaActionPerformed
@@ -359,6 +531,36 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_configuracion.setForeground(Color.BLACK);
 
     }//GEN-LAST:event_lbl_configuracionMouseExited
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        lbl_nameholder.setText(nombreUsuario);
+        lbl_idHolder.setText(String.valueOf(id));
+        lbl_email.setText(correo);
+        lbl_rol.setText(rol);
+        lbl_tarea.setText(tarea);
+        lbl_date.setText(currentDate.toString());
+        lbl_cardName.setText(nombreUsuario);
+        System.out.println(nombreUsuario);
+    }//GEN-LAST:event_formWindowActivated
+
+    // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
+    //útil ya que en lugar de mandar a llamar la función y hacer 3 combinaciones diferentes de arreglos enteros, mejor paso directamente las constantes
+    private boolean requerirRolPorId(int... idsPermitidos) {
+        if (u == null) {
+            JOptionPane.showMessageDialog(this, "Primero inicia sesión.", "Sesión requerida", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        int idRol = u.getIdRol();
+        for (int id : idsPermitidos) {
+            if (idRol == id) {
+                return true;
+            }
+        }
+        JOptionPane.showMessageDialog(this,
+                "Solo usuarios autorizados pueden acceder a esta función.\nTu rol: " + u.getRolNombre(),
+                "Acceso restringido", JOptionPane.WARNING_MESSAGE);
+        return false;
+    }
 
     /**
      * @param args the command line arguments
@@ -428,24 +630,38 @@ public class DashboardView extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private pck_customBtn.CustomButton btn_ayuda;
-    private pck_customBtn.CustomButton btn_dashboard;
-    private pck_customBtn.CustomButton btn_inventario;
-    private pck_customBtn.CustomButton btn_reportes;
-    private pck_customBtn.CustomButton btn_solicitudes;
-    private pck_customBtn.CustomButton btn_usuarios;
+    private pck_customComponents.CustomButton btn_ayuda;
+    private pck_customComponents.CustomButton btn_dashboard;
+    private pck_customComponents.CustomButton btn_inventario;
+    private pck_customComponents.CustomButton btn_reportes;
+    private pck_customComponents.CustomButton btn_solicitudes;
+    private pck_customComponents.CustomButton btn_usuarios;
     private javax.swing.JLabel imgKintLogo;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lbl_cardName;
     private javax.swing.JLabel lbl_configuracion;
+    private javax.swing.JLabel lbl_date;
+    private javax.swing.JLabel lbl_email;
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_icon;
+    private javax.swing.JLabel lbl_idHolder;
     private javax.swing.JLabel lbl_logout;
     private javax.swing.JLabel lbl_nameholder;
     private javax.swing.JLabel lbl_navegador;
+    private javax.swing.JLabel lbl_rol;
+    private javax.swing.JLabel lbl_rol2;
+    private javax.swing.JLabel lbl_rol3;
+    private javax.swing.JLabel lbl_rol4;
+    private javax.swing.JLabel lbl_squareAvatar;
+    private javax.swing.JLabel lbl_tarea;
     private javax.swing.JLabel lbl_userSVG;
     private javax.swing.JLabel lbl_username;
     private javax.swing.JPanel pan_bg;
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPanel pan_menuLatIzq;
+    private pck_customComponents.PillLabel pill_estado;
+    private pck_customComponents.RoundedPanel roundedPanel1;
+    private pck_customComponents.RoundedPanel tarjetaUsuario;
     // End of variables declaration//GEN-END:variables
 }

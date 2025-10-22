@@ -290,11 +290,11 @@
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="2"/>
-            <Property name="text" type="java.lang.String" value="USUARIO"/>
+            <Property name="text" type="java.lang.String" value="USUARIO (CORREO ELECTR&#xd3;NICO)"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="50" y="250" width="80" height="30"/>
+              <AbsoluteConstraints x="50" y="250" width="230" height="30"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -357,7 +357,7 @@
             </DimensionLayout>
           </Layout>
         </Container>
-        <Component class="pck_customBtn.CustomButton" name="btn_login">
+        <Component class="pck_customComponents.CustomButton" name="btn_login">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="49" green="2b" red="0" type="rgb"/>

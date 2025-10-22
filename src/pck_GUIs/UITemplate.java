@@ -58,12 +58,12 @@ public class UITemplate extends javax.swing.JFrame {
         pan_bg = new javax.swing.JPanel();
         pan_menuLatIzq = new javax.swing.JPanel();
         imgKintLogo = new javax.swing.JLabel();
-        btn_dashboard = new pck_customBtn.CustomButton();
-        btn_inventario = new pck_customBtn.CustomButton();
-        btn_solicitudes = new pck_customBtn.CustomButton();
-        btn_usuarios = new pck_customBtn.CustomButton();
-        btn_reportes = new pck_customBtn.CustomButton();
-        btn_ayuda = new pck_customBtn.CustomButton();
+        btn_dashboard = new pck_customComponents.CustomButton();
+        btn_inventario = new pck_customComponents.CustomButton();
+        btn_solicitudes = new pck_customComponents.CustomButton();
+        btn_usuarios = new pck_customComponents.CustomButton();
+        btn_reportes = new pck_customComponents.CustomButton();
+        btn_ayuda = new pck_customComponents.CustomButton();
         lbl_configuracion = new javax.swing.JLabel();
         lbl_logout = new javax.swing.JLabel();
         pan_cabecera = new javax.swing.JPanel();
@@ -395,12 +395,12 @@ public class UITemplate extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private pck_customBtn.CustomButton btn_ayuda;
-    private pck_customBtn.CustomButton btn_dashboard;
-    private pck_customBtn.CustomButton btn_inventario;
-    private pck_customBtn.CustomButton btn_reportes;
-    private pck_customBtn.CustomButton btn_solicitudes;
-    private pck_customBtn.CustomButton btn_usuarios;
+    private pck_customComponents.CustomButton btn_ayuda;
+    private pck_customComponents.CustomButton btn_dashboard;
+    private pck_customComponents.CustomButton btn_inventario;
+    private pck_customComponents.CustomButton btn_reportes;
+    private pck_customComponents.CustomButton btn_solicitudes;
+    private pck_customComponents.CustomButton btn_usuarios;
     private javax.swing.JLabel imgKintLogo;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbl_configuracion;

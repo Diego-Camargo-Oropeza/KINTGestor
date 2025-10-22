@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class UsuarioDAO {
 
     private static final String SQL_FIND_BY_CORREO
-            = "SELECT u.id_usuario, u.id_rol, u.nombre, u.correo, u.contrasena_hash, u.activo, r.nombre AS rol_nombre "
+            = "SELECT u.id_usuario, u.id_rol, u.nombre, u.correo, u.contrasena_hash, u.activo, u.tarea, r.nombre AS rol_nombre "
             + "FROM usuario u INNER JOIN rol r ON r.id_rol = u.id_rol "
             + "WHERE u.correo = ? AND u.activo = 1";
 
@@ -48,6 +48,7 @@ public class UsuarioDAO {
                 u.setCorreo(rs.getString("correo"));
                 u.setContrasenaHash(rs.getString("contrasena_hash"));
                 u.setActivo(rs.getInt("activo") == 1);
+                u.setTarea(rs.getString("tarea"));
                 u.setRolNombre(rs.getString("rol_nombre"));
             }
         } catch (SQLException e) {

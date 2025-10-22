@@ -1,4 +1,4 @@
-package pck_customBtn;
+package pck_customComponents;
 
 import java.awt.Color;
 import java.awt.Graphics;

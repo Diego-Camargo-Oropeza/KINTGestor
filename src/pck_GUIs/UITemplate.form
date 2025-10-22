@@ -119,7 +119,7 @@
                 <Property name="horizontalAlignment" type="int" value="4"/>
               </Properties>
             </Component>
-            <Component class="pck_customBtn.CustomButton" name="btn_dashboard">
+            <Component class="pck_customComponents.CustomButton" name="btn_dashboard">
               <Properties>
                 <Property name="text" type="java.lang.String" value="\ud83d\udcf0 Dashboard" containsInvalidXMLChars="true"/>
                 <Property name="toolTipText" type="java.lang.String" value="Click para ir al Panel Principal"/>
@@ -133,7 +133,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_dashboardActionPerformed"/>
               </Events>
             </Component>
-            <Component class="pck_customBtn.CustomButton" name="btn_inventario">
+            <Component class="pck_customComponents.CustomButton" name="btn_inventario">
               <Properties>
                 <Property name="text" type="java.lang.String" value="\ud83d\udce6 Inventario" containsInvalidXMLChars="true"/>
                 <Property name="toolTipText" type="java.lang.String" value="Click para ver Inventario"/>
@@ -147,7 +147,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_inventarioActionPerformed"/>
               </Events>
             </Component>
-            <Component class="pck_customBtn.CustomButton" name="btn_solicitudes">
+            <Component class="pck_customComponents.CustomButton" name="btn_solicitudes">
               <Properties>
                 <Property name="text" type="java.lang.String" value="\ud83d\udce9  Solicitudes" containsInvalidXMLChars="true"/>
                 <Property name="toolTipText" type="java.lang.String" value="Click para ver Solicitudes"/>
@@ -161,7 +161,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_solicitudesActionPerformed"/>
               </Events>
             </Component>
-            <Component class="pck_customBtn.CustomButton" name="btn_usuarios">
+            <Component class="pck_customComponents.CustomButton" name="btn_usuarios">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x200d;\ud83d\udc68 Usuarios" containsInvalidXMLChars="true"/>
                 <Property name="toolTipText" type="java.lang.String" value="Click para ver usuarios"/>
@@ -175,7 +175,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_usuariosActionPerformed"/>
               </Events>
             </Component>
-            <Component class="pck_customBtn.CustomButton" name="btn_reportes">
+            <Component class="pck_customComponents.CustomButton" name="btn_reportes">
               <Properties>
                 <Property name="text" type="java.lang.String" value="\ud83d\udccb Reportes" containsInvalidXMLChars="true"/>
                 <Property name="toolTipText" type="java.lang.String" value="Click para ver los Reportes"/>
@@ -189,7 +189,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_reportesActionPerformed"/>
               </Events>
             </Component>
-            <Component class="pck_customBtn.CustomButton" name="btn_ayuda">
+            <Component class="pck_customComponents.CustomButton" name="btn_ayuda">
               <Properties>
                 <Property name="text" type="java.lang.String" value="\ud83d\udcdeAyuda" containsInvalidXMLChars="true"/>
                 <Property name="toolTipText" type="java.lang.String" value="Click para ir a ayuda"/>

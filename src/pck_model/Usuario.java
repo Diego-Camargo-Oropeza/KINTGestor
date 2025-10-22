@@ -9,8 +9,9 @@ public class Usuario {
     private String contrasenaHash;
     private boolean activo;
     private String rolNombre;
+    private String tarea;
 
-    public Usuario(int idUsuario, int idRol, String nombre, String correo, String contrasenaHash, boolean activo, String rolNombre) {
+    public Usuario(int idUsuario, int idRol, String nombre, String correo, String contrasenaHash, boolean activo, String rolNombre, String tarea) {
         this.idUsuario = idUsuario;
         this.idRol = idRol;
         this.nombre = nombre;
@@ -18,10 +19,11 @@ public class Usuario {
         this.contrasenaHash = contrasenaHash;
         this.activo = activo;
         this.rolNombre = rolNombre;
+        this.tarea = tarea;
     }
 
     public Usuario() {
-        this(0, 3, null, null, null, false, null);
+        this(0, 3, null, null, null, false, null, null);
     }
 
     public int getIdUsuario() {
@@ -52,6 +54,10 @@ public class Usuario {
         return rolNombre;
     }
 
+    public String getTarea() {
+        return tarea;
+    }
+
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
@@ -78,6 +84,10 @@ public class Usuario {
 
     public void setRolNombre(String rolNombre) {
         this.rolNombre = rolNombre;
+    }
+
+    public void setTarea(String tarea) {
+        this.tarea = tarea;
     }
 
 }
