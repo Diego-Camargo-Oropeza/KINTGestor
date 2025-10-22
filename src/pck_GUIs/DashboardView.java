@@ -99,7 +99,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_tarea = new javax.swing.JLabel();
         lbl_rol4 = new javax.swing.JLabel();
         lbl_cardName = new javax.swing.JLabel();
-        roundedPanel1 = new pck_customComponents.RoundedPanel();
+        panelPrestamos = new pck_customComponents.RoundedPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -447,24 +447,24 @@ public class DashboardView extends javax.swing.JFrame {
         jTable1.setToolTipText("");
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
-        roundedPanel1.setLayout(roundedPanel1Layout);
-        roundedPanel1Layout.setHorizontalGroup(
-            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout panelPrestamosLayout = new javax.swing.GroupLayout(panelPrestamos);
+        panelPrestamos.setLayout(panelPrestamosLayout);
+        panelPrestamosLayout.setHorizontalGroup(
+            panelPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPrestamosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 948, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        roundedPanel1Layout.setVerticalGroup(
-            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+        panelPrestamosLayout.setVerticalGroup(
+            panelPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPrestamosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 400, 960, 380));
+        pan_bg.add(panelPrestamos, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 400, 960, 380));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -682,8 +682,8 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JPanel pan_bg;
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPanel pan_menuLatIzq;
+    private pck_customComponents.RoundedPanel panelPrestamos;
     private pck_customComponents.PillLabel pill_estado;
-    private pck_customComponents.RoundedPanel roundedPanel1;
     private pck_customComponents.RoundedPanel tarjetaUsuario;
     // End of variables declaration//GEN-END:variables
 }
