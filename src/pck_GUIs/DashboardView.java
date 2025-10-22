@@ -15,7 +15,7 @@ import pck_service.Session;
  * @author dieca
  */
 public class DashboardView extends javax.swing.JFrame {
-    
+
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
     Usuario u = Session.get();
@@ -40,7 +40,7 @@ public class DashboardView extends javax.swing.JFrame {
                 escalar.escalarLabel(lbl_squareAvatar, "/pck_img/square_avatar.png");
             }
         });
-        
+
         java.awt.event.ComponentAdapter resizeListener = new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
@@ -53,9 +53,9 @@ public class DashboardView extends javax.swing.JFrame {
         };
         imgKintLogo.addComponentListener(resizeListener);
         lbl_userSVG.addComponentListener(resizeListener);
-        
+
         setIconImage(new ImageIcon(getClass().getResource("/pck_img/favicon.png")).getImage());
-        
+
     }
 
     /**
@@ -100,6 +100,8 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_rol4 = new javax.swing.JLabel();
         lbl_cardName = new javax.swing.JLabel();
         roundedPanel1 = new pck_customComponents.RoundedPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Dashboard");
@@ -349,7 +351,9 @@ public class DashboardView extends javax.swing.JFrame {
 
         lbl_tarea.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
         lbl_tarea.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_tarea.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_tarea.setText("lbl");
+        lbl_tarea.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         lbl_rol4.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
         lbl_rol4.setForeground(new java.awt.Color(148, 148, 148));
@@ -365,8 +369,7 @@ public class DashboardView extends javax.swing.JFrame {
             tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_tarea, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
                         .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -390,7 +393,8 @@ public class DashboardView extends javax.swing.JFrame {
                         .addGap(44, 44, 44)
                         .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbl_rol4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_email, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(lbl_email, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lbl_tarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(22, 22, 22))
         );
         tarjetaUsuarioLayout.setVerticalGroup(
@@ -412,7 +416,7 @@ public class DashboardView extends javax.swing.JFrame {
                         .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
                             .addGap(19, 19, 19)
                             .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(60, 60, 60)
+                .addGap(18, 18, 18)
                 .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_rol3)
                     .addComponent(lbl_rol4))
@@ -422,22 +426,42 @@ public class DashboardView extends javax.swing.JFrame {
                     .addComponent(lbl_email))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbl_rol2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbl_tarea)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_tarea, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pan_bg.add(tarjetaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 400, 280));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jTable1.setToolTipText("");
+        jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
         roundedPanel1Layout.setHorizontalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 960, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 948, Short.MAX_VALUE)
+                .addContainerGap())
         );
         roundedPanel1Layout.setVerticalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 380, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 400, 960, 380));
@@ -531,6 +555,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_nameholder.setText(nombreUsuario);
         lbl_idHolder.setText(String.valueOf(id));
         lbl_email.setText(correo);
+        lbl_email.setToolTipText(correo);
         lbl_rol.setText(rol);
         lbl_tarea.setText(tarea);
         lbl_date.setText(currentDate.toString());
@@ -633,7 +658,9 @@ public class DashboardView extends javax.swing.JFrame {
     private pck_customComponents.CustomButton btn_usuarios;
     private javax.swing.JLabel imgKintLogo;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lbl_cardName;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_date;
