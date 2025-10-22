@@ -200,3 +200,6 @@ VALUES (3, "Técnico", "Solamente puede consultar el inventario y hacer solicitu
 
 /* PASS:  ADMIN */
 INSERT INTO usuario VALUES (1, 1, "Diego", "ca523884@uaeh.edu.mx", "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", 1, 10/21/2025, 10/21/2025);
+
+
+INSERT INTO `solicitud` (`id_solicitud`, `id_usuario`, `folio`, `estado`, `prioridad`, `comentarios`, `fecha_creacion`, `fecha_edicion`) VALUES ('1', '1', 'FOL04', 'APROBADA', 'ALTA', 'N/A', current_timestamp(), current_timestamp());
