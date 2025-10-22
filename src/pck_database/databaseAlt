@@ -1,0 +1,319 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 22-10-2025 a las 06:17:11
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `kint_inv`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle`
+--
+
+CREATE DATABASE kint_inv;
+USE kint_inv;
+
+CREATE TABLE `detalle` (
+  `id_detalle` int(10) UNSIGNED NOT NULL,
+  `id_solicitud` int(10) UNSIGNED NOT NULL,
+  `id_producto` int(10) UNSIGNED NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `observaciones` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `imagen`
+--
+
+CREATE TABLE `imagen` (
+  `id_imagen` int(10) UNSIGNED NOT NULL,
+  `id_producto` int(10) UNSIGNED NOT NULL,
+  `ruta` varchar(255) NOT NULL,
+  `principal` tinyint(4) NOT NULL DEFAULT 0,
+  `descripcion` varchar(255) DEFAULT NULL,
+  `fecha_subida` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `producto`
+--
+
+CREATE TABLE `producto` (
+  `id_producto` int(10) UNSIGNED NOT NULL,
+  `sku` varchar(80) NOT NULL,
+  `nombre` varchar(160) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `tipo` enum('MATERIAL','HERRAMIENTA','DISPOSITIVO') NOT NULL,
+  `marca` varchar(120) DEFAULT NULL,
+  `categoria` varchar(120) DEFAULT NULL,
+  `u_medida` varchar(20) DEFAULT NULL,
+  `codigo_barras` varchar(128) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `producto_proveedor`
+--
+
+CREATE TABLE `producto_proveedor` (
+  `id_producto` int(10) UNSIGNED NOT NULL,
+  `id_proveedor` int(10) UNSIGNED NOT NULL,
+  `codigo_proveedor` varchar(120) DEFAULT NULL,
+  `precio_compra` decimal(12,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `proveedor`
+--
+
+CREATE TABLE `proveedor` (
+  `id_proveedor` int(10) UNSIGNED NOT NULL,
+  `nombre` varchar(160) NOT NULL,
+  `rfc` varchar(20) DEFAULT NULL,
+  `telefono` varchar(40) DEFAULT NULL,
+  `email` varchar(160) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol`
+--
+
+CREATE TABLE `rol` (
+  `id_rol` int(10) UNSIGNED NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `descripcion` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`id_rol`, `nombre`, `descripcion`) VALUES
+(1, 'Administrador', 'Puede controlar todo el sistema'),
+(2, 'Supervisor', 'Puede controlar el flujo de solicitudes de préstamo de materiales/utencilios etc. Aprueba o desaprueba solicitudes, puede añadir más productos'),
+(3, 'Técnico', 'Solamente puede consultar el inventario y hacer solicitudes de materiales/utencilios/dispositivos etc.');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `solicitud`
+--
+
+CREATE TABLE `solicitud` (
+  `id_solicitud` int(10) UNSIGNED NOT NULL,
+  `id_usuario` int(10) UNSIGNED NOT NULL,
+  `folio` varchar(40) NOT NULL,
+  `estado` enum('BORRADOR','ENVIADA','APROBADA','RECHAZADA','ENTREGADA') NOT NULL DEFAULT 'BORRADOR',
+  `prioridad` enum('BAJA','MEDIA','ALTA','URGENTE') NOT NULL DEFAULT 'MEDIA',
+  `comentarios` varchar(255) DEFAULT NULL,
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `id_usuario` int(10) UNSIGNED NOT NULL,
+  `id_rol` int(10) UNSIGNED NOT NULL,
+  `nombre` varchar(120) NOT NULL,
+  `correo` varchar(160) NOT NULL,
+  `contrasena_hash` varchar(255) NOT NULL,
+  `activo` tinyint(4) NOT NULL DEFAULT 1,
+  `tarea` varchar(250) DEFAULT 'Este usuario no se le ha asigando ninguna tarea',
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`id_usuario`, `id_rol`, `nombre`, `correo`, `contrasena_hash`, `activo`, `tarea`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1, 1, 'Diego', 'ca523884@uaeh.edu.mx', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1, 'A este usuario no se le ha asignado ninguna tarea', '2025-10-21 15:12:12', '2025-10-21 21:38:04'),
+(2, 3, 'Técnico Super Profesional', 'diecamoesa07@gmail.com', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1, 'A este usuario no se le ha asignado ninguna tarea', '0000-00-00 00:00:00', '2025-10-21 21:45:34');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `detalle`
+--
+ALTER TABLE `detalle`
+  ADD PRIMARY KEY (`id_detalle`),
+  ADD UNIQUE KEY `uq_detalle` (`id_solicitud`,`id_producto`),
+  ADD KEY `ix_detalle_producto` (`id_producto`);
+
+--
+-- Indices de la tabla `imagen`
+--
+ALTER TABLE `imagen`
+  ADD PRIMARY KEY (`id_imagen`),
+  ADD KEY `ix_imagen_producto` (`id_producto`);
+
+--
+-- Indices de la tabla `producto`
+--
+ALTER TABLE `producto`
+  ADD PRIMARY KEY (`id_producto`),
+  ADD UNIQUE KEY `sku` (`sku`);
+
+--
+-- Indices de la tabla `producto_proveedor`
+--
+ALTER TABLE `producto_proveedor`
+  ADD PRIMARY KEY (`id_producto`,`id_proveedor`),
+  ADD KEY `fk_pp_proveedor` (`id_proveedor`);
+
+--
+-- Indices de la tabla `proveedor`
+--
+ALTER TABLE `proveedor`
+  ADD PRIMARY KEY (`id_proveedor`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `rol`
+--
+ALTER TABLE `rol`
+  ADD PRIMARY KEY (`id_rol`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `solicitud`
+--
+ALTER TABLE `solicitud`
+  ADD PRIMARY KEY (`id_solicitud`),
+  ADD UNIQUE KEY `folio` (`folio`),
+  ADD KEY `ix_solicitud_estado` (`estado`),
+  ADD KEY `ix_solicitud_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `correo` (`correo`),
+  ADD KEY `fk_usuario_rol` (`id_rol`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `detalle`
+--
+ALTER TABLE `detalle`
+  MODIFY `id_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `imagen`
+--
+ALTER TABLE `imagen`
+  MODIFY `id_imagen` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `producto`
+--
+ALTER TABLE `producto`
+  MODIFY `id_producto` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `proveedor`
+--
+ALTER TABLE `proveedor`
+  MODIFY `id_proveedor` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `rol`
+--
+ALTER TABLE `rol`
+  MODIFY `id_rol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `solicitud`
+--
+ALTER TABLE `solicitud`
+  MODIFY `id_solicitud` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `id_usuario` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `detalle`
+--
+ALTER TABLE `detalle`
+  ADD CONSTRAINT `fk_detalle_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_solicitud` FOREIGN KEY (`id_solicitud`) REFERENCES `solicitud` (`id_solicitud`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `imagen`
+--
+ALTER TABLE `imagen`
+  ADD CONSTRAINT `fk_imagen_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `producto_proveedor`
+--
+ALTER TABLE `producto_proveedor`
+  ADD CONSTRAINT `fk_pp_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pp_proveedor` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `solicitud`
+--
+ALTER TABLE `solicitud`
+  ADD CONSTRAINT `fk_solicitud_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
