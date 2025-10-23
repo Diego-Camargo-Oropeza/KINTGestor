@@ -596,7 +596,6 @@ public class DashboardView extends javax.swing.JFrame {
                 rows = dao.listByUsuario(u.getIdUsuario());
             }
 
-            // Columnas fijas
             String[] cols = {"Folio", "Producto", "Cantidad", "Estado", "Prioridad", "Creado"};
             javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(null, cols) {
                 @Override
