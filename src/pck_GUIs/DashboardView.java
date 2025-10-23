@@ -101,7 +101,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_cardName = new javax.swing.JLabel();
         panelPrestamos = new pck_customComponents.RoundedPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaPrestamos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Dashboard");
@@ -433,7 +433,7 @@ public class DashboardView extends javax.swing.JFrame {
 
         pan_bg.add(tarjetaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 400, 280));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaPrestamos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -444,8 +444,8 @@ public class DashboardView extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTable1.setToolTipText("");
-        jScrollPane1.setViewportView(jTable1);
+        tablaPrestamos.setToolTipText("");
+        jScrollPane1.setViewportView(tablaPrestamos);
 
         javax.swing.GroupLayout panelPrestamosLayout = new javax.swing.GroupLayout(panelPrestamos);
         panelPrestamos.setLayout(panelPrestamosLayout);
@@ -560,6 +560,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_tarea.setText(tarea);
         lbl_date.setText(currentDate.toString());
         lbl_cardName.setText(nombreUsuario);
+        cargarTablaPrestamos();
         System.out.println(nombreUsuario);
     }//GEN-LAST:event_formWindowActivated
 
@@ -580,6 +581,73 @@ public class DashboardView extends javax.swing.JFrame {
                 "Solo usuarios autorizados pueden acceder a esta función.\nTu rol: " + u.getRolNombre(),
                 "Acceso restringido", JOptionPane.WARNING_MESSAGE);
         return false;
+    }
+
+    private void cargarTablaPrestamos() {
+        try {
+            pck_dao.PrestamoDAO dao = new pck_dao.PrestamoDAO();
+            java.util.List<pck_model.PrestamoRow> rows;
+
+            // Regla: Admin (1) y Supervisor (2) ven todas; Técnico (3) solo las suyas
+            int rolId = u.getIdRol();
+            if (rolId == 1 || rolId == 2) {
+                rows = dao.listAll();
+            } else {
+                rows = dao.listByUsuario(u.getIdUsuario());
+            }
+
+            // Columnas fijas
+            String[] cols = {"Folio", "Producto", "Cantidad", "Estado", "Prioridad", "Creado"};
+            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(null, cols) {
+                @Override
+                public boolean isCellEditable(int r, int c) {
+                    return false;
+                }
+            };
+
+            if (rows == null || rows.isEmpty()) {
+                model.addRow(new Object[]{"— No    —", "hay", "solicitudes", "registradas", "", ""});
+                tablaPrestamos.setModel(model);
+                tablaPrestamos.setAutoCreateRowSorter(false);     
+                tablaPrestamos.setRowSelectionAllowed(false);     
+                tablaPrestamos.setEnabled(false);                 
+                javax.swing.table.DefaultTableCellRenderer gray = new javax.swing.table.DefaultTableCellRenderer();
+                gray.setForeground(new java.awt.Color(120, 120, 120));
+                gray.setFont(tablaPrestamos.getFont().deriveFont(java.awt.Font.ITALIC));
+                tablaPrestamos.getColumnModel().getColumn(0).setCellRenderer(gray);
+                return;
+            }
+
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
+            for (pck_model.PrestamoRow r : rows) {
+                model.addRow(new Object[]{
+                    r.getFolio(),
+                    r.getProducto(),
+                    r.getCantidad(),
+                    r.getEstado(),
+                    r.getPrioridad(),
+                    (r.getFechaCreacion() == null ? "" : sdf.format(r.getFechaCreacion()))
+                });
+            }
+
+            tablaPrestamos.setModel(model);
+            tablaPrestamos.setEnabled(true);
+            tablaPrestamos.setRowSelectionAllowed(true);
+            tablaPrestamos.setAutoCreateRowSorter(true);
+            tablaPrestamos.setRowHeight(22);
+            tablaPrestamos.getColumnModel().getColumn(0).setPreferredWidth(110);
+            tablaPrestamos.getColumnModel().getColumn(1).setPreferredWidth(240);
+            tablaPrestamos.getColumnModel().getColumn(2).setPreferredWidth(70);
+            tablaPrestamos.getColumnModel().getColumn(3).setPreferredWidth(100);
+            tablaPrestamos.getColumnModel().getColumn(4).setPreferredWidth(100);
+            tablaPrestamos.getColumnModel().getColumn(5).setPreferredWidth(140);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No se pudo cargar la tabla de préstamos.\n" + e.getMessage(),
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -660,7 +728,6 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lbl_cardName;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_date;
@@ -684,6 +751,7 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JPanel pan_menuLatIzq;
     private pck_customComponents.RoundedPanel panelPrestamos;
     private pck_customComponents.PillLabel pill_estado;
+    private javax.swing.JTable tablaPrestamos;
     private pck_customComponents.RoundedPanel tarjetaUsuario;
     // End of variables declaration//GEN-END:variables
 }
