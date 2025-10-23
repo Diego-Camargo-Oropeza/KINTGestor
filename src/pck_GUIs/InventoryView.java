@@ -14,7 +14,7 @@ import pck_service.Session;
  *
  * @author dieca
  */
-public class UITemplate extends javax.swing.JFrame {
+public class InventoryView extends javax.swing.JFrame {
 
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
@@ -29,7 +29,7 @@ public class UITemplate extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    public UITemplate() {
+    public InventoryView() {
         initComponents();
         setLocationRelativeTo(null);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -79,12 +79,25 @@ public class UITemplate extends javax.swing.JFrame {
         lbl_logout = new javax.swing.JLabel();
         pan_cabecera = new javax.swing.JPanel();
         lbl_navegador = new javax.swing.JLabel();
-        lbl_icon = new javax.swing.JLabel();
         lbl_exit = new javax.swing.JLabel();
+        lbl_icon1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         lbl_nameholder = new javax.swing.JLabel();
         lbl_userSVG = new javax.swing.JLabel();
         lbl_username = new javax.swing.JLabel();
+        roundedPanel1 = new pck_customComponents.RoundedPanel();
+        jLabel1 = new javax.swing.JLabel();
+        lbl_icon = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        roundedPanel2 = new pck_customComponents.RoundedPanel();
+        roundedPanel3 = new pck_customComponents.RoundedPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        productTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Dashboard");
@@ -255,13 +268,8 @@ public class UITemplate extends javax.swing.JFrame {
 
         lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Dashboard  /");
+        lbl_navegador.setText("Inventario /");
         pan_cabecera.add(lbl_navegador, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
-
-        lbl_icon.setFont(new java.awt.Font("Segoe UI Symbol", 1, 12)); // NOI18N
-        lbl_icon.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_icon.setText("🏠 / ");
-        pan_cabecera.add(lbl_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 30, 30));
 
         lbl_exit.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         lbl_exit.setForeground(new java.awt.Color(0, 0, 0));
@@ -285,6 +293,11 @@ public class UITemplate extends javax.swing.JFrame {
         });
         pan_cabecera.add(lbl_exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 0, 40, 30));
 
+        lbl_icon1.setFont(new java.awt.Font("Segoe UI Symbol", 1, 12)); // NOI18N
+        lbl_icon1.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_icon1.setText("🏠 / ");
+        pan_cabecera.add(lbl_icon1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 30, 30));
+
         pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1020, 30));
 
         jSeparator1.setBackground(new java.awt.Color(184, 184, 184));
@@ -301,6 +314,134 @@ public class UITemplate extends javax.swing.JFrame {
         lbl_username.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         lbl_username.setText("Usuario:");
         pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
+
+        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(26, 26, 26));
+        jLabel1.setText("Resúmen de productos");
+
+        lbl_icon.setFont(new java.awt.Font("Segoe UI Symbol", 0, 24)); // NOI18N
+        lbl_icon.setForeground(new java.awt.Color(0, 43, 73));
+        lbl_icon.setText(" 📊");
+
+        jLabel2.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(26, 26, 26));
+        jLabel2.setText("Total de Productos");
+
+        jLabel3.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(26, 26, 26));
+        jLabel3.setText("Agotados");
+
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(26, 26, 26));
+        jLabel4.setText("Bajos en Stock");
+        jLabel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 102, 26), 2, true));
+
+        jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(26, 26, 26));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("0");
+
+        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(26, 26, 26));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("0");
+
+        jLabel7.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(26, 26, 26));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("0");
+
+        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
+        roundedPanel1.setLayout(roundedPanel1Layout);
+        roundedPanel1Layout.setHorizontalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addComponent(lbl_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1))
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(34, 34, 34))
+        );
+        roundedPanel1Layout.setVerticalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lbl_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(52, 52, 52)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addGap(18, 18, 18)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addContainerGap(27, Short.MAX_VALUE))
+        );
+
+        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 160, 400, 190));
+
+        javax.swing.GroupLayout roundedPanel2Layout = new javax.swing.GroupLayout(roundedPanel2);
+        roundedPanel2.setLayout(roundedPanel2Layout);
+        roundedPanel2Layout.setHorizontalGroup(
+            roundedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 520, Short.MAX_VALUE)
+        );
+        roundedPanel2Layout.setVerticalGroup(
+            roundedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 190, Short.MAX_VALUE)
+        );
+
+        pan_bg.add(roundedPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 160, 520, 190));
+
+        productTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(productTable);
+
+        javax.swing.GroupLayout roundedPanel3Layout = new javax.swing.GroupLayout(roundedPanel3);
+        roundedPanel3.setLayout(roundedPanel3Layout);
+        roundedPanel3Layout.setHorizontalGroup(
+            roundedPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 948, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        roundedPanel3Layout.setVerticalGroup(
+            roundedPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pan_bg.add(roundedPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 370, 960, 410));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -328,7 +469,8 @@ public class UITemplate extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dashboardActionPerformed
-        // TODO add your handling code here:
+        new DashboardView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_dashboardActionPerformed
 
     private void btn_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inventarioActionPerformed
@@ -428,14 +570,142 @@ public class UITemplate extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UITemplate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UITemplate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UITemplate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UITemplate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -568,7 +838,7 @@ public class UITemplate extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UITemplate().setVisible(true);
+                new InventoryView().setVisible(true);
             }
         });
     }
@@ -582,10 +852,19 @@ public class UITemplate extends javax.swing.JFrame {
     private pck_customComponents.CustomButton btn_solicitudes;
     private pck_customComponents.CustomButton btn_usuarios;
     private javax.swing.JLabel imgKintLogo;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_icon;
+    private javax.swing.JLabel lbl_icon1;
     private javax.swing.JLabel lbl_logout;
     private javax.swing.JLabel lbl_nameholder;
     private javax.swing.JLabel lbl_navegador;
@@ -594,5 +873,9 @@ public class UITemplate extends javax.swing.JFrame {
     private javax.swing.JPanel pan_bg;
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPanel pan_menuLatIzq;
+    private javax.swing.JTable productTable;
+    private pck_customComponents.RoundedPanel roundedPanel1;
+    private pck_customComponents.RoundedPanel roundedPanel2;
+    private pck_customComponents.RoundedPanel roundedPanel3;
     // End of variables declaration//GEN-END:variables
 }

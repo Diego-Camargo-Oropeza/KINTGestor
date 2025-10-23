@@ -496,7 +496,8 @@ public class DashboardView extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_dashboardActionPerformed
 
     private void btn_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inventarioActionPerformed
-        // TODO add your handling code here:
+        new InventoryView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_inventarioActionPerformed
 
     private void btn_solicitudesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_solicitudesActionPerformed
@@ -607,9 +608,9 @@ public class DashboardView extends javax.swing.JFrame {
             if (rows == null || rows.isEmpty()) {
                 model.addRow(new Object[]{"— No    —", "hay", "solicitudes", "registradas", "", ""});
                 tablaPrestamos.setModel(model);
-                tablaPrestamos.setAutoCreateRowSorter(false);     
-                tablaPrestamos.setRowSelectionAllowed(false);     
-                tablaPrestamos.setEnabled(false);                 
+                tablaPrestamos.setAutoCreateRowSorter(false);
+                tablaPrestamos.setRowSelectionAllowed(false);
+                tablaPrestamos.setEnabled(false);
                 javax.swing.table.DefaultTableCellRenderer gray = new javax.swing.table.DefaultTableCellRenderer();
                 gray.setForeground(new java.awt.Color(120, 120, 120));
                 gray.setFont(tablaPrestamos.getFont().deriveFont(java.awt.Font.ITALIC));
