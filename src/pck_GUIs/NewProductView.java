@@ -2,11 +2,19 @@ package pck_GUIs;
 
 import java.awt.Color;
 import static java.awt.Color.WHITE;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import pck_dao.CategoriaDAO;
+import pck_dao.ProductoDAO;
+import pck_model.Categoria;
+import pck_model.Producto;
+import pck_model.TipoProducto;
 import pck_model.Usuario;
 import pck_service.Session;
 
@@ -20,8 +28,6 @@ public class NewProductView extends javax.swing.JFrame {
     Rescalar escalar = new Rescalar();
     Usuario u = Session.get();
     String nombreUsuario = u.getNombre();
-    String tarea = u.getTarea();
-    String correo = u.getCorreo();
     String rol = u.getRolNombre();
     int id = u.getIdUsuario();
     LocalDate currentDate = LocalDate.now();
@@ -280,7 +286,7 @@ public class NewProductView extends javax.swing.JFrame {
 
         lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Inventario  / Registrar Producto");
+        lbl_navegador.setText("Inventario  /  Registrar Producto");
         pan_cabecera.add(lbl_navegador, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
 
         lbl_icon.setFont(new java.awt.Font("Segoe UI Symbol", 1, 12)); // NOI18N
@@ -328,61 +334,65 @@ public class NewProductView extends javax.swing.JFrame {
         lbl_title.setText("Formulario de alta");
         pan_bg.add(lbl_title, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 240, 40));
 
-        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Nombre del producto");
 
+        tf_nombreProducto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tf_nombreProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_nombreProductoActionPerformed(evt);
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("SKU");
 
+        tf_sku.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tf_sku.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_skuActionPerformed(evt);
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Descripción (<500 caracteres)");
 
         ta_descripcion.setColumns(20);
         ta_descripcion.setRows(5);
+        ta_descripcion.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         jScrollPane1.setViewportView(ta_descripcion);
 
-        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Tipo");
 
         cb_tipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MATERIAL", "HERRAMIENTA", "DISPOSITIVO" }));
 
-        jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Categoría");
 
-        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Unidad de Medida");
 
         cb_unidades.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PIEZA", "KILOS", "GRAMOS", "LITROS", "MILILITROS", "UNIDADES", "METROS", "CENTÍMETROS", "CAJAS", "PALLETS", "DOCENA", "KIT", "PAQUETE" }));
 
-        jLabel7.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Código de Barras");
 
+        tf_codigoBarras.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tf_codigoBarras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_codigoBarrasActionPerformed(evt);
             }
         });
 
-        jLabel8.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("Ubicación física");
 
@@ -392,9 +402,12 @@ public class NewProductView extends javax.swing.JFrame {
             }
         });
 
-        jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Ubicación física");
+        jLabel9.setText("Cantidad incial");
+
+        spn_cantidad.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        spn_cantidad.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1000, 1));
 
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
@@ -479,7 +492,7 @@ public class NewProductView extends javax.swing.JFrame {
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tf_ubicación, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(spn_cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(122, Short.MAX_VALUE))
         );
 
         pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 180, 590, 580));
@@ -536,7 +549,7 @@ public class NewProductView extends javax.swing.JFrame {
                 btn_crear1ActionPerformed(evt);
             }
         });
-        pan_bg.add(btn_crear1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 120, 130, 40));
+        pan_bg.add(btn_crear1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 120, 140, 40));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -627,6 +640,7 @@ public class NewProductView extends javax.swing.JFrame {
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         lbl_nameholder.setText(nombreUsuario);
         System.out.println(nombreUsuario);
+        cargarCategorias();
     }//GEN-LAST:event_formWindowActivated
 
     private void btn_subirFotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_subirFotoActionPerformed
@@ -650,7 +664,9 @@ public class NewProductView extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_ubicaciónActionPerformed
 
     private void btn_crear1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_crear1ActionPerformed
-        // TODO add your handling code here:
+
+        onCrearProducto();
+        
     }//GEN-LAST:event_btn_crear1ActionPerformed
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
@@ -680,6 +696,149 @@ public class NewProductView extends javax.swing.JFrame {
         }
 
         return true;
+    }
+
+    private void cargarCategorias() {
+        CategoriaDAO dao = new CategoriaDAO();
+        List<Categoria> cats = dao.findAll();
+
+        DefaultComboBoxModel<Categoria> model = new DefaultComboBoxModel<>();
+        //placeholder
+        model.addElement(new Categoria(0, "— Selecciona categoría —", ""));
+
+        for (Categoria c : cats) {
+            model.addElement(c);
+        }
+        cb_categoria.setModel(model);
+    }
+
+    // Helpers
+    private String t(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    private TipoProducto parseTipo(String s) {
+        try {
+            return s == null ? null : TipoProducto.valueOf(s.trim());
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    private boolean validarFormulario() {
+        String nombre = t(tf_nombreProducto.getText());
+        String sku = t(tf_sku.getText());
+        String desc = t(ta_descripcion.getText());
+        String tipoStr = (cb_tipo.getSelectedItem() == null) ? "" : cb_tipo.getSelectedItem().toString();
+        TipoProducto tipo = parseTipo(tipoStr);
+        Categoria cat = (Categoria) cb_categoria.getSelectedItem();
+        String uMedida = (cb_unidades.getSelectedItem() == null) ? "" : cb_unidades.getSelectedItem().toString();
+        String ubic = t(tf_ubicación.getText());
+        String codBarras = t(tf_codigoBarras.getText());
+
+        StringBuilder sb = new StringBuilder();
+
+        if (nombre.isEmpty()) {
+            sb.append("• El nombre es obligatorio.\n");
+        }
+        if (sku.isEmpty()) {
+            sb.append("• El SKU es obligatorio.\n");
+        }
+        if (tipo == null) {
+            sb.append("• Selecciona un tipo de producto.\n");
+        }
+        if (cat == null || cat.getIdCategoria() <= 0) {
+            sb.append("• Selecciona una categoría válida.\n");
+        }
+        if (uMedida.isEmpty()) {
+            sb.append("• Selecciona la unidad de medida.\n");
+        }
+
+        if (nombre.length() > 120) {
+            sb.append("• El nombre no debe exceder 120 caracteres.\n");
+        }
+        if (sku.length() > 60) {
+            sb.append("• El SKU no debe exceder 60 caracteres.\n");
+        }
+        if (desc.length() > 500) {
+            sb.append("• La descripción no debe exceder 500 caracteres.\n");
+        }
+        if (codBarras.length() > 80) {
+            sb.append("• El código de barras no debe exceder 80 caracteres.\n");
+        }
+        if (ubic.length() > 120) {
+            sb.append("• La ubicación no debe exceder 120 caracteres.\n");
+        }
+
+        Number n = (Number) spn_cantidad.getValue();
+        int stock = (n == null) ? 0 : n.intValue();
+        if (stock < 0) {
+            sb.append("• La cantidad no puede ser negativa.\n");
+        }
+
+        if (sb.length() > 0) {
+            JOptionPane.showMessageDialog(this, sb.toString(), "Datos incompletos", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private Producto buildProductoDesdeUI() {
+        Producto p = new Producto();
+
+        p.setNombre(t(tf_nombreProducto.getText()));
+        p.setSku(t(tf_sku.getText()));
+        p.setDescripcion(t(ta_descripcion.getText()));
+
+        String tipoStr = (cb_tipo.getSelectedItem() == null) ? "" : cb_tipo.getSelectedItem().toString();
+        p.setTipo(parseTipo(tipoStr));
+
+        Categoria cat = (Categoria) cb_categoria.getSelectedItem();
+        p.setIdCategoria(cat != null ? cat.getIdCategoria() : 0);
+
+        p.setuMedida((cb_unidades.getSelectedItem() == null) ? "" : cb_unidades.getSelectedItem().toString());
+        p.setCodigoBarras(t(tf_codigoBarras.getText()));
+        p.setUbicacion(t(tf_ubicación.getText()));
+
+        Number n = (Number) spn_cantidad.getValue();
+        p.setStock(n == null ? 0 : n.intValue());
+
+        p.setActivo(true);   // Activo al crear
+        return p;
+    }
+
+    private void onCrearProducto() {
+        if (!validarFormulario()) {
+            return;
+        }
+
+        Producto p = buildProductoDesdeUI();
+        ProductoDAO dao = new ProductoDAO();
+
+        try {
+            int nuevoId = dao.insert(p);
+            if (nuevoId > 0) {
+                JOptionPane.showMessageDialog(this, "Producto creado con ID: " + nuevoId, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarFormulario();
+                // this.dispose(); 
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo crear el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error al crear el producto:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void limpiarFormulario() {
+        tf_nombreProducto.setText("");
+        tf_sku.setText("");
+        ta_descripcion.setText("");
+        cb_tipo.setSelectedIndex(-1);
+        cb_categoria.setSelectedIndex(0);
+        cb_unidades.setSelectedIndex(-1);
+        tf_codigoBarras.setText("");
+        tf_ubicación.setText("");
+        spn_cantidad.setValue(0);
     }
 
     /**
@@ -982,7 +1141,7 @@ public class NewProductView extends javax.swing.JFrame {
     private pck_customComponents.CustomButton btn_solicitudes;
     private pck_customComponents.CustomButton btn_subirFoto;
     private pck_customComponents.CustomButton btn_usuarios;
-    private javax.swing.JComboBox<String> cb_categoria;
+    private javax.swing.JComboBox<Categoria> cb_categoria;
     private javax.swing.JComboBox<String> cb_tipo;
     private javax.swing.JComboBox<String> cb_unidades;
     private javax.swing.JLabel imgKintLogo;

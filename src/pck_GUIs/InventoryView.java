@@ -637,7 +637,7 @@ public class InventoryView extends javax.swing.JFrame {
         lbl_stockBajo.setText(String.valueOf(bajos));
     }
 
-    // --- Acción de filtro (llamar desde ActionPerformed del combo) ---
+    // --- Acción de filtro ---
     private void applyFiltroTipo() {
         Object sel = cb_filtroTipo.getSelectedItem();
         String tipo = (sel == null) ? "TODOS" : sel.toString().trim();

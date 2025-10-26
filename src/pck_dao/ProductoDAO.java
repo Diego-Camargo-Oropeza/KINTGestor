@@ -206,7 +206,7 @@ public class ProductoDAO {
     }
 
     public int insert(Producto p) {
-        String sql = "INSERT INTO kint_inv_producto "
+        String sql = "INSERT INTO producto "
                 + "(sku, nombre, descripcion, tipo, marca, id_categoria, u_medida, "
                 + " codigo_barras, stock, ubicacion, activo, fecha_creacion) "
                 + "VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())";

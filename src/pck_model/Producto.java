@@ -12,12 +12,12 @@ public class Producto {
     private String sku;
     private String nombre;
     private String descripcion;
-    private TipoProducto tipo;              // enum: MATERIAL/HERRAMIENTA/DISPOSITIVO
+    private TipoProducto tipo;              
     private String marca;
 
     // --- Categoría 
-    private int idCategoria;                // FK a kint_inv_categoria.id_categoria
-    private String categoriaNombre;         // Solo lectura/convivencia para listas
+    private int idCategoria;                
+    private String categoriaNombre;         
 
     // --- Inventario
     private String uMedida;
