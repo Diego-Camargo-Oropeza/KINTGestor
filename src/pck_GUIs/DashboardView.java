@@ -2,11 +2,15 @@ package pck_GUIs;
 
 import java.awt.Color;
 import static java.awt.Color.WHITE;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import pck_dao.PrestamoDAO;
+import pck_model.PrestamoRow;
 import pck_model.Usuario;
 import pck_service.Session;
 
@@ -101,7 +105,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbl_cardName = new javax.swing.JLabel();
         panelPrestamos = new pck_customComponents.RoundedPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tablaPrestamos = new javax.swing.JTable();
+        jtable_prestamos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Dashboard");
@@ -335,6 +339,7 @@ public class DashboardView extends javax.swing.JFrame {
 
         lbl_date.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
         lbl_date.setForeground(new java.awt.Color(148, 148, 148));
+        lbl_date.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbl_date.setText("1");
 
         lbl_email.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
@@ -369,53 +374,53 @@ public class DashboardView extends javax.swing.JFrame {
             tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
-                        .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_tarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tarjetaUsuarioLayout.createSequentialGroup()
                         .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
-                                .addComponent(lbl_rol, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(102, 102, 102)
+                                .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lbl_rol, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lbl_idHolder, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(lbl_date, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(pill_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbl_idHolder, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(lbl_date, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(lbl_cardName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lbl_rol2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                                .addGap(95, 95, 95)
+                                .addComponent(lbl_email, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(109, 109, 109))
                     .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
-                        .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(lbl_cardName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lbl_rol2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
-                            .addComponent(lbl_rol3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(44, 44, 44)
-                        .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbl_rol4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_email, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(lbl_tarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(lbl_rol3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(204, 204, 204)
+                        .addComponent(lbl_rol4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
         tarjetaUsuarioLayout.setVerticalGroup(
             tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
-                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbl_rol)
+                            .addComponent(pill_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(lbl_idHolder)
+                            .addComponent(lbl_date)))
                     .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(pill_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
-                            .addGap(18, 18, 18)
-                            .addComponent(lbl_rol)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel2)
-                                .addComponent(lbl_idHolder)
-                                .addComponent(lbl_date)))
-                        .addGroup(tarjetaUsuarioLayout.createSequentialGroup()
-                            .addGap(19, 19, 19)
-                            .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(lbl_squareAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_rol3)
@@ -424,16 +429,16 @@ public class DashboardView extends javax.swing.JFrame {
                 .addGroup(tarjetaUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_cardName)
                     .addComponent(lbl_email))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(lbl_rol2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_tarea, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                .addComponent(lbl_tarea, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        pan_bg.add(tarjetaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 400, 280));
+        pan_bg.add(tarjetaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 520, 280));
 
-        tablaPrestamos.setModel(new javax.swing.table.DefaultTableModel(
+        jtable_prestamos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -444,8 +449,8 @@ public class DashboardView extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tablaPrestamos.setToolTipText("");
-        jScrollPane1.setViewportView(tablaPrestamos);
+        jtable_prestamos.setToolTipText("");
+        jScrollPane1.setViewportView(jtable_prestamos);
 
         javax.swing.GroupLayout panelPrestamosLayout = new javax.swing.GroupLayout(panelPrestamos);
         panelPrestamos.setLayout(panelPrestamosLayout);
@@ -586,8 +591,8 @@ public class DashboardView extends javax.swing.JFrame {
 
     private void cargarTablaPrestamos() {
         try {
-            pck_dao.PrestamoDAO dao = new pck_dao.PrestamoDAO();
-            java.util.List<pck_model.PrestamoRow> rows;
+            PrestamoDAO dao = new PrestamoDAO();
+            java.util.List<PrestamoRow> rows;
 
             // Regla: Admin (1) y Supervisor (2) ven todas; Técnico (3) solo las suyas
             int rolId = u.getIdRol();
@@ -598,7 +603,7 @@ public class DashboardView extends javax.swing.JFrame {
             }
 
             String[] cols = {"Folio", "Producto", "Cantidad", "Estado", "Prioridad", "Creado"};
-            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(null, cols) {
+            DefaultTableModel model = new DefaultTableModel(null, cols) {
                 @Override
                 public boolean isCellEditable(int r, int c) {
                     return false;
@@ -607,19 +612,19 @@ public class DashboardView extends javax.swing.JFrame {
 
             if (rows == null || rows.isEmpty()) {
                 model.addRow(new Object[]{"— No    —", "hay", "solicitudes", "registradas", "", ""});
-                tablaPrestamos.setModel(model);
-                tablaPrestamos.setAutoCreateRowSorter(false);
-                tablaPrestamos.setRowSelectionAllowed(false);
-                tablaPrestamos.setEnabled(false);
+                jtable_prestamos.setModel(model);
+                jtable_prestamos.setAutoCreateRowSorter(false);
+                jtable_prestamos.setRowSelectionAllowed(false);
+                jtable_prestamos.setEnabled(false);
                 javax.swing.table.DefaultTableCellRenderer gray = new javax.swing.table.DefaultTableCellRenderer();
                 gray.setForeground(new java.awt.Color(120, 120, 120));
-                gray.setFont(tablaPrestamos.getFont().deriveFont(java.awt.Font.ITALIC));
-                tablaPrestamos.getColumnModel().getColumn(0).setCellRenderer(gray);
+                gray.setFont(jtable_prestamos.getFont().deriveFont(java.awt.Font.ITALIC));
+                jtable_prestamos.getColumnModel().getColumn(0).setCellRenderer(gray);
                 return;
             }
 
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
-            for (pck_model.PrestamoRow r : rows) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            for (PrestamoRow r : rows) {
                 model.addRow(new Object[]{
                     r.getFolio(),
                     r.getProducto(),
@@ -630,17 +635,17 @@ public class DashboardView extends javax.swing.JFrame {
                 });
             }
 
-            tablaPrestamos.setModel(model);
-            tablaPrestamos.setEnabled(true);
-            tablaPrestamos.setRowSelectionAllowed(true);
-            tablaPrestamos.setAutoCreateRowSorter(true);
-            tablaPrestamos.setRowHeight(22);
-            tablaPrestamos.getColumnModel().getColumn(0).setPreferredWidth(110);
-            tablaPrestamos.getColumnModel().getColumn(1).setPreferredWidth(240);
-            tablaPrestamos.getColumnModel().getColumn(2).setPreferredWidth(70);
-            tablaPrestamos.getColumnModel().getColumn(3).setPreferredWidth(100);
-            tablaPrestamos.getColumnModel().getColumn(4).setPreferredWidth(100);
-            tablaPrestamos.getColumnModel().getColumn(5).setPreferredWidth(140);
+            jtable_prestamos.setModel(model);
+            jtable_prestamos.setEnabled(true);
+            jtable_prestamos.setRowSelectionAllowed(true);
+            jtable_prestamos.setAutoCreateRowSorter(true);
+            jtable_prestamos.setRowHeight(22);
+            jtable_prestamos.getColumnModel().getColumn(0).setPreferredWidth(110);
+            jtable_prestamos.getColumnModel().getColumn(1).setPreferredWidth(240);
+            jtable_prestamos.getColumnModel().getColumn(2).setPreferredWidth(70);
+            jtable_prestamos.getColumnModel().getColumn(3).setPreferredWidth(100);
+            jtable_prestamos.getColumnModel().getColumn(4).setPreferredWidth(100);
+            jtable_prestamos.getColumnModel().getColumn(5).setPreferredWidth(140);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -728,6 +733,7 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTable jtable_prestamos;
     private javax.swing.JLabel lbl_cardName;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_date;
@@ -751,7 +757,6 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JPanel pan_menuLatIzq;
     private pck_customComponents.RoundedPanel panelPrestamos;
     private pck_customComponents.PillLabel pill_estado;
-    private javax.swing.JTable tablaPrestamos;
     private pck_customComponents.RoundedPanel tarjetaUsuario;
     // End of variables declaration//GEN-END:variables
 }
