@@ -220,6 +220,11 @@ public class InventoryView extends javax.swing.JFrame {
         lbl_logout.setText("📲 Cerrar Sesión");
         lbl_logout.setToolTipText("Cerrar sesión actual");
         lbl_logout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbl_logout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbl_logoutMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout pan_menuLatIzqLayout = new javax.swing.GroupLayout(pan_menuLatIzq);
         pan_menuLatIzq.setLayout(pan_menuLatIzqLayout);
@@ -625,6 +630,18 @@ public class InventoryView extends javax.swing.JFrame {
         new NewProductView().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_nuevoProductoActionPerformed
+
+    private void lbl_logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_logoutMouseClicked
+        // TODO add your handling code here:
+        int aux;
+        aux = JOptionPane.showConfirmDialog(this, "¿Desea cerrar sesión?", "Confirmacion", JOptionPane.YES_NO_OPTION);
+        if (aux == JOptionPane.YES_OPTION) {
+            this.dispose();
+            new Login().setVisible(true);
+        }else if (aux == JOptionPane.NO_OPTION){
+            return;
+        }
+    }//GEN-LAST:event_lbl_logoutMouseClicked
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
     //útil ya que en lugar de mandar a llamar la función y hacer 3 combinaciones diferentes de arreglos enteros, mejor paso directamente las constantes
