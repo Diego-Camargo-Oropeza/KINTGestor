@@ -22,8 +22,11 @@ import pck_service.Session;
  *
  * @author dieca
  */
-public class NewProductView extends javax.swing.JFrame {
+public class EditProductView extends javax.swing.JFrame {
 
+    private int idProducto = 0;
+    private final ProductoDAO productoDAO = new ProductoDAO();
+    private Producto productoActual = null;
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
     Usuario u = Session.get();
@@ -35,9 +38,10 @@ public class NewProductView extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    public NewProductView() {
+    public EditProductView(int idProducto) {
         initComponents();
         setLocationRelativeTo(null);
+        this.idProducto = idProducto;
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowOpened(java.awt.event.WindowEvent e) {
@@ -115,7 +119,7 @@ public class NewProductView extends javax.swing.JFrame {
         lbl_imagen = new javax.swing.JLabel();
         btn_subirFoto = new pck_customComponents.CustomButton();
         lbl_username1 = new javax.swing.JLabel();
-        btn_crear1 = new pck_customComponents.CustomButton();
+        btn_editar = new pck_customComponents.CustomButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Dashboard");
@@ -286,7 +290,7 @@ public class NewProductView extends javax.swing.JFrame {
 
         lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Inventario  /  Registrar Producto");
+        lbl_navegador.setText("Inventario  / Editar Producto");
         pan_cabecera.add(lbl_navegador, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
 
         lbl_icon.setFont(new java.awt.Font("Segoe UI Symbol", 1, 12)); // NOI18N
@@ -331,7 +335,7 @@ public class NewProductView extends javax.swing.JFrame {
 
         lbl_title.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         lbl_title.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_title.setText("Formulario de alta");
+        lbl_title.setText("Formulario de edición");
         pan_bg.add(lbl_title, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 240, 40));
 
         jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
@@ -349,6 +353,7 @@ public class NewProductView extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("SKU");
 
+        tf_sku.setEnabled(false);
         tf_sku.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tf_sku.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -404,7 +409,7 @@ public class NewProductView extends javax.swing.JFrame {
 
         jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Cantidad incial");
+        jLabel9.setText("Stock");
 
         spn_cantidad.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         spn_cantidad.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1000, 1));
@@ -539,17 +544,17 @@ public class NewProductView extends javax.swing.JFrame {
         lbl_username1.setText("Usuario:");
         pan_bg.add(lbl_username1, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
 
-        btn_crear1.setText("Crear Producto");
-        btn_crear1.setToolTipText("Click para ir al Panel Principal");
-        btn_crear1.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
-        btn_crear1.setOver(true);
-        btn_crear1.setRadius(30);
-        btn_crear1.addActionListener(new java.awt.event.ActionListener() {
+        btn_editar.setText("Editar Producto");
+        btn_editar.setToolTipText("Click para ir al Panel Principal");
+        btn_editar.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
+        btn_editar.setOver(true);
+        btn_editar.setRadius(30);
+        btn_editar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_crear1ActionPerformed(evt);
+                btn_editarActionPerformed(evt);
             }
         });
-        pan_bg.add(btn_crear1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 120, 140, 40));
+        pan_bg.add(btn_editar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 120, 140, 40));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -641,6 +646,7 @@ public class NewProductView extends javax.swing.JFrame {
         lbl_nameholder.setText(nombreUsuario);
         System.out.println(nombreUsuario);
         cargarCategorias();
+        cargarProducto();
     }//GEN-LAST:event_formWindowActivated
 
     private void btn_subirFotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_subirFotoActionPerformed
@@ -663,9 +669,9 @@ public class NewProductView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tf_ubicaciónActionPerformed
 
-    private void btn_crear1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_crear1ActionPerformed
-        onCrearProducto();
-    }//GEN-LAST:event_btn_crear1ActionPerformed
+    private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
+        onGuardarCambios();
+    }//GEN-LAST:event_btn_editarActionPerformed
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
     //útil ya que en lugar de mandar a llamar la función y hacer 3 combinaciones diferentes de arreglos enteros, mejor paso directamente las constantes
@@ -684,16 +690,6 @@ public class NewProductView extends javax.swing.JFrame {
                 "Solo usuarios autorizados pueden acceder a esta función.\nTu rol: " + u.getRolNombre(),
                 "Acceso restringido", JOptionPane.WARNING_MESSAGE);
         return false;
-    }
-
-    private boolean crearProducto() {
-        try {
-
-        } catch (Exception e) {
-
-        }
-
-        return true;
     }
 
     private void cargarCategorias() {
@@ -805,25 +801,25 @@ public class NewProductView extends javax.swing.JFrame {
         return p;
     }
 
-    private void onCrearProducto() {
+    private void onGuardarCambios() {
         if (!validarFormulario()) {
             return;
         }
 
-        Producto p = buildProductoDesdeUI();
-        ProductoDAO dao = new ProductoDAO();
-
+        Producto p = buildProductoParaActualizar();
         try {
-            int nuevoId = dao.insert(p);
-            if (nuevoId > 0) {
-                JOptionPane.showMessageDialog(this, "Producto creado con ID: " + nuevoId, "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                limpiarFormulario();
-                // this.dispose(); 
+            boolean ok = productoDAO.update(p);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                new InventoryView().setVisible(true);
+                dispose();
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo crear el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Error al crear el producto:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al actualizar:\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -839,302 +835,96 @@ public class NewProductView extends javax.swing.JFrame {
         spn_cantidad.setValue(0);
     }
 
+    private void cargarProducto() {
+        try {
+            productoActual = productoDAO.findById(idProducto);
+            if (productoActual == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontró el producto con ID: " + idProducto,
+                        "Aviso", JOptionPane.WARNING_MESSAGE);
+                // Regresar al inventario
+                new InventoryView().setVisible(true);
+                dispose();
+                return;
+            }
+
+            // Título y SKU (lo tienes deshabilitado en el diseñador)
+            lbl_title.setText("Editar producto (ID " + idProducto + ")");
+            tf_sku.setText(productoActual.getSku());
+
+            // Texto
+            tf_nombreProducto.setText(n(productoActual.getNombre()));
+            ta_descripcion.setText(n(productoActual.getDescripcion()));
+            tf_codigoBarras.setText(n(productoActual.getCodigoBarras()));
+            tf_ubicación.setText(n(productoActual.getUbicacion()));
+
+            // Tipo (según enum)
+            if (productoActual.getTipo() != null) {
+                cb_tipo.setSelectedItem(productoActual.getTipo().name());
+            } else {
+                cb_tipo.setSelectedIndex(-1);
+            }
+
+            // Categoría: seleccionar por id
+            seleccionarCategoriaEnCombo(productoActual.getIdCategoria());
+
+            // U. Medida
+            if (productoActual.getuMedida() != null) {
+                cb_unidades.setSelectedItem(productoActual.getuMedida());
+            } else {
+                cb_unidades.setSelectedIndex(-1);
+            }
+
+            // Stock
+            spn_cantidad.setValue(productoActual.getStock());
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar el producto:\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private String n(String s) {
+        return s == null ? "" : s;
+    }
+
+    private void seleccionarCategoriaEnCombo(int idCategoria) {
+        if (cb_categoria.getItemCount() == 0) {
+            return;
+        }
+
+        for (int i = 0; i < cb_categoria.getItemCount(); i++) {
+            Categoria c = cb_categoria.getItemAt(i);
+            if (c != null && c.getIdCategoria() == idCategoria) {
+                cb_categoria.setSelectedIndex(i);
+                return;
+            }
+        }
+        // Si no se encontró, deja en placeholder (normalmente índice 0)
+        cb_categoria.setSelectedIndex(0);
+    }
+
+    private Producto buildProductoParaActualizar() {
+        Producto p = buildProductoDesdeUI();
+        p.setIdProducto(idProducto);                 // <- importante
+        // Mantén campos que no editas si es necesario (activo true/false, etc.)
+        p.setActivo(productoActual != null ? productoActual.isActivo() : true);
+        return p;
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewProductView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewProductView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewProductView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewProductView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewProductView().setVisible(true);
-            }
-        });
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private pck_customComponents.CustomButton btn_ayuda;
-    private pck_customComponents.CustomButton btn_crear1;
     private pck_customComponents.CustomButton btn_dashboard;
+    private pck_customComponents.CustomButton btn_editar;
     private pck_customComponents.CustomButton btn_inventario;
     private pck_customComponents.CustomButton btn_reportes;
     private pck_customComponents.CustomButton btn_solicitudes;

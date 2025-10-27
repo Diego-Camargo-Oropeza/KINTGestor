@@ -16,6 +16,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import pck_customComponents.AccionesEditor;
+import pck_customComponents.AccionesHandler;
+import pck_customComponents.AccionesRenderer;
 import pck_dao.ProductoDAO;
 import pck_model.ProductoRow;
 import pck_model.Usuario;
@@ -27,7 +30,7 @@ import pck_service.Session;
  */
 public class InventoryView extends javax.swing.JFrame {
 
-    private static final int UMBRAL_BAJO_STOCK = 5;
+    private static final int UMBRAL_BAJO_STOCK = 1;
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
     Usuario u = Session.get();
@@ -113,6 +116,7 @@ public class InventoryView extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         cb_filtroTipo = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
+        btn_nuevaCategoria = new pck_customComponents.CustomButton();
         btn_nuevoProducto = new pck_customComponents.CustomButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -416,13 +420,13 @@ public class InventoryView extends javax.swing.JFrame {
 
         jtable_productos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2", "Title 3", "Title 4", "Acciones"
             }
         ));
         jScrollPane1.setViewportView(jtable_productos);
@@ -488,6 +492,18 @@ public class InventoryView extends javax.swing.JFrame {
         );
 
         pan_bg.add(pan_filtroPorTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 160, 540, 140));
+
+        btn_nuevaCategoria.setText("+ Nueva Categoría");
+        btn_nuevaCategoria.setToolTipText("Click para ir al Panel Principal");
+        btn_nuevaCategoria.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
+        btn_nuevaCategoria.setOver(true);
+        btn_nuevaCategoria.setRadius(30);
+        btn_nuevaCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_nuevaCategoriaActionPerformed(evt);
+            }
+        });
+        pan_bg.add(btn_nuevaCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 110, 170, 40));
 
         btn_nuevoProducto.setText("+ Nuevo Producto");
         btn_nuevoProducto.setToolTipText("Click para ir al Panel Principal");
@@ -589,10 +605,18 @@ public class InventoryView extends javax.swing.JFrame {
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         lbl_nameholder.setText(nombreUsuario);
-        loadResumen();
         loadTablaProductosPorTipo("TODOS");
+        refreshInventarioView();
         System.out.println(nombreUsuario);
     }//GEN-LAST:event_formWindowActivated
+
+    private void btn_nuevaCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevaCategoriaActionPerformed
+
+    }//GEN-LAST:event_btn_nuevaCategoriaActionPerformed
+
+    private void cb_filtroTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_filtroTipoActionPerformed
+        applyFiltroTipo();
+    }//GEN-LAST:event_cb_filtroTipoActionPerformed
 
     private void btn_nuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoProductoActionPerformed
         if (!requerirRolPorId(1, 2)) {
@@ -601,10 +625,6 @@ public class InventoryView extends javax.swing.JFrame {
         new NewProductView().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_nuevoProductoActionPerformed
-
-    private void cb_filtroTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_filtroTipoActionPerformed
-        applyFiltroTipo();
-    }//GEN-LAST:event_cb_filtroTipoActionPerformed
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
     //útil ya que en lugar de mandar a llamar la función y hacer 3 combinaciones diferentes de arreglos enteros, mejor paso directamente las constantes
@@ -623,18 +643,6 @@ public class InventoryView extends javax.swing.JFrame {
                 "Solo usuarios autorizados pueden acceder a esta función.\nTu rol: " + u.getRolNombre(),
                 "Acceso restringido", JOptionPane.WARNING_MESSAGE);
         return false;
-    }
-
-    // --- Resumen superior: total / agotados / bajo stock ---
-    private void loadResumen() {
-        ProductoDAO dao = new ProductoDAO();
-        int total = dao.countAll();
-        int agotados = dao.countAgotados();
-        int bajos = dao.countBajoStock(UMBRAL_BAJO_STOCK);
-
-        lbl_total.setText(String.valueOf(total));
-        lbl_agotados.setText(String.valueOf(agotados));
-        lbl_stockBajo.setText(String.valueOf(bajos));
     }
 
     // --- Acción de filtro ---
@@ -658,6 +666,7 @@ public class InventoryView extends javax.swing.JFrame {
 
         DefaultTableModel model = buildModel(rows);
         jtable_productos.setModel(model);
+        instalarColumnaAcciones();
 
         // Ajustes visuales básicos
         jtable_productos.setAutoCreateRowSorter(true);
@@ -666,16 +675,17 @@ public class InventoryView extends javax.swing.JFrame {
 
         // Anchos 
         if (jtable_productos.getColumnModel().getColumnCount() >= 10) {
-            jtable_productos.getColumnModel().getColumn(0).setPreferredWidth(60);   // ID
+            jtable_productos.getColumnModel().getColumn(0).setPreferredWidth(40);   // ID
             jtable_productos.getColumnModel().getColumn(1).setPreferredWidth(110);  // SKU
             jtable_productos.getColumnModel().getColumn(2).setPreferredWidth(240);  // Nombre
             jtable_productos.getColumnModel().getColumn(3).setPreferredWidth(110);  // Tipo
             jtable_productos.getColumnModel().getColumn(4).setPreferredWidth(140);  // Categoría
             jtable_productos.getColumnModel().getColumn(5).setPreferredWidth(80);   // U. Medida
-            jtable_productos.getColumnModel().getColumn(6).setPreferredWidth(70);   // Stock
+            jtable_productos.getColumnModel().getColumn(6).setPreferredWidth(50);   // Stock
             jtable_productos.getColumnModel().getColumn(7).setPreferredWidth(120);  // Ubicación
             jtable_productos.getColumnModel().getColumn(8).setPreferredWidth(70);   // Activo
             jtable_productos.getColumnModel().getColumn(9).setPreferredWidth(150);  // Creado
+            jtable_productos.getColumnModel().getColumn(9).setPreferredWidth(115); //Acciones
         }
     }
 
@@ -683,7 +693,7 @@ public class InventoryView extends javax.swing.JFrame {
     private DefaultTableModel buildModel(List<ProductoRow> rows) {
         String[] cols = {
             "ID", "SKU", "Nombre", "Tipo", "Categoría",
-            "U. Medida", "Stock", "Ubicación", "Activo", "Creado"
+            "U. Medida", "Stock", "Ubicación", "Activo", "Creado", "Acciones"
         };
 
         DefaultTableModel model = new DefaultTableModel(null, cols) {
@@ -708,7 +718,6 @@ public class InventoryView extends javax.swing.JFrame {
         };
 
         if (rows == null || rows.isEmpty()) {
-            // Fila “no hay datos” (no editable, solo informativa)
             model.addRow(new Object[]{
                 "—", "—", "No hay productos", "—", "—", "—", "—", "—", "—", "—"
             });
@@ -728,26 +737,27 @@ public class InventoryView extends javax.swing.JFrame {
                 r.getStock(),
                 r.getUbicacion(),
                 r.isActivo() ? "Sí" : "No",
-                creado
+                creado,
+                null
             });
         }
         return model;
     }
 
-// ---- 1) Refrescar toda la vista (llámalo en WindowActivated) ----
+// ---- Refrescar toda la vista ----
     private void refreshInventarioView() {
         cargarResumen();
         cargarTablaSegunTipo();
         formatearTablaProductos();
     }
 
-// ---- 2) Resumen (totales, agotados, bajo stock) ----
+// ---- Resumen (totales, agotados, bajo stock) ----
     private void cargarResumen() {
         try {
             ProductoDAO dao = new ProductoDAO();
             int total = dao.countAll();
-            int agotados = dao.countAgotados();                // requiere método en DAO
-            int bajos = dao.countBajoStock(UMBRAL_BAJO_STOCK); // requiere método en DAO
+            int agotados = dao.countAgotados();
+            int bajos = dao.countBajoStock(UMBRAL_BAJO_STOCK);
 
             lbl_total.setText(String.valueOf(total));
             lbl_agotados.setText(String.valueOf(agotados));
@@ -760,7 +770,7 @@ public class InventoryView extends javax.swing.JFrame {
         }
     }
 
-// ---- 3) Determinar el tipo seleccionado en el Combo (TODOS | MATERIAL | HERRAMIENTA | DISPOSITIVO) ----
+// ---- Determinar el tipo seleccionado en el Cb (TODOS | MATERIAL | HERRAMIENTA | DISPOSITIVO) ----
     private String getTipoSeleccionado() {
         Object val = cb_filtroTipo.getSelectedItem();
         if (val == null) {
@@ -773,8 +783,7 @@ public class InventoryView extends javax.swing.JFrame {
         return "TODOS";
     }
 
-// ---- 4) Cargar tabla según el filtro de tipo ----
-// Conéctalo al ActionPerformed del combo desde el GUI Builder.
+// ----Cargar tabla según el filtro de tipo ----
     private void cargarTablaSegunTipo() {
         try {
             String tipo = getTipoSeleccionado();
@@ -789,6 +798,7 @@ public class InventoryView extends javax.swing.JFrame {
 
             DefaultTableModel model = construirModeloTablaProductos(rows);
             jtable_productos.setModel(model);
+            instalarColumnaAcciones();
 
             if (model.getRowCount() == 0) {
                 mostrarEstadoVacioEnTabla(model);
@@ -801,17 +811,17 @@ public class InventoryView extends javax.swing.JFrame {
         }
     }
 
-// ---- 5) Construir el TableModel que se asigna a jtable_productos ----
+// ---- Construir el TableModel que se asigna a jtable_productos ----
     private DefaultTableModel construirModeloTablaProductos(List<ProductoRow> rows) {
         String[] cols = {
             "ID", "SKU", "Nombre", "Tipo", "Categoría",
-            "U. Medida", "Stock", "Ubicación", "Activo", "Creado"
+            "U. Medida", "Stock", "Ubicación", "Activo", "Creado", "Acciones"
         };
 
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
-                return false;
+                return c == 10;
             }
 
             @Override
@@ -841,64 +851,45 @@ public class InventoryView extends javax.swing.JFrame {
                     r.getStock(),
                     r.getUbicacion(),
                     r.isActivo() ? "Sí" : "No",
-                    creado
+                    creado,
+                    null
                 });
             }
         }
         return model;
     }
+// ---- Formato visual y mejoras de usabilidad de la tabla ----
 
-// ---- 6) Formato visual y mejoras de usabilidad de la tabla ----
-// Llama esto después de setModel (por ejemplo dentro de refreshInventarioView()).
     private void formatearTablaProductos() {
         jtable_productos.setAutoCreateRowSorter(true);
         jtable_productos.setRowHeight(22);
         jtable_productos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Anchos sugeridos (ajusta a gusto)
+        // Anchos  
         TableColumnModel cm = jtable_productos.getColumnModel();
         if (cm.getColumnCount() >= 10) {
-            cm.getColumn(0).setPreferredWidth(60);   // ID
+            cm.getColumn(0).setPreferredWidth(40);   // ID
             cm.getColumn(1).setPreferredWidth(110);  // SKU
             cm.getColumn(2).setPreferredWidth(220);  // Nombre
             cm.getColumn(3).setPreferredWidth(110);  // Tipo
             cm.getColumn(4).setPreferredWidth(150);  // Categoría
             cm.getColumn(5).setPreferredWidth(90);   // U. Medida
-            cm.getColumn(6).setPreferredWidth(75);   // Stock
+            cm.getColumn(6).setPreferredWidth(50);   // Stock
             cm.getColumn(7).setPreferredWidth(140);  // Ubicación
             cm.getColumn(8).setPreferredWidth(70);   // Activo
             cm.getColumn(9).setPreferredWidth(140);  // Creado
+            cm.getColumn(10).setPreferredWidth(115);  // Creado
         }
-
-        // Render opcional para resaltar stock bajo (no es obligatorio)
-        jtable_productos.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(
-                    JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                c.setForeground(table.getForeground());
-                c.setFont(table.getFont());
-
-                try {
-                    int modelRow = table.convertRowIndexToModel(row);
-                    int stock = (Integer) table.getModel().getValueAt(modelRow, 6);
-                    if (stock <= UMBRAL_BAJO_STOCK) {
-                        c.setFont(c.getFont().deriveFont(Font.BOLD));
-                    }
-                } catch (Exception ignore) {
-                }
-                return c;
-            }
-        });
     }
 
-// ---- 7) Estado vacío en la tabla (cuando no hay filas) ----
+// ---- Estado vacío en la tabla ) ----
     private void mostrarEstadoVacioEnTabla(DefaultTableModel model) {
         model.addRow(new Object[]{
             "—", "—", "No hay productos registrados.", "—", "—",
             "—", "—", "—", "—", "—"
         });
         jtable_productos.setModel(model);
+        instalarColumnaAcciones();
         jtable_productos.setAutoCreateRowSorter(false);
         jtable_productos.setRowSelectionAllowed(false);
         jtable_productos.setEnabled(false);
@@ -909,7 +900,61 @@ public class InventoryView extends javax.swing.JFrame {
         jtable_productos.getColumnModel().getColumn(2).setCellRenderer(gray); // "No hay productos..."
     }
 
-// ---- 8) Handler para el combo (conéctalo al ActionPerformed vía GUI Builder) ----
+    private void instalarColumnaAcciones() {
+        int idx = jtable_productos.getColumnModel().getColumnIndex("Acciones");
+        jtable_productos.getColumnModel().getColumn(idx).setCellRenderer(new AccionesRenderer());
+        jtable_productos.getColumnModel().getColumn(idx).setCellEditor(
+                new AccionesEditor(jtable_productos, new AccionesHandler() {
+                    @Override
+                    public void editar(int idProducto, int modelRow) {
+                        onEditarProducto(idProducto, modelRow);
+                    }
+
+                    @Override
+                    public void eliminar(int idProducto, int modelRow) {
+                        onEliminarProducto(idProducto, modelRow);
+                    }
+                })
+        );
+        jtable_productos.getColumnModel().getColumn(idx).setPreferredWidth(140);
+    }
+
+    private void onEditarProducto(int idProducto, int modelRow) {
+        if (!requerirRolPorId(1, 2)) {
+            return;
+        } else {
+            new EditProductView(idProducto).setVisible(true);
+            this.dispose();
+            JOptionPane.showMessageDialog(this, "Editar producto ID: " + idProducto);
+        }
+
+    }
+
+    private void onEliminarProducto(int idProducto, int modelRow) {
+        if (!requerirRolPorId(1, 2)) {
+            return;
+        } else {
+            int res = JOptionPane.showConfirmDialog(this,
+                    "¿Seguro que deseas eliminar el producto ID " + idProducto + "?",
+                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+            if (res != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            ProductoDAO dao = new ProductoDAO();
+            boolean ok = dao.deleteHard(idProducto); //
+            if (ok) {
+                ((DefaultTableModel) jtable_productos.getModel()).removeRow(modelRow);
+                cargarResumen();
+                JOptionPane.showMessageDialog(this, "Producto eliminado.");
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar. Revise las relaciones con otras tablas como proveedores o prestamos activos", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+    }
+
     private void onFiltroTipoChanged() {
         cargarTablaSegunTipo();
         formatearTablaProductos();
@@ -1210,6 +1255,7 @@ public class InventoryView extends javax.swing.JFrame {
     private pck_customComponents.CustomButton btn_ayuda;
     private pck_customComponents.CustomButton btn_dashboard;
     private pck_customComponents.CustomButton btn_inventario;
+    private pck_customComponents.CustomButton btn_nuevaCategoria;
     private pck_customComponents.CustomButton btn_nuevoProducto;
     private pck_customComponents.CustomButton btn_reportes;
     private pck_customComponents.CustomButton btn_solicitudes;
