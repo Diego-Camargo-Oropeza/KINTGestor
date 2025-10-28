@@ -6,6 +6,7 @@ package pck_customComponents;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -20,20 +21,30 @@ public class AccionesRenderer extends JPanel implements TableCellRenderer {
     private final JButton btnEditar = new JButton("✏️");
     private final JButton btnEliminar = new JButton("🗑️");
     private final JButton btnSolicitar = new JButton("❓");
+    private final boolean showSolicitar;
 
     public AccionesRenderer() {
+        this(true);
+    }
+
+    public AccionesRenderer(boolean showSolicitar) {
+        this.showSolicitar = showSolicitar;
         setOpaque(true);
         setLayout(new FlowLayout(FlowLayout.CENTER, 4, 2));
-        btnEditar.setFocusable(false);
-        btnEliminar.setFocusable(false);
-        btnEditar.setBorderPainted(false);
-        btnEliminar.setBorderPainted(false);
-        btnEditar.setEnabled(false);
-        btnEliminar.setEnabled(false);
-        btnSolicitar.setEnabled(false);
+
+        // Botones “dummy” para render: deshabilitados y sin foco
+        for (JButton b : new JButton[]{btnEditar, btnEliminar, btnSolicitar}) {
+            b.setFocusable(false);
+            b.setBorderPainted(false);
+            b.setEnabled(false);
+            b.setMargin(new Insets(2, 6, 2, 6));
+        }
+
         add(btnEditar);
         add(btnEliminar);
-        add(btnSolicitar);
+        if (showSolicitar) {
+            add(btnSolicitar);
+        }
     }
 
     @Override

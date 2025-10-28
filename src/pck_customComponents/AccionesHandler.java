@@ -13,4 +13,7 @@ public interface AccionesHandler {
     void editar(int idProducto, int modelRow);
 
     void eliminar(int idProducto, int modelRow);
+
+    // Opcional: si alguna vista quiere usar el botón “Solicitar”
+    void solicitar(int id, int modelRow);
 }

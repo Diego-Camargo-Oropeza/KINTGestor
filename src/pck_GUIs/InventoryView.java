@@ -498,7 +498,7 @@ public class InventoryView extends javax.swing.JFrame {
 
         pan_bg.add(pan_filtroPorTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 160, 540, 140));
 
-        btn_nuevaCategoria.setText("+ Nueva Categoría");
+        btn_nuevaCategoria.setText("Categorías");
         btn_nuevaCategoria.setToolTipText("Click para ir al Panel Principal");
         btn_nuevaCategoria.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         btn_nuevaCategoria.setOver(true);
@@ -508,7 +508,7 @@ public class InventoryView extends javax.swing.JFrame {
                 btn_nuevaCategoriaActionPerformed(evt);
             }
         });
-        pan_bg.add(btn_nuevaCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 110, 170, 40));
+        pan_bg.add(btn_nuevaCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 110, 120, 40));
 
         btn_nuevoProducto.setText("+ Nuevo Producto");
         btn_nuevoProducto.setToolTipText("Click para ir al Panel Principal");
@@ -616,7 +616,11 @@ public class InventoryView extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     private void btn_nuevaCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevaCategoriaActionPerformed
-
+        if (!requerirRolPorId(1, 2)) {
+            return;
+        }
+        new CategoriesView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_nuevaCategoriaActionPerformed
 
     private void cb_filtroTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_filtroTipoActionPerformed
@@ -638,7 +642,7 @@ public class InventoryView extends javax.swing.JFrame {
         if (aux == JOptionPane.YES_OPTION) {
             this.dispose();
             new Login().setVisible(true);
-        }else if (aux == JOptionPane.NO_OPTION){
+        } else if (aux == JOptionPane.NO_OPTION) {
             return;
         }
     }//GEN-LAST:event_lbl_logoutMouseClicked
@@ -672,93 +676,33 @@ public class InventoryView extends javax.swing.JFrame {
     // --- Cargar tabla según tipo seleccionado ---
     private void loadTablaProductosPorTipo(String tipo) {
         ProductoDAO dao = new ProductoDAO();
-        List<ProductoRow> rows;
+        List<ProductoRow> rows = (tipo == null || tipo.equalsIgnoreCase("TODOS"))
+                ? dao.listAllBasic()
+                : dao.listByTipoBasic(tipo.toUpperCase());
 
-        if (tipo == null || tipo.equalsIgnoreCase("TODOS")) {
-            rows = dao.listAllBasic();
-        } else {
-            // Tipos esperados en BD: MATERIAL | HERRAMIENTA | DISPOSITIVO
-            rows = dao.listByTipoBasic(tipo.toUpperCase());
-        }
-
-        DefaultTableModel model = buildModel(rows);
+        DefaultTableModel model = construirModeloTablaProductos(rows);
         jtable_productos.setModel(model);
         instalarColumnaAcciones();
 
-        // Ajustes visuales básicos
         jtable_productos.setAutoCreateRowSorter(true);
         jtable_productos.setRowSelectionAllowed(true);
-        jtable_productos.setRowHeight(22);
+        jtable_productos.setRowHeight(24);
 
-        // Anchos 
-        if (jtable_productos.getColumnModel().getColumnCount() >= 10) {
-            jtable_productos.getColumnModel().getColumn(0).setPreferredWidth(40);   // ID
-            jtable_productos.getColumnModel().getColumn(1).setPreferredWidth(110);  // SKU
-            jtable_productos.getColumnModel().getColumn(2).setPreferredWidth(240);  // Nombre
-            jtable_productos.getColumnModel().getColumn(3).setPreferredWidth(110);  // Tipo
-            jtable_productos.getColumnModel().getColumn(4).setPreferredWidth(140);  // Categoría
-            jtable_productos.getColumnModel().getColumn(5).setPreferredWidth(80);   // U. Medida
-            jtable_productos.getColumnModel().getColumn(6).setPreferredWidth(50);   // Stock
-            jtable_productos.getColumnModel().getColumn(7).setPreferredWidth(120);  // Ubicación
-            jtable_productos.getColumnModel().getColumn(8).setPreferredWidth(70);   // Activo
-            jtable_productos.getColumnModel().getColumn(9).setPreferredWidth(150);  // Creado
-            jtable_productos.getColumnModel().getColumn(9).setPreferredWidth(115); //Acciones
+        TableColumnModel cm = jtable_productos.getColumnModel();
+        // Ajusta anchos correctos (fíjate que Acciones es la 10):
+        if (cm.getColumnCount() >= 11) {
+            cm.getColumn(0).setPreferredWidth(40);   // ID
+            cm.getColumn(1).setPreferredWidth(110);  // SKU
+            cm.getColumn(2).setPreferredWidth(240);  // Nombre
+            cm.getColumn(3).setPreferredWidth(110);  // Tipo
+            cm.getColumn(4).setPreferredWidth(140);  // Categoría
+            cm.getColumn(5).setPreferredWidth(80);   // U. Medida
+            cm.getColumn(6).setPreferredWidth(50);   // Stock
+            cm.getColumn(7).setPreferredWidth(120);  // Ubicación
+            cm.getColumn(8).setPreferredWidth(70);   // Activo
+            cm.getColumn(9).setPreferredWidth(150);  // Creado
+            cm.getColumn(10).setPreferredWidth(115); // Acciones
         }
-    }
-
-    // --- Armar modelo para la JTable ---
-    private DefaultTableModel buildModel(List<ProductoRow> rows) {
-        String[] cols = {
-            "ID", "SKU", "Nombre", "Tipo", "Categoría",
-            "U. Medida", "Stock", "Ubicación", "Activo", "Creado", "Acciones"
-        };
-
-        DefaultTableModel model = new DefaultTableModel(null, cols) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                switch (columnIndex) {
-                    case 0:
-                        return Integer.class; // ID
-                    case 6:
-                        return Integer.class; // Stock
-                    case 8:
-                        return String.class;  // Activo como "Sí/No"
-                    default:
-                        return String.class;
-                }
-            }
-        };
-
-        if (rows == null || rows.isEmpty()) {
-            model.addRow(new Object[]{
-                "—", "—", "No hay productos", "—", "—", "—", "—", "—", "—", "—"
-            });
-            return model;
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        for (ProductoRow r : rows) {
-            String creado = (r.getFechaCreacion() == null) ? "" : sdf.format(r.getFechaCreacion());
-            model.addRow(new Object[]{
-                r.getIdProducto(),
-                r.getSku(),
-                r.getNombre(),
-                r.getTipo(),
-                r.getCategoria(),
-                r.getUMedida(),
-                r.getStock(),
-                r.getUbicacion(),
-                r.isActivo() ? "Sí" : "No",
-                creado,
-                null
-            });
-        }
-        return model;
     }
 
 // ---- Refrescar toda la vista ----
@@ -919,9 +863,15 @@ public class InventoryView extends javax.swing.JFrame {
 
     private void instalarColumnaAcciones() {
         int idx = jtable_productos.getColumnModel().getColumnIndex("Acciones");
-        jtable_productos.getColumnModel().getColumn(idx).setCellRenderer(new AccionesRenderer());
+
+        jtable_productos.getColumnModel().getColumn(idx)
+                .setCellRenderer(new AccionesRenderer(true));
+
         jtable_productos.getColumnModel().getColumn(idx).setCellEditor(
-                new AccionesEditor(jtable_productos, new AccionesHandler() {
+                new AccionesEditor(
+                        jtable_productos,
+                        0,
+                        new AccionesHandler() {
                     @Override
                     public void editar(int idProducto, int modelRow) {
                         onEditarProducto(idProducto, modelRow);
@@ -931,9 +881,19 @@ public class InventoryView extends javax.swing.JFrame {
                     public void eliminar(int idProducto, int modelRow) {
                         onEliminarProducto(idProducto, modelRow);
                     }
-                })
+
+                    @Override
+                    public void solicitar(int idProducto, int modelRow) {
+                        // Si no lo usas, puedes dejarlo vacío o mostrar un diálogo
+                        // onSolicitarProducto(idProducto, modelRow);
+                    }
+                },
+                        true // mostrar el botón “❓”
+                )
         );
-        jtable_productos.getColumnModel().getColumn(idx).setPreferredWidth(140);
+
+        jtable_productos.getColumnModel().getColumn(idx).setPreferredWidth(115);
+        jtable_productos.setRowHeight(24);
     }
 
     private void onEditarProducto(int idProducto, int modelRow) {
@@ -981,284 +941,6 @@ public class InventoryView extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InventoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -25,13 +25,13 @@ public class CategoriaDAO {
             = SQL_SELECT_BASE + " WHERE id_categoria=?";
 
     private static final String SQL_INSERT
-            = "INSERT INTO kint_inv_categoria (nombre, descripcion) VALUES (?, ?)";
+            = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
 
     private static final String SQL_UPDATE
-            = "UPDATE kint_inv_categoria SET nombre=?, descripcion=? WHERE id_categoria=?";
+            = "UPDATE categoria SET nombre=?, descripcion=? WHERE id_categoria=?";
 
     private static final String SQL_DELETE_HARD
-            = "DELETE FROM kint_inv_categoria WHERE id_categoria=?";
+            = "DELETE FROM categoria WHERE id_categoria=?";
 
     // ============ MAPPER ============
     private Categoria map(ResultSet rs) {

@@ -685,7 +685,7 @@ public class EditProductView extends javax.swing.JFrame {
         if (aux == JOptionPane.YES_OPTION) {
             this.dispose();
             new Login().setVisible(true);
-        }else if (aux == JOptionPane.NO_OPTION){
+        } else if (aux == JOptionPane.NO_OPTION) {
             return;
         }
     }//GEN-LAST:event_lbl_logoutMouseClicked
@@ -818,28 +818,6 @@ public class EditProductView extends javax.swing.JFrame {
         return p;
     }
 
-    private void onGuardarCambios() {
-        if (!validarFormulario()) {
-            return;
-        }
-
-        Producto p = buildProductoParaActualizar();
-        try {
-            boolean ok = productoDAO.update(p);
-            if (ok) {
-                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                new InventoryView().setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al actualizar:\n" + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private void limpiarFormulario() {
         tf_nombreProducto.setText("");
         tf_sku.setText("");
@@ -922,10 +900,31 @@ public class EditProductView extends javax.swing.JFrame {
         cb_categoria.setSelectedIndex(0);
     }
 
+    private void onGuardarCambios() {
+        if (!validarFormulario()) {
+            return;
+        }
+
+        Producto p = buildProductoParaActualizar();
+        try {
+            boolean ok = productoDAO.update(p);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                new InventoryView().setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al actualizar:\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private Producto buildProductoParaActualizar() {
         Producto p = buildProductoDesdeUI();
-        p.setIdProducto(idProducto);                 // <- importante
-        // Mantén campos que no editas si es necesario (activo true/false, etc.)
+        p.setIdProducto(idProducto);                 
         p.setActivo(productoActual != null ? productoActual.isActivo() : true);
         return p;
     }

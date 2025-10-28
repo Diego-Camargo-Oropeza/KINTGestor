@@ -1,25 +1,14 @@
 package pck_GUIs;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.text.SimpleDateFormat;
+import static java.awt.Color.WHITE;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import pck_customComponents.AccionesEditor;
-import pck_customComponents.AccionesHandler;
-import pck_customComponents.AccionesRenderer;
+import javax.swing.SwingUtilities;
 import pck_dao.CategoriaDAO;
-import pck_dao.PrestamoDAO;
-import pck_dao.ProductoDAO;
 import pck_model.Categoria;
-import pck_model.PrestamoRow;
-import pck_model.ProductoRow;
 import pck_model.Usuario;
 import pck_service.Session;
 
@@ -27,23 +16,23 @@ import pck_service.Session;
  *
  * @author dieca
  */
-public class CategoriesView extends javax.swing.JFrame {
-    
+public class EditCategoryView extends javax.swing.JFrame {
+
     int mouseinX, mouseinY;
-    Rescalar escalar = new Rescalar();
-    Usuario u = Session.get();
-    String nombreUsuario = u.getNombre();
-    String tarea = u.getTarea();
-    String correo = u.getCorreo();
-    String rol = u.getRolNombre();
-    int id = u.getIdUsuario();
-    LocalDate currentDate = LocalDate.now();
+    private Rescalar escalar = new Rescalar();
+    private Usuario u = Session.get();
+    private String nombreUsuario = u.getNombre();
+    private int idCategoria;
+    private LocalDate currentDate = LocalDate.now();
+    private final CategoriaDAO categoriaDAO = new CategoriaDAO();
+    private Categoria categoriaActual = null;
 
     /**
      * Creates new form login
      */
-    public CategoriesView() {
+    public EditCategoryView(int idCategoria) {
         initComponents();
+        this.idCategoria = idCategoria;
         setLocationRelativeTo(null);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -52,7 +41,7 @@ public class CategoriesView extends javax.swing.JFrame {
                 escalar.escalarLabel(lbl_userSVG, "/pck_img/avatarIcon.png");
             }
         });
-        
+
         java.awt.event.ComponentAdapter resizeListener = new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
@@ -65,9 +54,9 @@ public class CategoriesView extends javax.swing.JFrame {
         };
         imgKintLogo.addComponentListener(resizeListener);
         lbl_userSVG.addComponentListener(resizeListener);
-        
+
         setIconImage(new ImageIcon(getClass().getResource("/pck_img/favicon.png")).getImage());
-        
+
     }
 
     /**
@@ -98,11 +87,14 @@ public class CategoriesView extends javax.swing.JFrame {
         lbl_nameholder = new javax.swing.JLabel();
         lbl_userSVG = new javax.swing.JLabel();
         lbl_username = new javax.swing.JLabel();
-        panelPrestamos = new pck_customComponents.RoundedPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jtable_categorias = new javax.swing.JTable();
-        btn_crear = new pck_customComponents.CustomButton();
+        roundedPanel1 = new pck_customComponents.RoundedPanel();
         lbl_navegador = new javax.swing.JLabel();
+        lbl_navegador3 = new javax.swing.JLabel();
+        tf_nombre = new pck_customComponents.RoundedTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ta_descripcion = new pck_customComponents.RoundedTextArea();
+        lbl_titulo = new javax.swing.JLabel();
+        btn_editar = new pck_customComponents.CustomButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Dashboard");
@@ -205,11 +197,6 @@ public class CategoriesView extends javax.swing.JFrame {
         lbl_logout.setText("📲 Cerrar Sesión");
         lbl_logout.setToolTipText("Cerrar sesión actual");
         lbl_logout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lbl_logout.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lbl_logoutMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout pan_menuLatIzqLayout = new javax.swing.GroupLayout(pan_menuLatIzq);
         pan_menuLatIzq.setLayout(pan_menuLatIzqLayout);
@@ -305,7 +292,7 @@ public class CategoriesView extends javax.swing.JFrame {
 
         lbl_navegador1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         lbl_navegador1.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador1.setText("Inventario  /  Categorías");
+        lbl_navegador1.setText("Inventario  /  Categorías /  Editar categoría");
         pan_cabecera.add(lbl_navegador1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
 
         pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1020, 30));
@@ -325,54 +312,65 @@ public class CategoriesView extends javax.swing.JFrame {
         lbl_username.setText("Usuario:");
         pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
 
-        jtable_categorias.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(jtable_categorias);
+        lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador.setText("Nombre de la categoría");
 
-        javax.swing.GroupLayout panelPrestamosLayout = new javax.swing.GroupLayout(panelPrestamos);
-        panelPrestamos.setLayout(panelPrestamosLayout);
-        panelPrestamosLayout.setHorizontalGroup(
-            panelPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelPrestamosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 948, Short.MAX_VALUE)
-                .addContainerGap())
+        lbl_navegador3.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador3.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador3.setText("Descripción de la categoría");
+
+        ta_descripcion.setColumns(20);
+        ta_descripcion.setRows(5);
+        jScrollPane1.setViewportView(ta_descripcion);
+
+        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
+        roundedPanel1.setLayout(roundedPanel1Layout);
+        roundedPanel1Layout.setHorizontalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_navegador, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
-        panelPrestamosLayout.setVerticalGroup(
-            panelPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelPrestamosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
-                .addContainerGap())
+        roundedPanel1Layout.setVerticalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_navegador, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
-        pan_bg.add(panelPrestamos, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, 960, 580));
+        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 910, 270));
 
-        btn_crear.setText("Nueva Categoría");
-        btn_crear.setToolTipText("Click para ir al Panel Principal");
-        btn_crear.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
-        btn_crear.setOver(true);
-        btn_crear.setRadius(30);
-        btn_crear.addActionListener(new java.awt.event.ActionListener() {
+        lbl_titulo.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_titulo.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_titulo.setText("Edición de categoría");
+        pan_bg.add(lbl_titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 150, 210, 30));
+
+        btn_editar.setText("Editar");
+        btn_editar.setToolTipText("Click para ir al Panel Principal");
+        btn_editar.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
+        btn_editar.setOver(true);
+        btn_editar.setRadius(30);
+        btn_editar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_crearActionPerformed(evt);
+                btn_editarActionPerformed(evt);
             }
         });
-        pan_bg.add(btn_crear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 130, 140, 40));
-
-        lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Categorías de los productos");
-        pan_bg.add(lbl_navegador, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 440, 30));
+        pan_bg.add(btn_editar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 480, 90, 40));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -400,13 +398,13 @@ public class CategoriesView extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dashboardActionPerformed
-        new DashboardView().setVisible(true);
         this.dispose();
+        new DashboardView().setVisible(true);
     }//GEN-LAST:event_btn_dashboardActionPerformed
 
     private void btn_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inventarioActionPerformed
-        new InventoryView().setVisible(true);
         this.dispose();
+        new InventoryView().setVisible(true);
     }//GEN-LAST:event_btn_inventarioActionPerformed
 
     private void btn_solicitudesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_solicitudesActionPerformed
@@ -464,25 +462,12 @@ public class CategoriesView extends javax.swing.JFrame {
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         lbl_nameholder.setText(nombreUsuario);
         System.out.println(nombreUsuario);
-        cargarTablaCategorias();
+        cargarCategoria();
     }//GEN-LAST:event_formWindowActivated
 
-    private void btn_crearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_crearActionPerformed
-        this.dispose();
-        new NewCategoryView().setVisible(true);
-    }//GEN-LAST:event_btn_crearActionPerformed
-
-    private void lbl_logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_logoutMouseClicked
-        // TODO add your handling code here:
-        int aux;
-        aux = JOptionPane.showConfirmDialog(this, "¿Desea cerrar sesión?", "Confirmacion", JOptionPane.YES_NO_OPTION);
-        if (aux == JOptionPane.YES_OPTION) {
-            this.dispose();
-            new Login().setVisible(true);
-        } else if (aux == JOptionPane.NO_OPTION) {
-            return;
-        }
-    }//GEN-LAST:event_lbl_logoutMouseClicked
+    private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
+        onGuardarCambios();
+    }//GEN-LAST:event_btn_editarActionPerformed
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
     //útil ya que en lugar de mandar a llamar la función y hacer 3 combinaciones diferentes de arreglos enteros, mejor paso directamente las constantes
@@ -503,229 +488,121 @@ public class CategoriesView extends javax.swing.JFrame {
         return false;
     }
 
-    // ---- Cargar tabla de categorías ----
-    private void cargarTablaCategorias() {
+    private boolean validarFormulario() {
+        String nombre = t(tf_nombre.getText());
+        String desc = t(ta_descripcion.getText());
+        StringBuilder sb = new StringBuilder();
+
+        if (nombre.isEmpty()) {
+            sb.append("• El nombre es obligatorio.\n");
+        }
+
+        if (nombre.length() > 120) {
+            sb.append("• El nombre no debe exceder 120 caracteres.\n");
+        }
+
+        if (desc.isEmpty()) {
+            sb.append("• La descripción es obligatoria.\n");
+        }
+
+        if (nombre.length() > 600) {
+            sb.append("• La descripción no debe exceder 600 caracteres.\n");
+        }
+
+        if (sb.length() > 0) {
+            JOptionPane.showMessageDialog(this, sb.toString(), "Datos incompletos", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private Categoria buildCategoriaDesdeUI() {
+        Categoria c = new Categoria();
+
+        c.setNombre(t(tf_nombre.getText()));
+        c.setDescripcion(t(ta_descripcion.getText()));
+        return c;
+    }
+
+    private void limpiarFormulario() {
+        tf_nombre.setText("");
+        ta_descripcion.setText("");
+    }
+
+    private void cargarCategoria() {
         try {
             CategoriaDAO dao = new CategoriaDAO();
-            List<Categoria> rows = dao.findAll();
-            
-            DefaultTableModel model = construirModeloCategorias(rows);
-            jtable_categorias.setModel(model);
-
-            // Instalar Acciones (aunque esté vacía no pasa nada)
-            instalarColumnaAccionesCategorias();
-            
-            if (rows == null || rows.isEmpty()) {
-                mostrarEstadoVacioCategorias(model);
-            } else {
-                formatearTablaCategorias();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo cargar la tabla de categorías.\n" + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    // ---- Construye el TableModel para categorías ----
-    private DefaultTableModel construirModeloCategorias(List<Categoria> rows) {
-        String[] cols = {"ID", "Nombre", "Descripción", "Acciones"};
-        
-        DefaultTableModel model = new DefaultTableModel(cols, 0) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return c == (getColumnCount() - 1);
-            }
-            
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return (columnIndex == 0) ? Integer.class : String.class;
-            }
-        };
-        
-        if (rows != null) {
-            for (Categoria c : rows) {
-                model.addRow(new Object[]{
-                    c.getIdCategoria(),
-                    s(c.getNombre()),
-                    s(c.getDescripcion()),
-                    null
-                });
-            }
-        }
-        return model;
-    }
-    
-    private void instalarColumnaAccionesCategorias() {
-        int idxAcciones = jtable_categorias.getColumnModel().getColumnIndex("Acciones");
-        
-        jtable_categorias.getColumnModel().getColumn(idxAcciones)
-                .setCellRenderer(new AccionesRenderer());
-        
-        int idColModel = 0;
-        jtable_categorias.getColumnModel().getColumn(idxAcciones)
-                .setCellEditor(new AccionesEditor(
-                        jtable_categorias,
-                        idColModel,
-                        new AccionesHandler() {
-                    @Override
-                    public void editar(int id, int modelRow) {
-                        onEditarCategoria(id, modelRow);
-                    }
-                    
-                    @Override
-                    public void eliminar(int id, int modelRow) {
-                        onEliminarCategoria(id, modelRow);
-                    }
-                    
-                    @Override
-                    public void solicitar(int id, int modelRow) {
-                        // No se usa en Categorías
-                    }
-                },
-                        false
-                ));
-        
-        jtable_categorias.getColumnModel()
-                .getColumn(idxAcciones).setPreferredWidth(115);
-        jtable_categorias.setRowHeight(
-                24);
-    }
-
-    // ---- Formato visual de la tabla ----
-    private void formatearTablaCategorias() {
-        jtable_categorias.setAutoCreateRowSorter(true);
-        jtable_categorias.setRowHeight(22);
-        jtable_categorias.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-        TableColumnModel cm = jtable_categorias.getColumnModel();
-        if (cm.getColumnCount() >= 4) {
-            cm.getColumn(0).setPreferredWidth(40);   // ID
-            cm.getColumn(1).setPreferredWidth(220);  // Nombre
-            cm.getColumn(2).setPreferredWidth(520);  // Descripción
-            cm.getColumn(3).setPreferredWidth(115);  // Acciones
-            cm.getColumn(3).setResizable(false);
-        }
-    }
-
-    // ---- Estado vacío ----
-    private void mostrarEstadoVacioCategorias(DefaultTableModel model) {
-        model.setRowCount(0);
-        model.addRow(new Object[]{"—", "No hay categorías registradas.", "—", "—"});
-        
-        jtable_categorias.setModel(model);
-        jtable_categorias.setAutoCreateRowSorter(false);
-        jtable_categorias.setRowSelectionAllowed(false);
-        jtable_categorias.setEnabled(false);
-        
-        DefaultTableCellRenderer gray = new DefaultTableCellRenderer();
-        gray.setForeground(new Color(120, 120, 120));
-        gray.setFont(jtable_categorias.getFont().deriveFont(Font.ITALIC));
-        jtable_categorias.getColumnModel().getColumn(1).setCellRenderer(gray); // mensaje
-    }
-    
-    private void onEditarCategoria(int idCategoria, int modelRow) {
-        if (!requerirRolPorId(1, 2)) {
-            return;
-        }
-        // Abre tu vista de edición; si aún no la tienes, puedes reusar NewCategoryView con modo edición
-        try {
-            new EditCategoryView(idCategoria).setVisible(true);
-            this.dispose();
-        } catch (Throwable t) {
-            // fallback temporal si no existe EditCategoryView:
-            JOptionPane.showMessageDialog(this,
-                    "Abrir editor para categoría ID: " + idCategoria + "\n(Crea EditCategoryView(int) o adapta NewCategoryView).",
-                    "Editar categoría", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-    
-    private void onEliminarCategoria(int idCategoria, int modelRow) {
-        if (!requerirRolPorId(1, 2)) {
-            return;
-        }
-        int res = JOptionPane.showConfirmDialog(
-                this,
-                "¿Seguro que deseas eliminar la categoría ID " + idCategoria + "?\n"
-                + "Si hay productos que la usan, primero quite la categoría de esos productos",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION
-        );
-        if (res != JOptionPane.YES_OPTION) {
-            return;
-        }
-        
-        try {
-            CategoriaDAO dao = new CategoriaDAO();
-            boolean ok = dao.deleteHard(idCategoria); // o deleteSoft según tu DAO
-            if (ok) {
-                ((DefaultTableModel) jtable_categorias.getModel()).removeRow(modelRow);
-                JOptionPane.showMessageDialog(this, "Categoría eliminada.");
-            } else {
+            Categoria c = dao.findById(idCategoria); // ajusta al nombre real si difiere
+            if (c == null) {
                 JOptionPane.showMessageDialog(this,
-                        "No se pudo eliminar. Verifica si está referenciada por productos.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                        "No se encontró la categoría con ID: " + idCategoria,
+                        "Aviso", JOptionPane.WARNING_MESSAGE);
+                this.dispose();
+                new CategoriesView().setVisible(true);
+                return;
+            }
+            tf_nombre.setText(t(c.getNombre()));
+            ta_descripcion.setText(t(c.getDescripcion()));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar la categoría:\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+            new CategoriesView().setVisible(true);
+        }
+    }
+
+    private void onGuardarCambios() {
+        if (!validarFormulario()) {
+            return;
+        }
+
+        Categoria c = buildCategoriaParaActualizar();
+        try {
+            boolean ok = categoriaDAO.update(c);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                new CategoriesView().setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    "Error al eliminar:\n" + ex.getMessage(),
+                    "Error al actualizar:\n" + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // ---- null safety ----
-    private String s(String s) {
-        return s == null ? "" : s;
+    private Categoria buildCategoriaParaActualizar() {
+        Categoria c = buildCategoriaDesdeUI();
+        c.setIdCategoria(idCategoria);                 
+        return c;
+    }
+
+    private String t(String s) {
+        return s == null ? "" : s.trim();
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CategoriesView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CategoriesView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CategoriesView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CategoriesView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CategoriesView().setVisible(true);
-            }
-        });
+
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private pck_customComponents.CustomButton btn_ayuda;
-    private pck_customComponents.CustomButton btn_crear;
     private pck_customComponents.CustomButton btn_dashboard;
+    private pck_customComponents.CustomButton btn_editar;
     private pck_customComponents.CustomButton btn_inventario;
     private pck_customComponents.CustomButton btn_reportes;
     private pck_customComponents.CustomButton btn_solicitudes;
     private pck_customComponents.CustomButton btn_usuarios;
     private javax.swing.JLabel imgKintLogo;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jtable_categorias;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_icon;
@@ -733,11 +610,15 @@ public class CategoriesView extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_nameholder;
     private javax.swing.JLabel lbl_navegador;
     private javax.swing.JLabel lbl_navegador1;
+    private javax.swing.JLabel lbl_navegador3;
+    private javax.swing.JLabel lbl_titulo;
     private javax.swing.JLabel lbl_userSVG;
     private javax.swing.JLabel lbl_username;
     private javax.swing.JPanel pan_bg;
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPanel pan_menuLatIzq;
-    private pck_customComponents.RoundedPanel panelPrestamos;
+    private pck_customComponents.RoundedPanel roundedPanel1;
+    private pck_customComponents.RoundedTextArea ta_descripcion;
+    private pck_customComponents.RoundedTextField tf_nombre;
     // End of variables declaration//GEN-END:variables
 }
