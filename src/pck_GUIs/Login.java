@@ -26,8 +26,21 @@ public class Login extends javax.swing.JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowOpened(java.awt.event.WindowEvent e) {
+                tf_showPass.setVisible(false);
                 escalar.escalarLabel(imgKintLogo, "/pck_img/kintLogo.png");
                 escalar.escalarLabel(imgLogin, "/pck_img/imgLogin.png");
+            }
+        });
+        
+        tf_pass.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { sync(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { sync(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { sync(); }
+
+            private void sync() {
+                if (cb_showPassword.isSelected()) {
+                    tf_showPass.setText(new String(tf_pass.getPassword()));
+                }
             }
         });
 
@@ -76,6 +89,8 @@ public class Login extends javax.swing.JFrame {
         lbl_exit = new javax.swing.JLabel();
         pan_cabecera = new javax.swing.JPanel();
         btn_login = new pck_customComponents.CustomButton();
+        cb_showPassword = new javax.swing.JCheckBox();
+        tf_showPass = new pck_customComponents.RoundedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Login");
@@ -160,6 +175,7 @@ public class Login extends javax.swing.JFrame {
         pan_background.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 380, 230, 10));
 
         tf_pass.setBackground(new java.awt.Color(240, 240, 240));
+        tf_pass.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
         tf_pass.setForeground(new java.awt.Color(153, 153, 153));
         tf_pass.setText("********************");
         tf_pass.setToolTipText("Ingrese su contraseña");
@@ -253,7 +269,26 @@ public class Login extends javax.swing.JFrame {
                 btn_loginActionPerformed(evt);
             }
         });
-        pan_background.add(btn_login, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 430, 90, 40));
+        pan_background.add(btn_login, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 440, 90, 40));
+
+        cb_showPassword.setFont(new java.awt.Font("Nirmala UI", 0, 10)); // NOI18N
+        cb_showPassword.setText("MOSTRAR CONTRASEÑA");
+        cb_showPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_showPasswordActionPerformed(evt);
+            }
+        });
+        pan_background.add(cb_showPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 350, 150, 30));
+
+        tf_showPass.setEditable(false);
+        tf_showPass.setEnabled(false);
+        tf_showPass.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        tf_showPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tf_showPassActionPerformed(evt);
+            }
+        });
+        pan_background.add(tf_showPass, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 390, 230, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -375,6 +410,20 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tf_passFocusGained
 
+    private void cb_showPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_showPasswordActionPerformed
+        // TODO add your handling code here:
+        if (cb_showPassword.isSelected()) {
+            tf_showPass.setVisible(true);
+            tf_showPass.setText(new String(tf_pass.getPassword())); 
+        } else {
+            tf_showPass.setVisible(false);
+        }
+    }//GEN-LAST:event_cb_showPasswordActionPerformed
+
+    private void tf_showPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_showPassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tf_showPassActionPerformed
+    
     private void loggear() {
         String correo = tf_user.getText().trim();
         char[] passChars = tf_pass.getPassword();
@@ -456,6 +505,7 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private pck_customComponents.CustomButton btn_login;
+    private javax.swing.JCheckBox cb_showPassword;
     private javax.swing.Box.Filler filler3;
     private javax.swing.JLabel imgKintLogo;
     private javax.swing.JLabel imgLogin;
@@ -472,6 +522,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel pan_background;
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPasswordField tf_pass;
+    private pck_customComponents.RoundedTextField tf_showPass;
     private javax.swing.JTextField tf_user;
     // End of variables declaration//GEN-END:variables
 }
