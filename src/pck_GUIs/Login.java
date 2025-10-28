@@ -411,7 +411,6 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_passFocusGained
 
     private void cb_showPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_showPasswordActionPerformed
-        // TODO add your handling code here:
         if (cb_showPassword.isSelected()) {
             tf_showPass.setVisible(true);
             tf_showPass.setText(new String(tf_pass.getPassword())); 
