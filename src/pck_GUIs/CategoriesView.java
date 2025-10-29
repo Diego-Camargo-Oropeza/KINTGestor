@@ -28,7 +28,7 @@ import pck_service.Session;
  * @author dieca
  */
 public class CategoriesView extends javax.swing.JFrame {
-    
+
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
     Usuario u = Session.get();
@@ -52,7 +52,7 @@ public class CategoriesView extends javax.swing.JFrame {
                 escalar.escalarLabel(lbl_userSVG, "/pck_img/avatarIcon.png");
             }
         });
-        
+
         java.awt.event.ComponentAdapter resizeListener = new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
@@ -65,9 +65,9 @@ public class CategoriesView extends javax.swing.JFrame {
         };
         imgKintLogo.addComponentListener(resizeListener);
         lbl_userSVG.addComponentListener(resizeListener);
-        
+
         setIconImage(new ImageIcon(getClass().getResource("/pck_img/favicon.png")).getImage());
-        
+
     }
 
     /**
@@ -413,14 +413,15 @@ public class CategoriesView extends javax.swing.JFrame {
         if (!requerirRolPorId(1, 2)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+
     }//GEN-LAST:event_btn_solicitudesActionPerformed
 
     private void btn_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_usuariosActionPerformed
         if (!requerirRolPorId(1)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+        this.dispose();
+        new UsersView().setVisible(true);
     }//GEN-LAST:event_btn_usuariosActionPerformed
 
     private void btn_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ayudaActionPerformed
@@ -508,13 +509,13 @@ public class CategoriesView extends javax.swing.JFrame {
         try {
             CategoriaDAO dao = new CategoriaDAO();
             List<Categoria> rows = dao.findAll();
-            
+
             DefaultTableModel model = construirModeloCategorias(rows);
             jtable_categorias.setModel(model);
 
             // Instalar Acciones (aunque esté vacía no pasa nada)
             instalarColumnaAccionesCategorias();
-            
+
             if (rows == null || rows.isEmpty()) {
                 mostrarEstadoVacioCategorias(model);
             } else {
@@ -531,19 +532,19 @@ public class CategoriesView extends javax.swing.JFrame {
     // ---- Construye el TableModel para categorías ----
     private DefaultTableModel construirModeloCategorias(List<Categoria> rows) {
         String[] cols = {"ID", "Nombre", "Descripción", "Acciones"};
-        
+
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return c == (getColumnCount() - 1);
             }
-            
+
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return (columnIndex == 0) ? Integer.class : String.class;
             }
         };
-        
+
         if (rows != null) {
             for (Categoria c : rows) {
                 model.addRow(new Object[]{
@@ -556,13 +557,13 @@ public class CategoriesView extends javax.swing.JFrame {
         }
         return model;
     }
-    
+
     private void instalarColumnaAccionesCategorias() {
         int idxAcciones = jtable_categorias.getColumnModel().getColumnIndex("Acciones");
-        
+
         jtable_categorias.getColumnModel().getColumn(idxAcciones)
                 .setCellRenderer(new AccionesRenderer());
-        
+
         int idColModel = 0;
         jtable_categorias.getColumnModel().getColumn(idxAcciones)
                 .setCellEditor(new AccionesEditor(
@@ -573,12 +574,12 @@ public class CategoriesView extends javax.swing.JFrame {
                     public void editar(int id, int modelRow) {
                         onEditarCategoria(id, modelRow);
                     }
-                    
+
                     @Override
                     public void eliminar(int id, int modelRow) {
                         onEliminarCategoria(id, modelRow);
                     }
-                    
+
                     @Override
                     public void solicitar(int id, int modelRow) {
                         // No se usa en Categorías
@@ -586,7 +587,7 @@ public class CategoriesView extends javax.swing.JFrame {
                 },
                         false
                 ));
-        
+
         jtable_categorias.getColumnModel()
                 .getColumn(idxAcciones).setPreferredWidth(115);
         jtable_categorias.setRowHeight(
@@ -598,7 +599,7 @@ public class CategoriesView extends javax.swing.JFrame {
         jtable_categorias.setAutoCreateRowSorter(true);
         jtable_categorias.setRowHeight(22);
         jtable_categorias.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         TableColumnModel cm = jtable_categorias.getColumnModel();
         if (cm.getColumnCount() >= 4) {
             cm.getColumn(0).setPreferredWidth(40);   // ID
@@ -613,34 +614,26 @@ public class CategoriesView extends javax.swing.JFrame {
     private void mostrarEstadoVacioCategorias(DefaultTableModel model) {
         model.setRowCount(0);
         model.addRow(new Object[]{"—", "No hay categorías registradas.", "—", "—"});
-        
+
         jtable_categorias.setModel(model);
         jtable_categorias.setAutoCreateRowSorter(false);
         jtable_categorias.setRowSelectionAllowed(false);
         jtable_categorias.setEnabled(false);
-        
+
         DefaultTableCellRenderer gray = new DefaultTableCellRenderer();
         gray.setForeground(new Color(120, 120, 120));
         gray.setFont(jtable_categorias.getFont().deriveFont(Font.ITALIC));
         jtable_categorias.getColumnModel().getColumn(1).setCellRenderer(gray); // mensaje
     }
-    
+
     private void onEditarCategoria(int idCategoria, int modelRow) {
         if (!requerirRolPorId(1, 2)) {
             return;
         }
-        // Abre tu vista de edición; si aún no la tienes, puedes reusar NewCategoryView con modo edición
-        try {
-            new EditCategoryView(idCategoria).setVisible(true);
-            this.dispose();
-        } catch (Throwable t) {
-            // fallback temporal si no existe EditCategoryView:
-            JOptionPane.showMessageDialog(this,
-                    "Abrir editor para categoría ID: " + idCategoria + "\n(Crea EditCategoryView(int) o adapta NewCategoryView).",
-                    "Editar categoría", JOptionPane.INFORMATION_MESSAGE);
-        }
+        new EditCategoryView(idCategoria).setVisible(true);
+        this.dispose();
     }
-    
+
     private void onEliminarCategoria(int idCategoria, int modelRow) {
         if (!requerirRolPorId(1, 2)) {
             return;
@@ -655,10 +648,10 @@ public class CategoriesView extends javax.swing.JFrame {
         if (res != JOptionPane.YES_OPTION) {
             return;
         }
-        
+
         try {
             CategoriaDAO dao = new CategoriaDAO();
-            boolean ok = dao.deleteHard(idCategoria); // o deleteSoft según tu DAO
+            boolean ok = dao.deleteHard(idCategoria); 
             if (ok) {
                 ((DefaultTableModel) jtable_categorias.getModel()).removeRow(modelRow);
                 JOptionPane.showMessageDialog(this, "Categoría eliminada.");

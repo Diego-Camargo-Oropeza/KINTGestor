@@ -1,14 +1,25 @@
 package pck_GUIs;
 
 import java.awt.Color;
-import static java.awt.Color.WHITE;
+import java.awt.Font;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import pck_customComponents.AccionesEditor;
+import pck_customComponents.AccionesHandler;
+import pck_customComponents.AccionesRenderer;
 import pck_dao.CategoriaDAO;
+import pck_dao.PrestamoDAO;
+import pck_dao.ProductoDAO;
 import pck_model.Categoria;
+import pck_model.PrestamoRow;
+import pck_model.ProductoRow;
 import pck_model.Usuario;
 import pck_service.Session;
 
@@ -16,22 +27,18 @@ import pck_service.Session;
  *
  * @author dieca
  */
-public class NewCategoryView extends javax.swing.JFrame {
+public class UsersView extends javax.swing.JFrame {
 
-    int mouseinX, mouseinY;
-    Rescalar escalar = new Rescalar();
-    Usuario u = Session.get();
-    String nombreUsuario = u.getNombre();
-    String tarea = u.getTarea();
-    String correo = u.getCorreo();
-    String rol = u.getRolNombre();
-    int id = u.getIdUsuario();
-    LocalDate currentDate = LocalDate.now();
+    private int mouseinX, mouseinY;
+    private Rescalar escalar = new Rescalar();
+    private Usuario u = Session.get();
+    private String nombreUsuario = u.getNombre();
+    private LocalDate currentDate = LocalDate.now();
 
     /**
      * Creates new form login
      */
-    public NewCategoryView() {
+    public UsersView() {
         initComponents();
         setLocationRelativeTo(null);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -87,14 +94,11 @@ public class NewCategoryView extends javax.swing.JFrame {
         lbl_nameholder = new javax.swing.JLabel();
         lbl_userSVG = new javax.swing.JLabel();
         lbl_username = new javax.swing.JLabel();
-        roundedPanel1 = new pck_customComponents.RoundedPanel();
-        lbl_navegador = new javax.swing.JLabel();
-        lbl_navegador3 = new javax.swing.JLabel();
-        tf_nombre = new pck_customComponents.RoundedTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        ta_descripcion = new pck_customComponents.RoundedTextArea();
-        lbl_titulo = new javax.swing.JLabel();
+        panelUsuarios = new pck_customComponents.RoundedPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jtable_usuarios = new javax.swing.JTable();
         btn_crear = new pck_customComponents.CustomButton();
+        lbl_navegador = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("KINT - Dashboard");
@@ -197,6 +201,11 @@ public class NewCategoryView extends javax.swing.JFrame {
         lbl_logout.setText("📲 Cerrar Sesión");
         lbl_logout.setToolTipText("Cerrar sesión actual");
         lbl_logout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbl_logout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbl_logoutMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout pan_menuLatIzqLayout = new javax.swing.GroupLayout(pan_menuLatIzq);
         pan_menuLatIzq.setLayout(pan_menuLatIzqLayout);
@@ -292,7 +301,7 @@ public class NewCategoryView extends javax.swing.JFrame {
 
         lbl_navegador1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         lbl_navegador1.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador1.setText("Inventario  /  Categorías /  Nueva categoría");
+        lbl_navegador1.setText("Usuarios");
         pan_cabecera.add(lbl_navegador1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
 
         pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1020, 30));
@@ -312,55 +321,39 @@ public class NewCategoryView extends javax.swing.JFrame {
         lbl_username.setText("Usuario:");
         pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
 
-        lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
-        lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Nombre de la categoría");
+        jtable_usuarios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jtable_usuarios);
 
-        lbl_navegador3.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
-        lbl_navegador3.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador3.setText("Descripción de la categoría");
-
-        ta_descripcion.setColumns(20);
-        ta_descripcion.setRows(5);
-        jScrollPane1.setViewportView(ta_descripcion);
-
-        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
-        roundedPanel1.setLayout(roundedPanel1Layout);
-        roundedPanel1Layout.setHorizontalGroup(
-            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_navegador, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(110, Short.MAX_VALUE))
+        javax.swing.GroupLayout panelUsuariosLayout = new javax.swing.GroupLayout(panelUsuarios);
+        panelUsuarios.setLayout(panelUsuariosLayout);
+        panelUsuariosLayout.setHorizontalGroup(
+            panelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelUsuariosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 948, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        roundedPanel1Layout.setVerticalGroup(
-            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_navegador, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(47, Short.MAX_VALUE))
+        panelUsuariosLayout.setVerticalGroup(
+            panelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelUsuariosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 910, 270));
+        pan_bg.add(panelUsuarios, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, 960, 470));
 
-        lbl_titulo.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
-        lbl_titulo.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_titulo.setText("Registro de categoría");
-        pan_bg.add(lbl_titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 150, 210, 30));
-
-        btn_crear.setText("Crear");
+        btn_crear.setText("Nuevo Usuario ");
         btn_crear.setToolTipText("Click para ir al Panel Principal");
         btn_crear.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         btn_crear.setOver(true);
@@ -370,7 +363,12 @@ public class NewCategoryView extends javax.swing.JFrame {
                 btn_crearActionPerformed(evt);
             }
         });
-        pan_bg.add(btn_crear, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 480, 90, 40));
+        pan_bg.add(btn_crear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 130, 140, 40));
+
+        lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador.setText("Usuarios del sistema");
+        pan_bg.add(lbl_navegador, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 440, 30));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -398,13 +396,13 @@ public class NewCategoryView extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dashboardActionPerformed
-        this.dispose();
         new DashboardView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_dashboardActionPerformed
 
     private void btn_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inventarioActionPerformed
-        this.dispose();
         new InventoryView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_inventarioActionPerformed
 
     private void btn_solicitudesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_solicitudesActionPerformed
@@ -418,8 +416,7 @@ public class NewCategoryView extends javax.swing.JFrame {
         if (!requerirRolPorId(1)) {
             return;
         }
-        this.dispose();
-        new UsersView().setVisible(true);
+        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
     }//GEN-LAST:event_btn_usuariosActionPerformed
 
     private void btn_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ayudaActionPerformed
@@ -463,11 +460,25 @@ public class NewCategoryView extends javax.swing.JFrame {
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         lbl_nameholder.setText(nombreUsuario);
         System.out.println(nombreUsuario);
+        cargarTablaUsuarios();
     }//GEN-LAST:event_formWindowActivated
 
     private void btn_crearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_crearActionPerformed
-        onCrearCategoria();
+        this.dispose();
+        new NewUserView().setVisible(true);
     }//GEN-LAST:event_btn_crearActionPerformed
+
+    private void lbl_logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_logoutMouseClicked
+        // TODO add your handling code here:
+        int aux;
+        aux = JOptionPane.showConfirmDialog(this, "¿Desea cerrar sesión?", "Confirmacion", JOptionPane.YES_NO_OPTION);
+        if (aux == JOptionPane.YES_OPTION) {
+            this.dispose();
+            new Login().setVisible(true);
+        } else if (aux == JOptionPane.NO_OPTION) {
+            return;
+        }
+    }//GEN-LAST:event_lbl_logoutMouseClicked
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
     //útil ya que en lugar de mandar a llamar la función y hacer 3 combinaciones diferentes de arreglos enteros, mejor paso directamente las constantes
@@ -488,72 +499,170 @@ public class NewCategoryView extends javax.swing.JFrame {
         return false;
     }
 
-    private boolean validarFormulario() {
-        String nombre = t(tf_nombre.getText());
-        String desc = t(ta_descripcion.getText());
-        StringBuilder sb = new StringBuilder();
+// ---- Cargar tabla de usuarios ----
+    private void cargarTablaUsuarios() {
+        try {
+            pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
+            java.util.List<pck_model.Usuario> rows = dao.findAll();
 
-        if (nombre.isEmpty()) {
-            sb.append("• El nombre es obligatorio.\n");
-        }
+            DefaultTableModel model = construirModeloUsuarios(rows);
+            jtable_usuarios.setModel(model);
 
-        if (nombre.length() > 120) {
-            sb.append("• El nombre no debe exceder 120 caracteres.\n");
-        }
+            instalarColumnaAccionesUsuarios();  // acciones (editar/eliminar)
+            formatearTablaUsuarios();
 
-        if (desc.isEmpty()) {
-            sb.append("• La descripción es obligatoria.\n");
+            if (rows == null || rows.isEmpty()) {
+                mostrarEstadoVacioUsuarios(model);
+                return;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo cargar la tabla de usuarios.\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        if (nombre.length() > 600) {
-            sb.append("• La descripción no debe exceder 600 caracteres.\n");
-        }
-
-        if (sb.length() > 0) {
-            JOptionPane.showMessageDialog(this, sb.toString(), "Datos incompletos", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        return true;
     }
 
-    private Categoria buildCategoriaDesdeUI() {
-        Categoria c = new Categoria();
+// ---- Modelo de datos ----
+    private DefaultTableModel construirModeloUsuarios(List<pck_model.Usuario> rows) {
+        String[] cols = {"ID", "Rol", "Nombre", "Correo", "Tarea", "F. Nacimiento", "Activo", "Acciones"};
 
-        c.setNombre(t(tf_nombre.getText()));
-        c.setDescripcion(t(ta_descripcion.getText()));
-        return c;
+        DefaultTableModel model = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return c == 7;
+            } // solo "Acciones"
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                switch (columnIndex) {
+                    case 0:
+                        return Integer.class; // ID
+                    case 6:
+                        return String.class;  // Activo "Sí/No"
+                    default:
+                        return String.class;
+                }
+            }
+        };
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (rows != null) {
+            for (pck_model.Usuario us : rows) {
+                String fNac = (us.getFechaNacimiento() == null) ? "" : sdf.format(us.getFechaNacimiento());
+                model.addRow(new Object[]{
+                    us.getIdUsuario(),
+                    s(us.getRolNombre()),
+                    s(us.getNombre()),
+                    s(us.getCorreo()),
+                    s(us.getTarea()),
+                    fNac,
+                    us.isActivo() ? "Sí" : "No",
+                    null // Acciones
+                });
+            }
+        }
+        return model;
     }
 
-    private void onCrearCategoria() {
-        if (!validarFormulario()) {
+// ---- Formato visual ----
+    private void formatearTablaUsuarios() {
+        jtable_usuarios.setAutoCreateRowSorter(true);
+        jtable_usuarios.setRowHeight(22);
+        jtable_usuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        TableColumnModel cm = jtable_usuarios.getColumnModel();
+        if (cm.getColumnCount() >= 8) {
+            cm.getColumn(0).setPreferredWidth(40);   // ID
+            cm.getColumn(1).setPreferredWidth(100);  // Rol
+            cm.getColumn(2).setPreferredWidth(150);  // Nombre
+            cm.getColumn(3).setPreferredWidth(200);  // Correo
+            cm.getColumn(4).setPreferredWidth(120);  // Tarea
+            cm.getColumn(5).setPreferredWidth(110);  // F. Nac
+            cm.getColumn(6).setPreferredWidth(60);   // Activo
+            cm.getColumn(7).setPreferredWidth(120);  // Acciones
+        }
+    }
+
+// ---- Estado vacío ----
+    private void mostrarEstadoVacioUsuarios(DefaultTableModel model) {
+        model.setRowCount(0);
+        model.addRow(new Object[]{"—", "—", "No hay usuarios registrados.", "—", "—", "—", "—"});
+        jtable_usuarios.setModel(model);
+        jtable_usuarios.setAutoCreateRowSorter(false);
+        jtable_usuarios.setRowSelectionAllowed(false);
+        jtable_usuarios.setEnabled(false);
+
+        DefaultTableCellRenderer gray = new DefaultTableCellRenderer();
+        gray.setForeground(new Color(120, 120, 120));
+        gray.setFont(jtable_usuarios.getFont().deriveFont(Font.ITALIC));
+        jtable_usuarios.getColumnModel().getColumn(2).setCellRenderer(gray);
+    }
+
+    private void instalarColumnaAccionesUsuarios() {
+        int accionesIdx = jtable_usuarios.getColumnModel().getColumnIndex("Acciones");
+
+        jtable_usuarios.getColumnModel().getColumn(accionesIdx).setCellRenderer(new AccionesRenderer());
+        jtable_usuarios.getColumnModel().getColumn(accionesIdx).setCellEditor(
+                new AccionesEditor(
+                        jtable_usuarios,
+                        0,
+                        new AccionesHandler() {
+                    @Override
+                    public void editar(int id, int modelRow) {
+                        onEditarUsuario(id, modelRow);
+                    }
+
+                    @Override
+                    public void eliminar(int id, int modelRow) {
+                        onEliminarUsuario(id, modelRow);
+                    }
+
+                    @Override
+                    public void solicitar(int id, int modelRow) {
+                    }
+                },
+                        false // ocultar solicitar
+                )
+        );
+    }
+
+    private void onEditarUsuario(int idUsuario, int modelRow) {
+        if (!requerirRolPorId(1)) {
+            return;
+        }
+        new EditUserView(idUsuario).setVisible(true);
+        this.dispose();
+        JOptionPane.showMessageDialog(this, "Editar usuario ID: " + idUsuario);
+    }
+
+    private void onEliminarUsuario(int idUsuario, int modelRow) {
+        if (!requerirRolPorId(1)) {
+            return;
+        }
+        int res = JOptionPane.showConfirmDialog(this,
+                "¿Seguro que deseas eliminar el usuario ID " + idUsuario + "?",
+                "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+        if (res != JOptionPane.YES_OPTION) {
             return;
         }
 
-        Categoria c = buildCategoriaDesdeUI();
-        CategoriaDAO dao = new CategoriaDAO();
-
-        try {
-            int nuevoId = dao.insert(c);
-            if (nuevoId > 0) {
-                JOptionPane.showMessageDialog(this, "Producto creado con ID: " + nuevoId, "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                limpiarFormulario();
-                this.dispose();
-                new CategoriesView().setVisible(true);
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo crear el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Error al crear el producto:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
+        boolean ok = dao.deleteHard(idUsuario);
+        if (ok) {
+            ((DefaultTableModel) jtable_usuarios.getModel()).removeRow(modelRow);
+            JOptionPane.showMessageDialog(this, "Usuario eliminado.");
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo eliminar. Verifica relaciones (p. ej. préstamos).",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void limpiarFormulario() {
-        tf_nombre.setText("");
-        ta_descripcion.setText("");
-    }
-
-    private String t(String s) {
-        return s == null ? "" : s.trim();
+    // ---- null safety ----
+    private String s(String s) {
+        return s == null ? "" : s;
     }
 
     /**
@@ -573,18 +682,19 @@ public class NewCategoryView extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewCategoryView().setVisible(true);
+                new UsersView().setVisible(true);
             }
         });
     }
@@ -599,8 +709,9 @@ public class NewCategoryView extends javax.swing.JFrame {
     private pck_customComponents.CustomButton btn_solicitudes;
     private pck_customComponents.CustomButton btn_usuarios;
     private javax.swing.JLabel imgKintLogo;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTable jtable_usuarios;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_icon;
@@ -608,15 +719,11 @@ public class NewCategoryView extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_nameholder;
     private javax.swing.JLabel lbl_navegador;
     private javax.swing.JLabel lbl_navegador1;
-    private javax.swing.JLabel lbl_navegador3;
-    private javax.swing.JLabel lbl_titulo;
     private javax.swing.JLabel lbl_userSVG;
     private javax.swing.JLabel lbl_username;
     private javax.swing.JPanel pan_bg;
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPanel pan_menuLatIzq;
-    private pck_customComponents.RoundedPanel roundedPanel1;
-    private pck_customComponents.RoundedTextArea ta_descripcion;
-    private pck_customComponents.RoundedTextField tf_nombre;
+    private pck_customComponents.RoundedPanel panelUsuarios;
     // End of variables declaration//GEN-END:variables
 }

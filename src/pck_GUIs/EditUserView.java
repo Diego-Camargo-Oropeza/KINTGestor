@@ -2,19 +2,14 @@ package pck_GUIs;
 
 import java.awt.Color;
 import static java.awt.Color.WHITE;
-import java.sql.SQLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import pck_dao.CategoriaDAO;
-import pck_dao.ProductoDAO;
-import pck_model.Categoria;
-import pck_model.Producto;
-import pck_model.TipoProducto;
+import pck_dao.UsuarioDAO;
 import pck_model.Usuario;
 import pck_service.Session;
 
@@ -22,26 +17,28 @@ import pck_service.Session;
  *
  * @author dieca
  */
-public class EditProductView extends javax.swing.JFrame {
+public class EditUserView extends javax.swing.JFrame {
 
-    private int idProducto = 0;
-    private final ProductoDAO productoDAO = new ProductoDAO();
-    private Producto productoActual = null;
-    int mouseinX, mouseinY;
-    Rescalar escalar = new Rescalar();
-    Usuario u = Session.get();
-    String nombreUsuario = u.getNombre();
-    String rol = u.getRolNombre();
-    int id = u.getIdUsuario();
+    private int mouseinX, mouseinY;
+    private Rescalar escalar = new Rescalar();
+    private Usuario u = Session.get();
+    private String nombreUsuario = u.getNombre();
+    private String tarea = u.getTarea();
+    private String correo = u.getCorreo();
+    private String rol = u.getRolNombre();
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private Usuario usuarioActual = null;
+    private int idUsuario;
+
     LocalDate currentDate = LocalDate.now();
 
     /**
      * Creates new form login
      */
-    public EditProductView(int idProducto) {
+    public EditUserView(int idUsuario) {
         initComponents();
         setLocationRelativeTo(null);
-        this.idProducto = idProducto;
+        this.idUsuario = idUsuario;
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowOpened(java.awt.event.WindowEvent e) {
@@ -88,37 +85,31 @@ public class EditProductView extends javax.swing.JFrame {
         lbl_configuracion = new javax.swing.JLabel();
         lbl_logout = new javax.swing.JLabel();
         pan_cabecera = new javax.swing.JPanel();
-        lbl_navegador = new javax.swing.JLabel();
         lbl_icon = new javax.swing.JLabel();
         lbl_exit = new javax.swing.JLabel();
+        lbl_navegador1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         lbl_nameholder = new javax.swing.JLabel();
         lbl_userSVG = new javax.swing.JLabel();
-        lbl_title = new javax.swing.JLabel();
+        lbl_username = new javax.swing.JLabel();
         roundedPanel1 = new pck_customComponents.RoundedPanel();
-        jLabel1 = new javax.swing.JLabel();
-        tf_nombreProducto = new pck_customComponents.RoundedTextField();
-        jLabel2 = new javax.swing.JLabel();
-        tf_sku = new pck_customComponents.RoundedTextField();
-        jLabel3 = new javax.swing.JLabel();
+        lbl_pass = new javax.swing.JLabel();
+        tf_nombre = new pck_customComponents.RoundedTextField();
+        lbl_navegador2 = new javax.swing.JLabel();
+        cb_rol = new javax.swing.JComboBox<>();
+        lbl_navegador3 = new javax.swing.JLabel();
+        tf_correo = new pck_customComponents.RoundedTextField();
+        lbl_navegador4 = new javax.swing.JLabel();
+        tf_pass = new pck_customComponents.RoundedTextField();
+        btn_generarPass = new pck_customComponents.CustomButton();
+        checkb_activo = new javax.swing.JCheckBox();
+        lbl_navegador5 = new javax.swing.JLabel();
+        lbl_navegador6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        ta_descripcion = new pck_customComponents.RoundedTextArea();
-        jLabel4 = new javax.swing.JLabel();
-        cb_tipo = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
-        cb_categoria = new javax.swing.JComboBox<>();
-        jLabel6 = new javax.swing.JLabel();
-        cb_unidades = new javax.swing.JComboBox<>();
-        jLabel7 = new javax.swing.JLabel();
-        tf_codigoBarras = new pck_customComponents.RoundedTextField();
-        jLabel8 = new javax.swing.JLabel();
-        tf_ubicación = new pck_customComponents.RoundedTextField();
-        jLabel9 = new javax.swing.JLabel();
-        spn_cantidad = new javax.swing.JSpinner();
-        roundedPanel2 = new pck_customComponents.RoundedPanel();
-        lbl_imagen = new javax.swing.JLabel();
-        btn_subirFoto = new pck_customComponents.CustomButton();
-        lbl_username1 = new javax.swing.JLabel();
+        ta_tarea = new pck_customComponents.RoundedTextArea();
+        dc_fechaNacimiento = new com.toedter.calendar.JDateChooser();
+        lbl_pass1 = new javax.swing.JLabel();
+        lbl_titulo = new javax.swing.JLabel();
         btn_editar = new pck_customComponents.CustomButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -222,11 +213,6 @@ public class EditProductView extends javax.swing.JFrame {
         lbl_logout.setText("📲 Cerrar Sesión");
         lbl_logout.setToolTipText("Cerrar sesión actual");
         lbl_logout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lbl_logout.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lbl_logoutMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout pan_menuLatIzqLayout = new javax.swing.GroupLayout(pan_menuLatIzq);
         pan_menuLatIzq.setLayout(pan_menuLatIzqLayout);
@@ -293,11 +279,6 @@ public class EditProductView extends javax.swing.JFrame {
         });
         pan_cabecera.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Inventario  / Editar Producto");
-        pan_cabecera.add(lbl_navegador, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
-
         lbl_icon.setFont(new java.awt.Font("Segoe UI Symbol", 1, 12)); // NOI18N
         lbl_icon.setForeground(new java.awt.Color(0, 0, 0));
         lbl_icon.setText("🏠 / ");
@@ -325,6 +306,11 @@ public class EditProductView extends javax.swing.JFrame {
         });
         pan_cabecera.add(lbl_exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 0, 40, 30));
 
+        lbl_navegador1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        lbl_navegador1.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador1.setText("Usuarios /  Editar usuario");
+        pan_cabecera.add(lbl_navegador1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
+
         pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1020, 30));
 
         jSeparator1.setBackground(new java.awt.Color(184, 184, 184));
@@ -338,219 +324,143 @@ public class EditProductView extends javax.swing.JFrame {
         lbl_userSVG.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         pan_bg.add(lbl_userSVG, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 40, 40, 40));
 
-        lbl_title.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        lbl_title.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_title.setText("Formulario de edición");
-        pan_bg.add(lbl_title, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 240, 40));
+        lbl_username.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        lbl_username.setText("Usuario:");
+        pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
 
-        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Nombre del producto");
+        lbl_pass.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_pass.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_pass.setText("Contraseña");
 
-        tf_nombreProducto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        tf_nombreProducto.addActionListener(new java.awt.event.ActionListener() {
+        lbl_navegador2.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador2.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador2.setText("Rol a asignar");
+
+        cb_rol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador\t", "Supervisor", "Técnico" }));
+
+        lbl_navegador3.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador3.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador3.setText("Estado");
+
+        lbl_navegador4.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador4.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador4.setText("Nombre");
+
+        btn_generarPass.setText("Generar");
+        btn_generarPass.setToolTipText("Click para ver los Reportes (solo administradores)");
+        btn_generarPass.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
+        btn_generarPass.setOver(true);
+        btn_generarPass.setRadius(30);
+        btn_generarPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tf_nombreProductoActionPerformed(evt);
+                btn_generarPassActionPerformed(evt);
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("SKU");
-
-        tf_sku.setEnabled(false);
-        tf_sku.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        tf_sku.addActionListener(new java.awt.event.ActionListener() {
+        checkb_activo.setSelected(true);
+        checkb_activo.setText("Activo");
+        checkb_activo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tf_skuActionPerformed(evt);
+                checkb_activoActionPerformed(evt);
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Descripción (<500 caracteres)");
+        lbl_navegador5.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador5.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador5.setText("Correo");
 
-        ta_descripcion.setColumns(20);
-        ta_descripcion.setRows(5);
-        ta_descripcion.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        jScrollPane1.setViewportView(ta_descripcion);
+        lbl_navegador6.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador6.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador6.setText("Tarea (se puede dejar en blanco)");
 
-        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("Tipo");
+        ta_tarea.setColumns(20);
+        ta_tarea.setRows(5);
+        jScrollPane1.setViewportView(ta_tarea);
 
-        cb_tipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MATERIAL", "HERRAMIENTA", "DISPOSITIVO" }));
-
-        jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Categoría");
-
-        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel6.setText("Unidad de Medida");
-
-        cb_unidades.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PIEZA", "KILOS", "GRAMOS", "LITROS", "MILILITROS", "UNIDADES", "METROS", "CENTÍMETROS", "CAJAS", "PALLETS", "DOCENA", "KIT", "PAQUETE" }));
-
-        jLabel7.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel7.setText("Código de Barras");
-
-        tf_codigoBarras.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        tf_codigoBarras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tf_codigoBarrasActionPerformed(evt);
-            }
-        });
-
-        jLabel8.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Ubicación física");
-
-        tf_ubicación.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tf_ubicaciónActionPerformed(evt);
-            }
-        });
-
-        jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Stock");
-
-        spn_cantidad.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        spn_cantidad.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1000, 1));
+        lbl_pass1.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_pass1.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_pass1.setText("Fecha de nacimiento");
 
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
         roundedPanel1Layout.setHorizontalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(49, 49, 49)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(tf_nombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(roundedPanel1Layout.createSequentialGroup()
-                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tf_sku, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
-                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel7)
-                            .addComponent(tf_codigoBarras, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbl_pass1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lbl_navegador6, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(roundedPanel1Layout.createSequentialGroup()
-                            .addComponent(tf_ubicación, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(spn_cantidad))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, roundedPanel1Layout.createSequentialGroup()
                             .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(roundedPanel1Layout.createSequentialGroup()
                                     .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(cb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel4))
+                                        .addComponent(lbl_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lbl_navegador4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(18, 18, 18)
-                                    .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel5)
-                                        .addComponent(cb_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addComponent(jLabel8))
+                                    .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(lbl_navegador2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(cb_rol, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                    .addComponent(tf_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btn_generarPass, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGap(18, 18, 18)
                             .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel9)
-                                .addComponent(jLabel6)
-                                .addComponent(cb_unidades, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(24, Short.MAX_VALUE))
+                                .addComponent(tf_correo, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(checkb_activo))
+                                .addComponent(lbl_navegador5, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1))
+                    .addComponent(dc_fechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         roundedPanel1Layout.setVerticalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tf_nombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(16, 16, 16)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(tf_correo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(roundedPanel1Layout.createSequentialGroup()
                         .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lbl_navegador4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_navegador2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_navegador5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2)
                         .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tf_sku, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tf_codigoBarras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(roundedPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cb_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(roundedPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cb_unidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cb_rol, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
+                .addComponent(lbl_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tf_ubicación, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(spn_cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(122, Short.MAX_VALUE))
-        );
-
-        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 180, 590, 580));
-
-        lbl_imagen.setText("jLabel10");
-
-        btn_subirFoto.setText("Subir Foto");
-        btn_subirFoto.setToolTipText("Click para ir al Panel Principal");
-        btn_subirFoto.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
-        btn_subirFoto.setOver(true);
-        btn_subirFoto.setRadius(30);
-        btn_subirFoto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_subirFotoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout roundedPanel2Layout = new javax.swing.GroupLayout(roundedPanel2);
-        roundedPanel2.setLayout(roundedPanel2Layout);
-        roundedPanel2Layout.setHorizontalGroup(
-            roundedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbl_imagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(roundedPanel2Layout.createSequentialGroup()
-                .addGap(118, 118, 118)
-                .addComponent(btn_subirFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(122, Short.MAX_VALUE))
-        );
-        roundedPanel2Layout.setVerticalGroup(
-            roundedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(roundedPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbl_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tf_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_generarPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkb_activo)
+                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btn_subirFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addComponent(lbl_navegador6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(lbl_pass1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dc_fechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        pan_bg.add(roundedPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 180, 370, 580));
+        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 910, 510));
 
-        lbl_username1.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        lbl_username1.setText("Usuario:");
-        pan_bg.add(lbl_username1, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
+        lbl_titulo.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_titulo.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_titulo.setText("Registro de Usuario");
+        pan_bg.add(lbl_titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 150, 210, 30));
 
-        btn_editar.setText("Editar Producto");
-        btn_editar.setToolTipText("Click para ir al Panel Principal");
+        btn_editar.setText("Editar");
+        btn_editar.setToolTipText("Click para ir a ayuda");
         btn_editar.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         btn_editar.setOver(true);
         btn_editar.setRadius(30);
@@ -559,7 +469,7 @@ public class EditProductView extends javax.swing.JFrame {
                 btn_editarActionPerformed(evt);
             }
         });
-        pan_bg.add(btn_editar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 120, 140, 40));
+        pan_bg.add(btn_editar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 730, 120, 40));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -587,13 +497,14 @@ public class EditProductView extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dashboardActionPerformed
-        new DashboardView().setVisible(true);
         this.dispose();
+        new DashboardView().setVisible(true);
     }//GEN-LAST:event_btn_dashboardActionPerformed
 
     private void btn_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inventarioActionPerformed
+        this.dispose();
         new InventoryView().setVisible(true);
-        this.dispose();    }//GEN-LAST:event_btn_inventarioActionPerformed
+    }//GEN-LAST:event_btn_inventarioActionPerformed
 
     private void btn_solicitudesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_solicitudesActionPerformed
         if (!requerirRolPorId(1, 2)) {
@@ -651,45 +562,26 @@ public class EditProductView extends javax.swing.JFrame {
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         lbl_nameholder.setText(nombreUsuario);
         System.out.println(nombreUsuario);
-        cargarCategorias();
-        cargarProducto();
+        cargarUsuario();
     }//GEN-LAST:event_formWindowActivated
 
-    private void btn_subirFotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_subirFotoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_subirFotoActionPerformed
+    private void btn_generarPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generarPassActionPerformed
+        String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789@#$%";
+        StringBuilder sb = new StringBuilder();
+        java.util.Random r = new java.util.Random();
+        for (int i = 0; i < 10; i++) {
+            sb.append(chars.charAt(r.nextInt(chars.length())));
+        }
+        tf_pass.setText(sb.toString());
+    }//GEN-LAST:event_btn_generarPassActionPerformed
 
-    private void tf_nombreProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_nombreProductoActionPerformed
+    private void checkb_activoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkb_activoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tf_nombreProductoActionPerformed
-
-    private void tf_skuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_skuActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tf_skuActionPerformed
-
-    private void tf_codigoBarrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_codigoBarrasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tf_codigoBarrasActionPerformed
-
-    private void tf_ubicaciónActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_ubicaciónActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tf_ubicaciónActionPerformed
+    }//GEN-LAST:event_checkb_activoActionPerformed
 
     private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
-        onGuardarCambios();
+        onGuardarUsuario();
     }//GEN-LAST:event_btn_editarActionPerformed
-
-    private void lbl_logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_logoutMouseClicked
-        // TODO add your handling code here:
-        int aux;
-        aux = JOptionPane.showConfirmDialog(this, "¿Desea cerrar sesión?", "Confirmación", JOptionPane.YES_NO_OPTION);
-        if (aux == JOptionPane.YES_OPTION) {
-            this.dispose();
-            new Login().setVisible(true);
-        } else if (aux == JOptionPane.NO_OPTION) {
-            return;
-        }
-    }//GEN-LAST:event_lbl_logoutMouseClicked
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
     //útil ya que en lugar de mandar a llamar la función y hacer 3 combinaciones diferentes de arreglos enteros, mejor paso directamente las constantes
@@ -710,82 +602,38 @@ public class EditProductView extends javax.swing.JFrame {
         return false;
     }
 
-    private void cargarCategorias() {
-        CategoriaDAO dao = new CategoriaDAO();
-        List<Categoria> cats = dao.findAll();
-
-        DefaultComboBoxModel<Categoria> model = new DefaultComboBoxModel<>();
-        //placeholder
-        model.addElement(new Categoria(0, "— Selecciona categoría —", ""));
-
-        for (Categoria c : cats) {
-            model.addElement(c);
-        }
-        cb_categoria.setModel(model);
-    }
-
-    // Helpers
-    private String t(String s) {
-        return s == null ? "" : s.trim();
-    }
-
-    private TipoProducto parseTipo(String s) {
-        try {
-            return s == null ? null : TipoProducto.valueOf(s.trim());
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
-    }
-
+    // ======== Validación del formulario ========
     private boolean validarFormulario() {
-        String nombre = t(tf_nombreProducto.getText());
-        String sku = t(tf_sku.getText());
-        String desc = t(ta_descripcion.getText());
-        String tipoStr = (cb_tipo.getSelectedItem() == null) ? "" : cb_tipo.getSelectedItem().toString();
-        TipoProducto tipo = parseTipo(tipoStr);
-        Categoria cat = (Categoria) cb_categoria.getSelectedItem();
-        String uMedida = (cb_unidades.getSelectedItem() == null) ? "" : cb_unidades.getSelectedItem().toString();
-        String ubic = t(tf_ubicación.getText());
-        String codBarras = t(tf_codigoBarras.getText());
+        String nombre = t(tf_nombre.getText());
+        String correo = t(tf_correo.getText());
+        String pass = t(tf_pass.getText());
+        String tarea = t(ta_tarea.getText());
+        java.util.Date fnac = dc_fechaNacimiento.getDate();
 
         StringBuilder sb = new StringBuilder();
 
         if (nombre.isEmpty()) {
             sb.append("• El nombre es obligatorio.\n");
         }
-        if (sku.isEmpty()) {
-            sb.append("• El SKU es obligatorio.\n");
-        }
-        if (tipo == null) {
-            sb.append("• Selecciona un tipo de producto.\n");
-        }
-        if (cat == null || cat.getIdCategoria() <= 0) {
-            sb.append("• Selecciona una categoría válida.\n");
-        }
-        if (uMedida.isEmpty()) {
-            sb.append("• Selecciona la unidad de medida.\n");
-        }
-
         if (nombre.length() > 120) {
             sb.append("• El nombre no debe exceder 120 caracteres.\n");
         }
-        if (sku.length() > 60) {
-            sb.append("• El SKU no debe exceder 60 caracteres.\n");
-        }
-        if (desc.length() > 500) {
-            sb.append("• La descripción no debe exceder 500 caracteres.\n");
-        }
-        if (codBarras.length() > 80) {
-            sb.append("• El código de barras no debe exceder 80 caracteres.\n");
-        }
-        if (ubic.length() > 120) {
-            sb.append("• La ubicación no debe exceder 120 caracteres.\n");
+
+        if (correo.isEmpty()) {
+            sb.append("• El correo es obligatorio.\n");
+        } else if (!correoValido(correo)) {
+            sb.append("• El correo no tiene un formato válido.\n");
         }
 
-        Number n = (Number) spn_cantidad.getValue();
-        int stock = (n == null) ? 0 : n.intValue();
-        if (stock < 0) {
-            sb.append("• La cantidad no puede ser negativa.\n");
+        if (tarea.length() > 600) {
+            sb.append("• La tarea no debe exceder 600 caracteres.\n");
+        }
+
+        if (fnac != null) {
+            // Evitar fechas futuras
+            if (fnac.after(new java.util.Date())) {
+                sb.append("• La fecha de nacimiento no puede ser futura.\n");
+            }
         }
 
         if (sb.length() > 0) {
@@ -795,146 +643,191 @@ public class EditProductView extends javax.swing.JFrame {
         return true;
     }
 
-    private Producto buildProductoDesdeUI() {
-        Producto p = new Producto();
+    // ======== Construir el Usuario desde la UI ========
+    private Usuario buildUsuarioDesdeUI() {
+        pck_model.Usuario nuevo = new pck_model.Usuario();
 
-        p.setNombre(t(tf_nombreProducto.getText()));
-        p.setSku(t(tf_sku.getText()));
-        p.setDescripcion(t(ta_descripcion.getText()));
+        nuevo.setNombre(t(tf_nombre.getText()));
+        nuevo.setCorreo(t(tf_correo.getText()));
+        nuevo.setIdRol(rolSeleccionadoId());
+        nuevo.setActivo(checkb_activo.isSelected());
+        nuevo.setTarea(t(ta_tarea.getText()));
 
-        String tipoStr = (cb_tipo.getSelectedItem() == null) ? "" : cb_tipo.getSelectedItem().toString();
-        p.setTipo(parseTipo(tipoStr));
+        // Hash de la contraseña para el campo contrasena_hash
+        String passPlano = t(tf_pass.getText());
+        nuevo.setContrasenaHash(hashSHA256(passPlano));
 
-        Categoria cat = (Categoria) cb_categoria.getSelectedItem();
-        p.setIdCategoria(cat != null ? cat.getIdCategoria() : 0);
+        // Fecha de nacimiento 
+        Date fnac = dc_fechaNacimiento.getDate();
+        nuevo.setFechaNacimiento(toSqlDate(fnac));
 
-        p.setuMedida((cb_unidades.getSelectedItem() == null) ? "" : cb_unidades.getSelectedItem().toString());
-        p.setCodigoBarras(t(tf_codigoBarras.getText()));
-        p.setUbicacion(t(tf_ubicación.getText()));
-
-        Number n = (Number) spn_cantidad.getValue();
-        p.setStock(n == null ? 0 : n.intValue());
-
-        p.setActivo(true);   // Activo al crear
-        return p;
+        return nuevo;
     }
 
-    private void limpiarFormulario() {
-        tf_nombreProducto.setText("");
-        tf_sku.setText("");
-        ta_descripcion.setText("");
-        cb_tipo.setSelectedIndex(-1);
-        cb_categoria.setSelectedIndex(0);
-        cb_unidades.setSelectedIndex(-1);
-        tf_codigoBarras.setText("");
-        tf_ubicación.setText("");
-        spn_cantidad.setValue(0);
-    }
-
-    private void cargarProducto() {
+    private void cargarUsuario() {
         try {
-            productoActual = productoDAO.findById(idProducto);
-            if (productoActual == null) {
+            Usuario u = usuarioDAO.findById(idUsuario);
+            if (u == null) {
                 JOptionPane.showMessageDialog(this,
-                        "No se encontró el producto con ID: " + idProducto,
+                        "No se encontró el usuario con ID: " + idUsuario,
                         "Aviso", JOptionPane.WARNING_MESSAGE);
-                // Regresar al inventario
-                new InventoryView().setVisible(true);
-                dispose();
+                this.dispose();
+                new UsersView().setVisible(true);
                 return;
             }
 
-            // Título y SKU (lo tienes deshabilitado en el diseñador)
-            lbl_title.setText("Editar producto (ID " + idProducto + ")");
-            tf_sku.setText(productoActual.getSku());
+            // Nombre
+            tf_nombre.setText(t(u.getNombre()));
 
-            // Texto
-            tf_nombreProducto.setText(n(productoActual.getNombre()));
-            ta_descripcion.setText(n(productoActual.getDescripcion()));
-            tf_codigoBarras.setText(n(productoActual.getCodigoBarras()));
-            tf_ubicación.setText(n(productoActual.getUbicacion()));
+            // Correo
+            tf_correo.setText(t(u.getCorreo()));
 
-            // Tipo (según enum)
-            if (productoActual.getTipo() != null) {
-                cb_tipo.setSelectedItem(productoActual.getTipo().name());
+            // Rol
+            seleccionarRolEnCombo(u.getIdRol());
+
+            // Activo
+            checkb_activo.setSelected(u.isActivo());
+
+            // Tarea 
+            ta_tarea.setText(t(u.getTarea()));
+
+            // Fecha de nacimiento 
+            if (u.getFechaNacimiento() != null) {
+                // java.sql.Date -> convertir a java.util.Date
+                java.util.Date d = new java.util.Date(u.getFechaNacimiento().getTime());
+                dc_fechaNacimiento.setDate(d);
             } else {
-                cb_tipo.setSelectedIndex(-1);
+                dc_fechaNacimiento.setDate(null);
             }
 
-            // Categoría: seleccionar por id
-            seleccionarCategoriaEnCombo(productoActual.getIdCategoria());
+            // Contraseña
+            tf_pass.setText("");
 
-            // U. Medida
-            if (productoActual.getuMedida() != null) {
-                cb_unidades.setSelectedItem(productoActual.getuMedida());
-            } else {
-                cb_unidades.setSelectedIndex(-1);
-            }
-
-            // Stock
-            spn_cantidad.setValue(productoActual.getStock());
+            lbl_titulo.setText("Editar Usuario (ID " + u.getIdUsuario() + ")");
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    "Error al cargar el producto:\n" + ex.getMessage(),
+                    "Error al cargar el usuario:\n" + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+            new UsersView().setVisible(true);
         }
     }
 
-    private String n(String s) {
-        return s == null ? "" : s;
-    }
-
-    private void seleccionarCategoriaEnCombo(int idCategoria) {
-        if (cb_categoria.getItemCount() == 0) {
-            return;
+    // Helper para seleccionar el rol en el combo a partir del id_rol
+    private void seleccionarRolEnCombo(int idRol) {
+        String etiqueta;
+        if (idRol == 1) {
+            etiqueta = "Administrador";
+        } else if (idRol == 2) {
+            etiqueta = "Supervisor";
+        } else {
+            etiqueta = "Técnico";
         }
 
-        for (int i = 0; i < cb_categoria.getItemCount(); i++) {
-            Categoria c = cb_categoria.getItemAt(i);
-            if (c != null && c.getIdCategoria() == idCategoria) {
-                cb_categoria.setSelectedIndex(i);
+        //Busqueda por prefijo
+        for (int i = 0; i < cb_rol.getItemCount(); i++) {
+            String it = String.valueOf(cb_rol.getItemAt(i));
+            if (it != null && it.trim().toUpperCase().startsWith(etiqueta.toUpperCase())) {
+                cb_rol.setSelectedIndex(i);
                 return;
             }
         }
-        // Si no se encontró, deja en placeholder (normalmente índice 0)
-        cb_categoria.setSelectedIndex(0);
+
+        // fallback
+        if (cb_rol.getItemCount() > 0) {
+            cb_rol.setSelectedIndex(0);
+        }
     }
 
-    private void onGuardarCambios() {
+    // ======== Guardar ========
+    private void onGuardarUsuario() {
         if (!validarFormulario()) {
             return;
         }
 
-        Producto p = buildProductoParaActualizar();
-        try {
-            boolean ok = productoDAO.update(p);
-            if (ok) {
-                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                new InventoryView().setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        } catch (Exception ex) {
+        // 1) Validar correo duplicado 
+        String correoNuevo = t(tf_correo.getText());
+        if (usuarioDAO.existsCorreoForOther(correoNuevo, idUsuario)) {
             JOptionPane.showMessageDialog(this,
-                    "Error al actualizar:\n" + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                    "El correo ya está utilizado por otro usuario.",
+                    "Correo duplicado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 2) Construir objeto desde UI 
+        Usuario uEdit = buildUsuarioDesdeUI();
+        uEdit.setIdUsuario(idUsuario);
+
+        // 3) Actualizar datos generales 
+        boolean okUpdate = usuarioDAO.update(uEdit);
+
+        // 4) Si el campo de contraseña tiene algo
+        String passPlano = t(tf_pass.getText());
+        boolean okPass = true;
+        if (!passPlano.isEmpty()) {
+            String nuevoHash = hashSHA256(passPlano);
+            okPass = usuarioDAO.updatePassword(idUsuario, nuevoHash);
+        }
+
+        if (okUpdate && okPass) {
+            JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new UsersView().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo actualizar el usuario.",
+                    "Aviso", JOptionPane.WARNING_MESSAGE);
         }
     }
 
-    private Producto buildProductoParaActualizar() {
-        Producto p = buildProductoDesdeUI();
-        p.setIdProducto(idProducto);
-        p.setActivo(productoActual != null ? productoActual.isActivo() : true);
-        return p;
+    // ======== Helpers básicos ========
+    private String t(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    private boolean correoValido(String correo) {
+        // Regex correo
+        return correo != null && correo.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    }
+
+    private int rolSeleccionadoId() {
+        String rolSel = (String) cb_rol.getSelectedItem();
+        if (rolSel == null) {
+            return 3;
+        }
+        rolSel = rolSel.trim().toUpperCase();
+        if (rolSel.startsWith("ADMIN")) {
+            return 1;
+        }
+        if (rolSel.startsWith("SUPERV")) {
+            return 2;
+        }
+        return 3; // Técnico
+    }
+
+    private String hashSHA256(String texto) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(texto.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            return texto;
+        }
+    }
+
+    private java.sql.Date toSqlDate(java.util.Date d) {
+        return (d == null) ? null : new java.sql.Date(d.getTime());
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-
     }
 
 
@@ -942,46 +835,40 @@ public class EditProductView extends javax.swing.JFrame {
     private pck_customComponents.CustomButton btn_ayuda;
     private pck_customComponents.CustomButton btn_dashboard;
     private pck_customComponents.CustomButton btn_editar;
+    private pck_customComponents.CustomButton btn_generarPass;
     private pck_customComponents.CustomButton btn_inventario;
     private pck_customComponents.CustomButton btn_reportes;
     private pck_customComponents.CustomButton btn_solicitudes;
-    private pck_customComponents.CustomButton btn_subirFoto;
     private pck_customComponents.CustomButton btn_usuarios;
-    private javax.swing.JComboBox<Categoria> cb_categoria;
-    private javax.swing.JComboBox<String> cb_tipo;
-    private javax.swing.JComboBox<String> cb_unidades;
+    private javax.swing.JComboBox<String> cb_rol;
+    private javax.swing.JCheckBox checkb_activo;
+    private com.toedter.calendar.JDateChooser dc_fechaNacimiento;
     private javax.swing.JLabel imgKintLogo;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_icon;
-    private javax.swing.JLabel lbl_imagen;
     private javax.swing.JLabel lbl_logout;
     private javax.swing.JLabel lbl_nameholder;
-    private javax.swing.JLabel lbl_navegador;
-    private javax.swing.JLabel lbl_title;
+    private javax.swing.JLabel lbl_navegador1;
+    private javax.swing.JLabel lbl_navegador2;
+    private javax.swing.JLabel lbl_navegador3;
+    private javax.swing.JLabel lbl_navegador4;
+    private javax.swing.JLabel lbl_navegador5;
+    private javax.swing.JLabel lbl_navegador6;
+    private javax.swing.JLabel lbl_pass;
+    private javax.swing.JLabel lbl_pass1;
+    private javax.swing.JLabel lbl_titulo;
     private javax.swing.JLabel lbl_userSVG;
-    private javax.swing.JLabel lbl_username1;
+    private javax.swing.JLabel lbl_username;
     private javax.swing.JPanel pan_bg;
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPanel pan_menuLatIzq;
     private pck_customComponents.RoundedPanel roundedPanel1;
-    private pck_customComponents.RoundedPanel roundedPanel2;
-    private javax.swing.JSpinner spn_cantidad;
-    private pck_customComponents.RoundedTextArea ta_descripcion;
-    private pck_customComponents.RoundedTextField tf_codigoBarras;
-    private pck_customComponents.RoundedTextField tf_nombreProducto;
-    private pck_customComponents.RoundedTextField tf_sku;
-    private pck_customComponents.RoundedTextField tf_ubicación;
+    private pck_customComponents.RoundedTextArea ta_tarea;
+    private pck_customComponents.RoundedTextField tf_correo;
+    private pck_customComponents.RoundedTextField tf_nombre;
+    private pck_customComponents.RoundedTextField tf_pass;
     // End of variables declaration//GEN-END:variables
 }

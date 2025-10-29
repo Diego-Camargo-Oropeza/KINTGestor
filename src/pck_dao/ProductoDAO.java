@@ -189,7 +189,7 @@ public class ProductoDAO {
         return list;
     }
 
-    // ---------- CRUD de Producto (modelo completo) ----------
+    // ---------- CRUD de Producto ----------
     public Producto findById(int idProducto) {
         String sql = BASE_SELECT_JOIN + "WHERE p.id_producto=?";
         try (Connection cn = DbConnection.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {

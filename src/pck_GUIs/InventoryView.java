@@ -567,7 +567,8 @@ public class InventoryView extends javax.swing.JFrame {
         if (!requerirRolPorId(1)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+        this.dispose();
+        new UsersView().setVisible(true);
     }//GEN-LAST:event_btn_usuariosActionPerformed
 
     private void btn_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ayudaActionPerformed
@@ -689,7 +690,7 @@ public class InventoryView extends javax.swing.JFrame {
         jtable_productos.setRowHeight(24);
 
         TableColumnModel cm = jtable_productos.getColumnModel();
-        // Ajusta anchos correctos (fíjate que Acciones es la 10):
+        // Ajusta anchos correctos
         if (cm.getColumnCount() >= 11) {
             cm.getColumn(0).setPreferredWidth(40);   // ID
             cm.getColumn(1).setPreferredWidth(110);  // SKU
@@ -843,7 +844,7 @@ public class InventoryView extends javax.swing.JFrame {
         }
     }
 
-// ---- Estado vacío en la tabla ) ----
+// ---- Estado vacío en la tabla  ----
     private void mostrarEstadoVacioEnTabla(DefaultTableModel model) {
         model.addRow(new Object[]{
             "—", "—", "No hay productos registrados.", "—", "—",
@@ -858,7 +859,7 @@ public class InventoryView extends javax.swing.JFrame {
         DefaultTableCellRenderer gray = new DefaultTableCellRenderer();
         gray.setForeground(new Color(120, 120, 120));
         gray.setFont(jtable_productos.getFont().deriveFont(Font.ITALIC));
-        jtable_productos.getColumnModel().getColumn(2).setCellRenderer(gray); // "No hay productos..."
+        jtable_productos.getColumnModel().getColumn(2).setCellRenderer(gray); 
     }
 
     private void instalarColumnaAcciones() {
@@ -884,11 +885,9 @@ public class InventoryView extends javax.swing.JFrame {
 
                     @Override
                     public void solicitar(int idProducto, int modelRow) {
-                        // Si no lo usas, puedes dejarlo vacío o mostrar un diálogo
-                        // onSolicitarProducto(idProducto, modelRow);
                     }
                 },
-                        true // mostrar el botón “❓”
+                        true
                 )
         );
 

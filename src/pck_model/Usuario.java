@@ -1,5 +1,7 @@
 package pck_model;
 
+import java.util.Date;
+
 public class Usuario {
 
     private int idUsuario;
@@ -10,8 +12,9 @@ public class Usuario {
     private boolean activo;
     private String rolNombre;
     private String tarea;
+    private Date fechaNacimiento;
 
-    public Usuario(int idUsuario, int idRol, String nombre, String correo, String contrasenaHash, boolean activo, String rolNombre, String tarea) {
+    public Usuario(int idUsuario, int idRol, String nombre, String correo, String contrasenaHash, boolean activo, String rolNombre, String tarea, Date fechaNacimiento) {
         this.idUsuario = idUsuario;
         this.idRol = idRol;
         this.nombre = nombre;
@@ -20,10 +23,11 @@ public class Usuario {
         this.activo = activo;
         this.rolNombre = rolNombre;
         this.tarea = tarea;
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public Usuario() {
-        this(0, 3, null, null, null, false, null, null);
+        this(0, 3, null, null, null, false, null, null, null);
     }
 
     public int getIdUsuario() {
@@ -58,6 +62,10 @@ public class Usuario {
         return tarea;
     }
 
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
@@ -88,6 +96,10 @@ public class Usuario {
 
     public void setTarea(String tarea) {
         this.tarea = tarea;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
 }

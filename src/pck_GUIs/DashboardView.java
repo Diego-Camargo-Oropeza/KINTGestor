@@ -521,7 +521,8 @@ public class DashboardView extends javax.swing.JFrame {
         if (!requerirRolPorId(1)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+        this.dispose();
+        new UsersView().setVisible(true);
     }//GEN-LAST:event_btn_usuariosActionPerformed
 
     private void btn_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ayudaActionPerformed
@@ -582,7 +583,7 @@ public class DashboardView extends javax.swing.JFrame {
         if (aux == JOptionPane.YES_OPTION) {
             this.dispose();
             new Login().setVisible(true);
-        }else if (aux == JOptionPane.NO_OPTION){
+        } else if (aux == JOptionPane.NO_OPTION) {
             return;
         }
 

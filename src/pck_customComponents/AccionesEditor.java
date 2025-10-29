@@ -2,7 +2,6 @@ package pck_customComponents;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -18,76 +17,75 @@ public class AccionesEditor extends AbstractCellEditor implements TableCellEdito
 
     private final JTable table;
     private final AccionesHandler handler;
-    private final int idColumnIndex;
+    private final int idColumnIndex;   
     private final boolean showSolicitar;
-
-    public AccionesEditor(JTable table, int idColumnIndex, AccionesHandler handler) {
-        this(table, idColumnIndex, handler, true);
-    }
 
     public AccionesEditor(JTable table, int idColumnIndex, AccionesHandler handler, boolean showSolicitar) {
         this.table = table;
-        this.idColumnIndex = idColumnIndex;
         this.handler = handler;
+        this.idColumnIndex = idColumnIndex;
         this.showSolicitar = showSolicitar;
 
-        for (JButton b : new JButton[]{btnEditar, btnEliminar, btnSolicitar}) {
-            b.setFocusable(false);
-            b.setMargin(new Insets(2, 6, 2, 6));
-        }
+        btnEditar.setFocusable(false);
+        btnEliminar.setFocusable(false);
+        btnSolicitar.setFocusable(false);
+        btnSolicitar.setVisible(showSolicitar);
 
         panel.add(btnEditar);
         panel.add(btnEliminar);
-        if (showSolicitar) {
-            panel.add(btnSolicitar);
-        }
+        panel.add(btnSolicitar);
 
-        btnEditar.addActionListener(e -> invokeHandler(ActionType.EDITAR));
-        btnEliminar.addActionListener(e -> invokeHandler(ActionType.ELIMINAR));
-        btnSolicitar.addActionListener(e -> invokeHandler(ActionType.SOLICITAR));
-    }
-
-    private enum ActionType {
-        EDITAR, ELIMINAR, SOLICITAR
-    }
-
-    private void invokeHandler(ActionType type) {
-        int viewRow = table.getEditingRow();
-        try {
+        btnEditar.addActionListener(e -> {
+            int viewRow = table.getEditingRow();
             if (viewRow >= 0) {
                 int modelRow = table.convertRowIndexToModel(viewRow);
-                Object idVal = table.getModel().getValueAt(modelRow, idColumnIndex);
-
-                int id = (idVal instanceof Number)
-                        ? ((Number) idVal).intValue()
-                        : Integer.parseInt(String.valueOf(idVal));
-
-                switch (type) {
-                    case EDITAR ->
-                        handler.editar(id, modelRow);
-                    case ELIMINAR ->
-                        handler.eliminar(id, modelRow);
-                    case SOLICITAR ->
-                        handler.solicitar(id, modelRow);
-                }
+                Integer id = safeGetId(modelRow);
+                if (id != null) handler.editar(id, modelRow);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return;
-        } finally {
             stopCellEditing();
+        });
+
+        btnEliminar.addActionListener(e -> {
+            int viewRow = table.getEditingRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                Integer id = safeGetId(modelRow);
+                if (id != null) handler.eliminar(id, modelRow);
+            }
+            stopCellEditing();
+        });
+
+        btnSolicitar.addActionListener(e -> {
+            int viewRow = table.getEditingRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                Integer id = safeGetId(modelRow);
+                if (id != null) handler.solicitar(id, modelRow);
+            }
+            stopCellEditing();
+        });
+    }
+
+    private Integer safeGetId(int modelRow) {
+        try {
+            Object val = table.getModel().getValueAt(modelRow, idColumnIndex);
+            if (val == null) return null;
+            if (val instanceof Number) return ((Number) val).intValue();
+            String s = String.valueOf(val).trim();
+            if (s.isEmpty() || s.equals("—") || s.equalsIgnoreCase("null")) return null;
+            return Integer.parseInt(s);
+        } catch (Exception ex) {
+            return null;
         }
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
-            boolean isSelected, int row, int column) {
+                                                 boolean isSelected, int row, int column) {
         panel.setBackground(table.getSelectionBackground());
         return panel;
     }
 
     @Override
-    public Object getCellEditorValue() {
-        return null;
-    }
+    public Object getCellEditorValue() { return null; }
 }

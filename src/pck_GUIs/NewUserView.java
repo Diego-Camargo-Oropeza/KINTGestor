@@ -16,7 +16,7 @@ import pck_service.Session;
  *
  * @author dieca
  */
-public class NewCategoryView extends javax.swing.JFrame {
+public class NewUserView extends javax.swing.JFrame {
 
     int mouseinX, mouseinY;
     Rescalar escalar = new Rescalar();
@@ -31,7 +31,7 @@ public class NewCategoryView extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    public NewCategoryView() {
+    public NewUserView() {
         initComponents();
         setLocationRelativeTo(null);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -88,11 +88,22 @@ public class NewCategoryView extends javax.swing.JFrame {
         lbl_userSVG = new javax.swing.JLabel();
         lbl_username = new javax.swing.JLabel();
         roundedPanel1 = new pck_customComponents.RoundedPanel();
-        lbl_navegador = new javax.swing.JLabel();
-        lbl_navegador3 = new javax.swing.JLabel();
+        lbl_pass = new javax.swing.JLabel();
         tf_nombre = new pck_customComponents.RoundedTextField();
+        lbl_navegador2 = new javax.swing.JLabel();
+        cb_rol = new javax.swing.JComboBox<>();
+        lbl_navegador3 = new javax.swing.JLabel();
+        tf_correo = new pck_customComponents.RoundedTextField();
+        lbl_navegador4 = new javax.swing.JLabel();
+        tf_pass = new pck_customComponents.RoundedTextField();
+        btn_generarPass = new pck_customComponents.CustomButton();
+        checkb_activo = new javax.swing.JCheckBox();
+        lbl_navegador5 = new javax.swing.JLabel();
+        lbl_navegador6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        ta_descripcion = new pck_customComponents.RoundedTextArea();
+        ta_tarea = new pck_customComponents.RoundedTextArea();
+        dc_fechaNacimiento = new com.toedter.calendar.JDateChooser();
+        lbl_pass1 = new javax.swing.JLabel();
         lbl_titulo = new javax.swing.JLabel();
         btn_crear = new pck_customComponents.CustomButton();
 
@@ -292,7 +303,7 @@ public class NewCategoryView extends javax.swing.JFrame {
 
         lbl_navegador1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         lbl_navegador1.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador1.setText("Inventario  /  Categorías /  Nueva categoría");
+        lbl_navegador1.setText("Usuarios /  Nuevo usuario");
         pan_cabecera.add(lbl_navegador1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
 
         pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1020, 30));
@@ -312,17 +323,58 @@ public class NewCategoryView extends javax.swing.JFrame {
         lbl_username.setText("Usuario:");
         pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
 
-        lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
-        lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Nombre de la categoría");
+        lbl_pass.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_pass.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_pass.setText("Contraseña");
+
+        lbl_navegador2.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador2.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador2.setText("Rol a asignar");
+
+        cb_rol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador\t", "Supervisor", "Técnico" }));
 
         lbl_navegador3.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
         lbl_navegador3.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador3.setText("Descripción de la categoría");
+        lbl_navegador3.setText("Estado");
 
-        ta_descripcion.setColumns(20);
-        ta_descripcion.setRows(5);
-        jScrollPane1.setViewportView(ta_descripcion);
+        lbl_navegador4.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador4.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador4.setText("Nombre");
+
+        btn_generarPass.setText("Generar");
+        btn_generarPass.setToolTipText("Click para ver los Reportes (solo administradores)");
+        btn_generarPass.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
+        btn_generarPass.setOver(true);
+        btn_generarPass.setRadius(30);
+        btn_generarPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_generarPassActionPerformed(evt);
+            }
+        });
+
+        checkb_activo.setSelected(true);
+        checkb_activo.setText("Activo");
+        checkb_activo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkb_activoActionPerformed(evt);
+            }
+        });
+
+        lbl_navegador5.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador5.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador5.setText("Correo");
+
+        lbl_navegador6.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_navegador6.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_navegador6.setText("Tarea (se puede dejar en blanco)");
+
+        ta_tarea.setColumns(20);
+        ta_tarea.setRows(5);
+        jScrollPane1.setViewportView(ta_tarea);
+
+        lbl_pass1.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
+        lbl_pass1.setForeground(new java.awt.Color(0, 0, 0));
+        lbl_pass1.setText("Fecha de nacimiento");
 
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
@@ -331,37 +383,79 @@ public class NewCategoryView extends javax.swing.JFrame {
             .addGroup(roundedPanel1Layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_navegador, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(110, Short.MAX_VALUE))
+                    .addComponent(lbl_pass1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lbl_navegador6, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(roundedPanel1Layout.createSequentialGroup()
+                            .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                    .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lbl_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lbl_navegador4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(lbl_navegador2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(cb_rol, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                    .addComponent(tf_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btn_generarPass, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(18, 18, 18)
+                            .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(tf_correo, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(checkb_activo))
+                                .addComponent(lbl_navegador5, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1))
+                    .addComponent(dc_fechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         roundedPanel1Layout.setVerticalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_navegador, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(tf_correo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbl_navegador4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_navegador2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_navegador5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cb_rol, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addComponent(lbl_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tf_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tf_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_generarPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkb_activo)
+                    .addComponent(lbl_navegador3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(lbl_navegador6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(lbl_pass1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dc_fechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 910, 270));
+        pan_bg.add(roundedPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 910, 510));
 
         lbl_titulo.setFont(new java.awt.Font("Nirmala UI", 1, 16)); // NOI18N
         lbl_titulo.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_titulo.setText("Registro de categoría");
+        lbl_titulo.setText("Registro de Usuario");
         pan_bg.add(lbl_titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 150, 210, 30));
 
         btn_crear.setText("Crear");
-        btn_crear.setToolTipText("Click para ir al Panel Principal");
+        btn_crear.setToolTipText("Click para ir a ayuda");
         btn_crear.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
         btn_crear.setOver(true);
         btn_crear.setRadius(30);
@@ -370,7 +464,7 @@ public class NewCategoryView extends javax.swing.JFrame {
                 btn_crearActionPerformed(evt);
             }
         });
-        pan_bg.add(btn_crear, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 480, 90, 40));
+        pan_bg.add(btn_crear, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 730, 120, 40));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
 
@@ -465,8 +559,22 @@ public class NewCategoryView extends javax.swing.JFrame {
         System.out.println(nombreUsuario);
     }//GEN-LAST:event_formWindowActivated
 
+    private void btn_generarPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generarPassActionPerformed
+        String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789@#$%";
+        StringBuilder sb = new StringBuilder();
+        java.util.Random r = new java.util.Random();
+        for (int i = 0; i < 10; i++) {
+            sb.append(chars.charAt(r.nextInt(chars.length())));
+        }
+        tf_pass.setText(sb.toString());
+    }//GEN-LAST:event_btn_generarPassActionPerformed
+
+    private void checkb_activoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkb_activoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_checkb_activoActionPerformed
+
     private void btn_crearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_crearActionPerformed
-        onCrearCategoria();
+        onGuardarUsuario();
     }//GEN-LAST:event_btn_crearActionPerformed
 
     // Autorizacion por ID de rol, la sintaxis de ... hace referencia a un parámetro multivariable, para que pueda poner desde 0...* argumentos
@@ -488,25 +596,44 @@ public class NewCategoryView extends javax.swing.JFrame {
         return false;
     }
 
+    // ======== Validación del formulario ========
     private boolean validarFormulario() {
         String nombre = t(tf_nombre.getText());
-        String desc = t(ta_descripcion.getText());
+        String correo = t(tf_correo.getText());
+        String pass = t(tf_pass.getText());
+        String tarea = t(ta_tarea.getText());
+        java.util.Date fnac = dc_fechaNacimiento.getDate();
+
         StringBuilder sb = new StringBuilder();
 
         if (nombre.isEmpty()) {
             sb.append("• El nombre es obligatorio.\n");
         }
-
         if (nombre.length() > 120) {
             sb.append("• El nombre no debe exceder 120 caracteres.\n");
         }
 
-        if (desc.isEmpty()) {
-            sb.append("• La descripción es obligatoria.\n");
+        if (correo.isEmpty()) {
+            sb.append("• El correo es obligatorio.\n");
+        } else if (!correoValido(correo)) {
+            sb.append("• El correo no tiene un formato válido.\n");
         }
 
-        if (nombre.length() > 600) {
-            sb.append("• La descripción no debe exceder 600 caracteres.\n");
+        if (pass.isEmpty()) {
+            sb.append("• La contraseña es obligatoria (puedes usar “Generar”).\n");
+        } else if (pass.length() < 6) {
+            sb.append("• La contraseña debe tener al menos 6 caracteres.\n");
+        }
+
+        if (tarea.length() > 600) {
+            sb.append("• La tarea no debe exceder 600 caracteres.\n");
+        }
+
+        if (fnac != null) {
+            // Evitar fechas futuras
+            if (fnac.after(new java.util.Date())) {
+                sb.append("• La fecha de nacimiento no puede ser futura.\n");
+            }
         }
 
         if (sb.length() > 0) {
@@ -516,44 +643,100 @@ public class NewCategoryView extends javax.swing.JFrame {
         return true;
     }
 
-    private Categoria buildCategoriaDesdeUI() {
-        Categoria c = new Categoria();
+    // ======== Construir el Usuario desde la UI ========
+    private pck_model.Usuario buildUsuarioDesdeUI() {
+        pck_model.Usuario nuevo = new pck_model.Usuario();
 
-        c.setNombre(t(tf_nombre.getText()));
-        c.setDescripcion(t(ta_descripcion.getText()));
-        return c;
+        nuevo.setNombre(t(tf_nombre.getText()));
+        nuevo.setCorreo(t(tf_correo.getText()));
+        nuevo.setIdRol(rolSeleccionadoId());
+        nuevo.setActivo(checkb_activo.isSelected());
+        nuevo.setTarea(t(ta_tarea.getText()));
+
+        // Hash de la contraseña para el campo contrasena_hash
+        String passPlano = t(tf_pass.getText());
+        nuevo.setContrasenaHash(hashSHA256(passPlano));
+
+        // Fecha de nacimiento (puede ser null)
+        java.util.Date fnac = dc_fechaNacimiento.getDate();
+        nuevo.setFechaNacimiento(toSqlDate(fnac));
+
+        return nuevo;
     }
 
-    private void onCrearCategoria() {
+    // ======== Guardar en BD ========
+    private void onGuardarUsuario() {
         if (!validarFormulario()) {
             return;
         }
 
-        Categoria c = buildCategoriaDesdeUI();
-        CategoriaDAO dao = new CategoriaDAO();
+        pck_model.Usuario nuevo = buildUsuarioDesdeUI();
+        pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
 
         try {
-            int nuevoId = dao.insert(c);
-            if (nuevoId > 0) {
-                JOptionPane.showMessageDialog(this, "Producto creado con ID: " + nuevoId, "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                limpiarFormulario();
+            boolean ok = dao.insert(nuevo);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Usuario creado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                // Limpia y vuelve a la lista
+                tf_nombre.setText("");
+                tf_correo.setText("");
+                tf_pass.setText("");
+                ta_tarea.setText("");
+                checkb_activo.setSelected(true);
+                dc_fechaNacimiento.setDate(null);
+
                 this.dispose();
-                new CategoriesView().setVisible(true);
+                new UsersView().setVisible(true);
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo crear el producto.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No se pudo crear el usuario.", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Error al crear el producto:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al crear el usuario:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void limpiarFormulario() {
-        tf_nombre.setText("");
-        ta_descripcion.setText("");
-    }
-
+    // ======== Helpers básicos ========
     private String t(String s) {
         return s == null ? "" : s.trim();
+    }
+
+    private boolean correoValido(String correo) {
+        // Regex simple 
+        return correo != null && correo.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    }
+
+    private int rolSeleccionadoId() {
+       
+        String rolSel = (String) cb_rol.getSelectedItem();
+        if (rolSel == null) {
+            return 3; // por defecto técnico
+        }
+        rolSel = rolSel.trim().toUpperCase();
+        if (rolSel.startsWith("ADMIN")) {
+            return 1;
+        }
+        if (rolSel.startsWith("SUPERV")) {
+            return 2;
+        }
+        return 3; // Técnico
+    }
+
+    private String hashSHA256(String texto) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(texto.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return texto; 
+        }
+    }
+
+    private java.sql.Date toSqlDate(java.util.Date d) {
+        return (d == null) ? null : new java.sql.Date(d.getTime());
     }
 
     /**
@@ -573,18 +756,18 @@ public class NewCategoryView extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewCategoryView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewCategoryView().setVisible(true);
+                new NewUserView().setVisible(true);
             }
         });
     }
@@ -594,10 +777,14 @@ public class NewCategoryView extends javax.swing.JFrame {
     private pck_customComponents.CustomButton btn_ayuda;
     private pck_customComponents.CustomButton btn_crear;
     private pck_customComponents.CustomButton btn_dashboard;
+    private pck_customComponents.CustomButton btn_generarPass;
     private pck_customComponents.CustomButton btn_inventario;
     private pck_customComponents.CustomButton btn_reportes;
     private pck_customComponents.CustomButton btn_solicitudes;
     private pck_customComponents.CustomButton btn_usuarios;
+    private javax.swing.JComboBox<String> cb_rol;
+    private javax.swing.JCheckBox checkb_activo;
+    private com.toedter.calendar.JDateChooser dc_fechaNacimiento;
     private javax.swing.JLabel imgKintLogo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
@@ -606,9 +793,14 @@ public class NewCategoryView extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_icon;
     private javax.swing.JLabel lbl_logout;
     private javax.swing.JLabel lbl_nameholder;
-    private javax.swing.JLabel lbl_navegador;
     private javax.swing.JLabel lbl_navegador1;
+    private javax.swing.JLabel lbl_navegador2;
     private javax.swing.JLabel lbl_navegador3;
+    private javax.swing.JLabel lbl_navegador4;
+    private javax.swing.JLabel lbl_navegador5;
+    private javax.swing.JLabel lbl_navegador6;
+    private javax.swing.JLabel lbl_pass;
+    private javax.swing.JLabel lbl_pass1;
     private javax.swing.JLabel lbl_titulo;
     private javax.swing.JLabel lbl_userSVG;
     private javax.swing.JLabel lbl_username;
@@ -616,7 +808,9 @@ public class NewCategoryView extends javax.swing.JFrame {
     private javax.swing.JPanel pan_cabecera;
     private javax.swing.JPanel pan_menuLatIzq;
     private pck_customComponents.RoundedPanel roundedPanel1;
-    private pck_customComponents.RoundedTextArea ta_descripcion;
+    private pck_customComponents.RoundedTextArea ta_tarea;
+    private pck_customComponents.RoundedTextField tf_correo;
     private pck_customComponents.RoundedTextField tf_nombre;
+    private pck_customComponents.RoundedTextField tf_pass;
     // End of variables declaration//GEN-END:variables
 }

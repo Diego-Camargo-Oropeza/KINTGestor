@@ -418,7 +418,8 @@ public class EditCategoryView extends javax.swing.JFrame {
         if (!requerirRolPorId(1)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+        this.dispose();
+        new UsersView().setVisible(true);
     }//GEN-LAST:event_btn_usuariosActionPerformed
 
     private void btn_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ayudaActionPerformed
@@ -576,7 +577,7 @@ public class EditCategoryView extends javax.swing.JFrame {
 
     private Categoria buildCategoriaParaActualizar() {
         Categoria c = buildCategoriaDesdeUI();
-        c.setIdCategoria(idCategoria);                 
+        c.setIdCategoria(idCategoria);
         return c;
     }
 
