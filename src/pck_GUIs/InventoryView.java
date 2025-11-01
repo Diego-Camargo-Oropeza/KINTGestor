@@ -674,36 +674,52 @@ public class InventoryView extends javax.swing.JFrame {
         loadTablaProductosPorTipo(tipo);
     }
 
-    // --- Cargar tabla según tipo seleccionado ---
-    private void loadTablaProductosPorTipo(String tipo) {
-        ProductoDAO dao = new ProductoDAO();
-        List<ProductoRow> rows = (tipo == null || tipo.equalsIgnoreCase("TODOS"))
-                ? dao.listAllBasic()
-                : dao.listByTipoBasic(tipo.toUpperCase());
+    // ---- Construir el TableModel que se asigna a jtable_productos ----
+    private DefaultTableModel construirModeloTablaProductos(List<ProductoRow> rows) {
+        String[] cols = {
+            "ID", "SKU", "Nombre", "Tipo", "Categoría",
+            "U. Medida", "Stock", "Ubicación", "Activo", "Acciones"
+        };
 
-        DefaultTableModel model = construirModeloTablaProductos(rows);
-        jtable_productos.setModel(model);
-        instalarColumnaAcciones();
+        DefaultTableModel model = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return c == 9;
+            }
 
-        jtable_productos.setAutoCreateRowSorter(true);
-        jtable_productos.setRowSelectionAllowed(true);
-        jtable_productos.setRowHeight(24);
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                switch (columnIndex) {
+                    case 0:
+                        return Integer.class;         // ID
+                    case 6:
+                        return Integer.class;         // Stock
+                    default:
+                        return String.class;
+                }
+            }
+        };
 
-        TableColumnModel cm = jtable_productos.getColumnModel();
-        // Ajusta anchos correctos
-        if (cm.getColumnCount() >= 11) {
-            cm.getColumn(0).setPreferredWidth(40);   // ID
-            cm.getColumn(1).setPreferredWidth(110);  // SKU
-            cm.getColumn(2).setPreferredWidth(240);  // Nombre
-            cm.getColumn(3).setPreferredWidth(110);  // Tipo
-            cm.getColumn(4).setPreferredWidth(140);  // Categoría
-            cm.getColumn(5).setPreferredWidth(80);   // U. Medida
-            cm.getColumn(6).setPreferredWidth(50);   // Stock
-            cm.getColumn(7).setPreferredWidth(120);  // Ubicación
-            cm.getColumn(8).setPreferredWidth(70);   // Activo
-            cm.getColumn(9).setPreferredWidth(150);  // Creado
-            cm.getColumn(10).setPreferredWidth(115); // Acciones
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        if (rows != null) {
+            for (ProductoRow r : rows) {
+                String creado = (r.getFechaCreacion() == null) ? "" : sdf.format(r.getFechaCreacion());
+                model.addRow(new Object[]{
+                    r.getIdProducto(),
+                    r.getSku(),
+                    r.getNombre(),
+                    r.getTipo(),
+                    r.getCategoria(),
+                    r.getUMedida(),
+                    r.getStock(),
+                    r.getUbicacion(),
+                    r.isActivo() ? "Sí" : "No",
+                    //                    creado,
+                    null
+                });
+            }
         }
+        return model;
     }
 
 // ---- Refrescar toda la vista ----
@@ -753,9 +769,9 @@ public class InventoryView extends javax.swing.JFrame {
 
             List<ProductoRow> rows;
             if ("TODOS".equals(tipo)) {
-                rows = dao.listAllBasic();           // SELECT de columnas para tabla
+                rows = dao.listAllBasic();           
             } else {
-                rows = dao.listByTipoBasic(tipo);    // SELECT filtrado por tipo
+                rows = dao.listByTipoBasic(tipo);    
             }
 
             DefaultTableModel model = construirModeloTablaProductos(rows);
@@ -773,55 +789,39 @@ public class InventoryView extends javax.swing.JFrame {
         }
     }
 
-// ---- Construir el TableModel que se asigna a jtable_productos ----
-    private DefaultTableModel construirModeloTablaProductos(List<ProductoRow> rows) {
-        String[] cols = {
-            "ID", "SKU", "Nombre", "Tipo", "Categoría",
-            "U. Medida", "Stock", "Ubicación", "Activo", "Creado", "Acciones"
-        };
+    // --- Cargar tabla según tipo seleccionado ---
+    private void loadTablaProductosPorTipo(String tipo) {
+        ProductoDAO dao = new ProductoDAO();
+        List<ProductoRow> rows = (tipo == null || tipo.equalsIgnoreCase("TODOS"))
+                ? dao.listAllBasic()
+                : dao.listByTipoBasic(tipo.toUpperCase());
 
-        DefaultTableModel model = new DefaultTableModel(cols, 0) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return c == 10;
-            }
+        DefaultTableModel model = construirModeloTablaProductos(rows);
+        jtable_productos.setModel(model);
+        instalarColumnaAcciones();
 
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                switch (columnIndex) {
-                    case 0:
-                        return Integer.class;         // ID
-                    case 6:
-                        return Integer.class;         // Stock
-                    default:
-                        return String.class;
-                }
-            }
-        };
+        jtable_productos.setAutoCreateRowSorter(true);
+        jtable_productos.setRowSelectionAllowed(true);
+        jtable_productos.setRowHeight(24);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        if (rows != null) {
-            for (ProductoRow r : rows) {
-                String creado = (r.getFechaCreacion() == null) ? "" : sdf.format(r.getFechaCreacion());
-                model.addRow(new Object[]{
-                    r.getIdProducto(),
-                    r.getSku(),
-                    r.getNombre(),
-                    r.getTipo(),
-                    r.getCategoria(),
-                    r.getUMedida(),
-                    r.getStock(),
-                    r.getUbicacion(),
-                    r.isActivo() ? "Sí" : "No",
-                    creado,
-                    null
-                });
-            }
+        TableColumnModel cm = jtable_productos.getColumnModel();
+        // Ajusta anchos correctos
+        if (cm.getColumnCount() >= 9) {
+            cm.getColumn(0).setPreferredWidth(40);   // ID
+            cm.getColumn(1).setPreferredWidth(110);  // SKU
+            cm.getColumn(2).setPreferredWidth(240);  // Nombre
+            cm.getColumn(3).setPreferredWidth(110);  // Tipo
+            cm.getColumn(4).setPreferredWidth(140);  // Categoría
+            cm.getColumn(5).setPreferredWidth(80);   // U. Medida
+            cm.getColumn(6).setPreferredWidth(50);   // Stock
+            cm.getColumn(7).setPreferredWidth(120);  // Ubicación
+            cm.getColumn(8).setPreferredWidth(70);   // Activo
+//            cm.getColumn(9).setPreferredWidth(150);  // Creado
+            cm.getColumn(9).setPreferredWidth(180); // Acciones
         }
-        return model;
     }
-// ---- Formato visual y mejoras de usabilidad de la tabla ----
 
+// ---- Formato visual y mejoras de usabilidad de la tabla ----
     private void formatearTablaProductos() {
         jtable_productos.setAutoCreateRowSorter(true);
         jtable_productos.setRowHeight(22);
@@ -829,7 +829,7 @@ public class InventoryView extends javax.swing.JFrame {
 
         // Anchos  
         TableColumnModel cm = jtable_productos.getColumnModel();
-        if (cm.getColumnCount() >= 10) {
+        if (cm.getColumnCount() >= 9) {
             cm.getColumn(0).setPreferredWidth(40);   // ID
             cm.getColumn(1).setPreferredWidth(110);  // SKU
             cm.getColumn(2).setPreferredWidth(220);  // Nombre
@@ -839,8 +839,8 @@ public class InventoryView extends javax.swing.JFrame {
             cm.getColumn(6).setPreferredWidth(50);   // Stock
             cm.getColumn(7).setPreferredWidth(140);  // Ubicación
             cm.getColumn(8).setPreferredWidth(70);   // Activo
-            cm.getColumn(9).setPreferredWidth(140);  // Creado
-            cm.getColumn(10).setPreferredWidth(115);  // Creado
+//            cm.getColumn(9).setPreferredWidth(140);  // Creado
+            cm.getColumn(10).setPreferredWidth(180);  // Creado
         }
     }
 
@@ -859,7 +859,7 @@ public class InventoryView extends javax.swing.JFrame {
         DefaultTableCellRenderer gray = new DefaultTableCellRenderer();
         gray.setForeground(new Color(120, 120, 120));
         gray.setFont(jtable_productos.getFont().deriveFont(Font.ITALIC));
-        jtable_productos.getColumnModel().getColumn(2).setCellRenderer(gray); 
+        jtable_productos.getColumnModel().getColumn(2).setCellRenderer(gray);
     }
 
     private void instalarColumnaAcciones() {

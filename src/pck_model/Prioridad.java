@@ -1,5 +1,5 @@
 package pck_model;
 
 public enum Prioridad {
-    BAJA, MEDIA, ALTA, URGENTE
+    BAJA, MEDIA, ALTA
 }
