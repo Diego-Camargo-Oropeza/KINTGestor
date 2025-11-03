@@ -2,24 +2,15 @@ package pck_GUIs;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import pck_customComponents.AccionesEditor;
-import pck_customComponents.AccionesHandler;
-import pck_customComponents.AccionesRenderer;
-import pck_dao.CategoriaDAO;
 import pck_dao.PrestamoDAO;
-import pck_dao.ProductoDAO;
-import pck_model.Categoria;
 import pck_model.PrestamoRow;
-import pck_model.ProductoRow;
 import pck_model.Usuario;
 import pck_service.Session;
 
@@ -27,7 +18,7 @@ import pck_service.Session;
  *
  * @author dieca
  */
-public class UsersView extends javax.swing.JFrame {
+public class RequestsView extends javax.swing.JFrame {
 
     private int mouseinX, mouseinY;
     private Rescalar escalar = new Rescalar();
@@ -38,7 +29,7 @@ public class UsersView extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    public UsersView() {
+    public RequestsView() {
         initComponents();
         setLocationRelativeTo(null);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -96,8 +87,7 @@ public class UsersView extends javax.swing.JFrame {
         lbl_username = new javax.swing.JLabel();
         panelUsuarios = new pck_customComponents.RoundedPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jtable_usuarios = new javax.swing.JTable();
-        btn_crear = new pck_customComponents.CustomButton();
+        jtable_solicitudes = new javax.swing.JTable();
         lbl_navegador = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -301,7 +291,7 @@ public class UsersView extends javax.swing.JFrame {
 
         lbl_navegador1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         lbl_navegador1.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador1.setText("Usuarios");
+        lbl_navegador1.setText("Solicitudes");
         pan_cabecera.add(lbl_navegador1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 440, 30));
 
         pan_bg.add(pan_cabecera, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1020, 30));
@@ -321,7 +311,7 @@ public class UsersView extends javax.swing.JFrame {
         lbl_username.setText("Usuario:");
         pan_bg.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 80, 40));
 
-        jtable_usuarios.setModel(new javax.swing.table.DefaultTableModel(
+        jtable_solicitudes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -332,7 +322,7 @@ public class UsersView extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jtable_usuarios);
+        jScrollPane2.setViewportView(jtable_solicitudes);
 
         javax.swing.GroupLayout panelUsuariosLayout = new javax.swing.GroupLayout(panelUsuarios);
         panelUsuarios.setLayout(panelUsuariosLayout);
@@ -353,21 +343,9 @@ public class UsersView extends javax.swing.JFrame {
 
         pan_bg.add(panelUsuarios, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, 960, 470));
 
-        btn_crear.setText("Nuevo Usuario ");
-        btn_crear.setToolTipText("Click para ir al Panel Principal");
-        btn_crear.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
-        btn_crear.setOver(true);
-        btn_crear.setRadius(30);
-        btn_crear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_crearActionPerformed(evt);
-            }
-        });
-        pan_bg.add(btn_crear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 130, 140, 40));
-
         lbl_navegador.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         lbl_navegador.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_navegador.setText("Usuarios del sistema");
+        lbl_navegador.setText("Solicitudes de préstamo");
         pan_bg.add(lbl_navegador, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 440, 30));
 
         getContentPane().add(pan_bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 800));
@@ -409,8 +387,7 @@ public class UsersView extends javax.swing.JFrame {
         if (!requerirRolPorId(1, 2)) {
             return;
         }
-        new RequestsView().setVisible(true);
-        this.dispose();
+        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
     }//GEN-LAST:event_btn_solicitudesActionPerformed
 
     private void btn_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_usuariosActionPerformed
@@ -460,14 +437,10 @@ public class UsersView extends javax.swing.JFrame {
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         lbl_nameholder.setText(nombreUsuario);
+        cargarTablaSolicitudes();
+        instalarDobleClickAcciones();
         System.out.println(nombreUsuario);
-        cargarTablaUsuarios();
     }//GEN-LAST:event_formWindowActivated
-
-    private void btn_crearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_crearActionPerformed
-        this.dispose();
-        new NewUserView().setVisible(true);
-    }//GEN-LAST:event_btn_crearActionPerformed
 
     private void lbl_logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_logoutMouseClicked
         // TODO add your handling code here:
@@ -500,164 +473,195 @@ public class UsersView extends javax.swing.JFrame {
         return false;
     }
 
-// ---- Cargar tabla de usuarios ----
-    private void cargarTablaUsuarios() {
-        try {
-            pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
-            java.util.List<pck_model.Usuario> rows = dao.findAll();
-
-            DefaultTableModel model = construirModeloUsuarios(rows);
-            jtable_usuarios.setModel(model);
-
-            instalarColumnaAccionesUsuarios();  // acciones (editar/eliminar)
-            formatearTablaUsuarios();
-
-            if (rows == null || rows.isEmpty()) {
-                mostrarEstadoVacioUsuarios(model);
-                return;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo cargar la tabla de usuarios.\n" + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-// ---- Modelo de datos ----
-    private DefaultTableModel construirModeloUsuarios(List<pck_model.Usuario> rows) {
-        String[] cols = {"ID", "Rol", "Nombre", "Correo", "Tarea", "F. Nacimiento", "Activo", "Acciones"};
-
+    private DefaultTableModel construirModeloSolicitudes(java.util.List<pck_model.PrestamoRow> rows) {
+        String[] cols = {"ID", "Folio", "Producto", "Cantidad", "Estado", "Prioridad", "Fecha solicitud"};
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
-                return c == 7;
-            } // solo "Acciones"
+                return false;
+            }
 
             @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                switch (columnIndex) {
-                    case 0:
-                        return Integer.class; // ID
-                    case 6:
-                        return String.class;  // Activo "Sí/No"
-                    default:
-                        return String.class;
-                }
+            public Class<?> getColumnClass(int c) {
+                return switch (c) {
+                    case 0, 3 ->
+                        Integer.class;
+                    default ->
+                        String.class;
+                };
             }
         };
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
         if (rows != null) {
-            for (pck_model.Usuario us : rows) {
-                String fNac = (us.getFechaNacimiento() == null) ? "" : sdf.format(us.getFechaNacimiento());
+            for (pck_model.PrestamoRow r : rows) {
+                String f = (r.getFechaCreacion() == null) ? "" : sdf.format(r.getFechaCreacion());
                 model.addRow(new Object[]{
-                    us.getIdUsuario(),
-                    s(us.getRolNombre()),
-                    s(us.getNombre()),
-                    s(us.getCorreo()),
-                    s(us.getTarea()),
-                    fNac,
-                    us.isActivo() ? "Sí" : "No",
-                    null // Acciones
+                    r.getIdSolicitud(), r.getFolio(), r.getProducto(), r.getCantidad(),
+                    r.getEstado(), r.getPrioridad(), f
                 });
             }
         }
         return model;
     }
 
-// ---- Formato visual ----
-    private void formatearTablaUsuarios() {
-        jtable_usuarios.setAutoCreateRowSorter(true);
-        jtable_usuarios.setRowHeight(22);
-        jtable_usuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    private void cargarTablaSolicitudes() {
+        try {
+            PrestamoDAO dao = new PrestamoDAO();
+            java.util.List<PrestamoRow> rows = dao.listAll(); // (o listByUsuario(u.getIdUsuario()) si así lo quieres)
+            DefaultTableModel model = construirModeloSolicitudes(rows);
+            jtable_solicitudes.setModel(model);
 
-        TableColumnModel cm = jtable_usuarios.getColumnModel();
-        if (cm.getColumnCount() >= 8) {
-            cm.getColumn(0).setPreferredWidth(40);   // ID
-            cm.getColumn(1).setPreferredWidth(100);  // Rol
-            cm.getColumn(2).setPreferredWidth(150);  // Nombre
-            cm.getColumn(3).setPreferredWidth(200);  // Correo
-            cm.getColumn(4).setPreferredWidth(120);  // Tarea
-            cm.getColumn(5).setPreferredWidth(110);  // F. Nac
-            cm.getColumn(6).setPreferredWidth(60);   // Activo
-            cm.getColumn(7).setPreferredWidth(120);  // Acciones
-        }
-    }
+            // formato
+            jtable_solicitudes.setAutoCreateRowSorter(true);
+            jtable_solicitudes.setRowHeight(22);
+            jtable_solicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-// ---- Estado vacío ----
-    private void mostrarEstadoVacioUsuarios(DefaultTableModel model) {
-        model.setRowCount(0);
-        model.addRow(new Object[]{"—", "—", "No hay usuarios registrados.", "—", "—", "—", "—"});
-        jtable_usuarios.setModel(model);
-        jtable_usuarios.setAutoCreateRowSorter(false);
-        jtable_usuarios.setRowSelectionAllowed(false);
-        jtable_usuarios.setEnabled(false);
+            TableColumnModel cm = jtable_solicitudes.getColumnModel();
+            if (cm.getColumnCount() >= 7) {
+                cm.getColumn(0).setPreferredWidth(50);   // ID
+                cm.getColumn(1).setPreferredWidth(120);  // Folio
+                cm.getColumn(2).setPreferredWidth(250);  // Producto
+                cm.getColumn(3).setPreferredWidth(80);   // Cantidad
+                cm.getColumn(4).setPreferredWidth(110);  // Estado
+                cm.getColumn(5).setPreferredWidth(90);   // Prioridad
+                cm.getColumn(6).setPreferredWidth(150);  // Fecha
+            }
 
-        DefaultTableCellRenderer gray = new DefaultTableCellRenderer();
-        gray.setForeground(new Color(120, 120, 120));
-        gray.setFont(jtable_usuarios.getFont().deriveFont(Font.ITALIC));
-        jtable_usuarios.getColumnModel().getColumn(2).setCellRenderer(gray);
-    }
-
-    private void instalarColumnaAccionesUsuarios() {
-        int accionesIdx = jtable_usuarios.getColumnModel().getColumnIndex("Acciones");
-
-        jtable_usuarios.getColumnModel().getColumn(accionesIdx).setCellRenderer(new AccionesRenderer());
-        jtable_usuarios.getColumnModel().getColumn(accionesIdx).setCellEditor(
-                new AccionesEditor(
-                        jtable_usuarios,
-                        0,
-                        new AccionesHandler() {
-                    @Override
-                    public void editar(int id, int modelRow) {
-                        onEditarUsuario(id, modelRow);
-                    }
-
-                    @Override
-                    public void eliminar(int id, int modelRow) {
-                        onEliminarUsuario(id, modelRow);
-                    }
-
-                    @Override
-                    public void solicitar(int id, int modelRow) {
-                    }
-                },
-                        false // ocultar solicitar
-                )
-        );
-    }
-
-    private void onEditarUsuario(int idUsuario, int modelRow) {
-        if (!requerirRolPorId(1)) {
-            return;
-        }
-        new EditUserView(idUsuario).setVisible(true);
-        this.dispose();
-        JOptionPane.showMessageDialog(this, "Editar usuario ID: " + idUsuario);
-    }
-
-    private void onEliminarUsuario(int idUsuario, int modelRow) {
-        if (!requerirRolPorId(1)) {
-            return;
-        }
-        int res = JOptionPane.showConfirmDialog(this,
-                "¿Seguro que deseas eliminar el usuario ID " + idUsuario + "?",
-                "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-
-        if (res != JOptionPane.YES_OPTION) {
-            return;
-        }
-
-        pck_dao.UsuarioDAO dao = new pck_dao.UsuarioDAO();
-        boolean ok = dao.deleteHard(idUsuario);
-        if (ok) {
-            ((DefaultTableModel) jtable_usuarios.getModel()).removeRow(modelRow);
-            JOptionPane.showMessageDialog(this, "Usuario eliminado.");
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo eliminar. Verifica relaciones (p. ej. préstamos).",
+            // estado vacío
+            if (model.getRowCount() == 0) {
+                model.addRow(new Object[]{"—", "—", "No hay solicitudes.", "—", "—", "—", "—"});
+                DefaultTableCellRenderer gray = new DefaultTableCellRenderer();
+                gray.setForeground(new Color(120, 120, 120));
+                gray.setFont(jtable_solicitudes.getFont().deriveFont(Font.ITALIC));
+                jtable_solicitudes.getColumnModel().getColumn(2).setCellRenderer(gray);
+                jtable_solicitudes.setEnabled(false);
+            } else {
+                jtable_solicitudes.setEnabled(true);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "No se pudo cargar la tabla de solicitudes.\n" + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void instalarDobleClickAcciones() {
+        jtable_solicitudes.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && jtable_solicitudes.isEnabled()) {
+                    int viewRow = jtable_solicitudes.getSelectedRow();
+                    if (viewRow < 0) {
+                        return;
+                    }
+                    int row = jtable_solicitudes.convertRowIndexToModel(viewRow);
+                    onAccionSolicitud(row);
+                }
+            }
+        });
+    }
+
+    private void onAprobarSolicitud(int idSolicitud, String folio) {
+        if (!requerirRolPorId(1, 2)) {
+            return;
+        }
+
+        String comentario = JOptionPane.showInputDialog(this,
+                "Comentario para el solicitante (opcional):", "Aprobar " + folio,
+                JOptionPane.QUESTION_MESSAGE);
+        if (comentario == null) {
+            return;
+        }
+
+        int conf = JOptionPane.showConfirmDialog(this,
+                "¿Aprobar la solicitud " + folio + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION);
+        if (conf != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            PrestamoDAO dao = new PrestamoDAO();
+            boolean ok = dao.actualizarEstadoSolicitud(idSolicitud, "APROBADA", u.getIdUsuario(), comentario);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Solicitud aprobada.");
+                cargarTablaSolicitudes();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo aprobar la solicitud.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al aprobar:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onRechazarSolicitud(int idSolicitud, String folio) {
+        if (!requerirRolPorId(1, 2)) {
+            return;
+        }
+
+        String comentario = JOptionPane.showInputDialog(this,
+                "Motivo del rechazo:", "Rechazar " + folio,
+                JOptionPane.QUESTION_MESSAGE);
+        if (comentario == null) {
+            return;
+        }
+        if (comentario.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debes indicar un motivo de rechazo.", "Dato requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int conf = JOptionPane.showConfirmDialog(this,
+                "¿Rechazar la solicitud " + folio + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION);
+        if (conf != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            PrestamoDAO dao = new PrestamoDAO();
+            boolean ok = dao.actualizarEstadoSolicitud(idSolicitud, "RECHAZADA", u.getIdUsuario(), comentario);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Solicitud rechazada.");
+                cargarTablaSolicitudes();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo rechazar la solicitud.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al rechazar:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onVerDetalleSolicitud(int idSolicitud) {
+        // Puedes ampliar a consultar DB y listar múltiples items por solicitud.
+        JOptionPane.showMessageDialog(this,
+                "Detalle rápido de la solicitud ID: " + idSolicitud + "\n(Aquí puedes abrir una vista de detalle o listar múltiples productos).",
+                "Detalle", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void onAccionSolicitud(int modelRow) {
+        DefaultTableModel m = (DefaultTableModel) jtable_solicitudes.getModel();
+        int idSolicitud = Integer.parseInt(String.valueOf(m.getValueAt(modelRow, 0)));
+        String folio = String.valueOf(m.getValueAt(modelRow, 1));
+        String producto = String.valueOf(m.getValueAt(modelRow, 2));
+        int cantidad = Integer.parseInt(String.valueOf(m.getValueAt(modelRow, 3)));
+        String estado = String.valueOf(m.getValueAt(modelRow, 4));
+        String prioridad = String.valueOf(m.getValueAt(modelRow, 5));
+
+        String msg = "Folio: " + folio + "\nProducto: " + producto + "\nCantidad: " + cantidad
+                + "\nEstado: " + estado + "\nPrioridad: " + prioridad
+                + "\n\nElige una acción:";
+        String[] ops = {"Aprobar", "Rechazar", "Ver detalle", "Cancelar"};
+        int sel = JOptionPane.showOptionDialog(this, msg, "Acciones de solicitud",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, ops, ops[0]);
+
+        if (sel == 0) {
+            onAprobarSolicitud(idSolicitud, folio);
+        } else if (sel == 1) {
+            onRechazarSolicitud(idSolicitud, folio);
+        } else if (sel == 2) {
+            onVerDetalleSolicitud(idSolicitud);
         }
     }
 
@@ -683,19 +687,19 @@ public class UsersView extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RequestsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RequestsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RequestsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UsersView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RequestsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UsersView().setVisible(true);
+                new RequestsView().setVisible(true);
             }
         });
     }
@@ -703,7 +707,6 @@ public class UsersView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private pck_customComponents.CustomButton btn_ayuda;
-    private pck_customComponents.CustomButton btn_crear;
     private pck_customComponents.CustomButton btn_dashboard;
     private pck_customComponents.CustomButton btn_inventario;
     private pck_customComponents.CustomButton btn_reportes;
@@ -712,7 +715,7 @@ public class UsersView extends javax.swing.JFrame {
     private javax.swing.JLabel imgKintLogo;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jtable_usuarios;
+    private javax.swing.JTable jtable_solicitudes;
     private javax.swing.JLabel lbl_configuracion;
     private javax.swing.JLabel lbl_exit;
     private javax.swing.JLabel lbl_icon;

@@ -544,7 +544,8 @@ public class InventoryView extends javax.swing.JFrame {
         if (!requerirRolPorId(1, 2)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+        new RequestsView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dashboardActionPerformed
@@ -769,9 +770,9 @@ public class InventoryView extends javax.swing.JFrame {
 
             List<ProductoRow> rows;
             if ("TODOS".equals(tipo)) {
-                rows = dao.listAllBasic();           
+                rows = dao.listAllBasic();
             } else {
-                rows = dao.listByTipoBasic(tipo);    
+                rows = dao.listByTipoBasic(tipo);
             }
 
             DefaultTableModel model = construirModeloTablaProductos(rows);
@@ -806,7 +807,7 @@ public class InventoryView extends javax.swing.JFrame {
 
         TableColumnModel cm = jtable_productos.getColumnModel();
         // Ajusta anchos correctos
-        if (cm.getColumnCount() >= 9) {
+        if (cm.getColumnCount() >= 10) {
             cm.getColumn(0).setPreferredWidth(40);   // ID
             cm.getColumn(1).setPreferredWidth(110);  // SKU
             cm.getColumn(2).setPreferredWidth(240);  // Nombre
@@ -829,7 +830,7 @@ public class InventoryView extends javax.swing.JFrame {
 
         // Anchos  
         TableColumnModel cm = jtable_productos.getColumnModel();
-        if (cm.getColumnCount() >= 9) {
+        if (cm.getColumnCount() >= 10) {
             cm.getColumn(0).setPreferredWidth(40);   // ID
             cm.getColumn(1).setPreferredWidth(110);  // SKU
             cm.getColumn(2).setPreferredWidth(220);  // Nombre
@@ -840,7 +841,7 @@ public class InventoryView extends javax.swing.JFrame {
             cm.getColumn(7).setPreferredWidth(140);  // Ubicación
             cm.getColumn(8).setPreferredWidth(70);   // Activo
 //            cm.getColumn(9).setPreferredWidth(140);  // Creado
-            cm.getColumn(10).setPreferredWidth(180);  // Creado
+            cm.getColumn(9).setPreferredWidth(180);  // Creado
         }
     }
 
@@ -885,6 +886,7 @@ public class InventoryView extends javax.swing.JFrame {
 
                     @Override
                     public void solicitar(int idProducto, int modelRow) {
+                        onSolicitarProducto(idProducto, modelRow);
                     }
                 },
                         true
@@ -929,6 +931,118 @@ public class InventoryView extends javax.swing.JFrame {
             }
         }
 
+    }
+
+    // === Solicitar producto con JOptionPane ===
+    private void onSolicitarProducto(int idProducto, int modelRow) {
+        // Validar sesión
+        if (u == null) {
+            JOptionPane.showMessageDialog(this, "Primero inicia sesión.", "Sesión requerida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Obtener datos útiles de la fila para mostrar al usuario
+        DefaultTableModel model = (DefaultTableModel) jtable_productos.getModel();
+        String sku = String.valueOf(model.getValueAt(modelRow, 1));
+        String nombre = String.valueOf(model.getValueAt(modelRow, 2));
+        String tipo = String.valueOf(model.getValueAt(modelRow, 3));
+        String cat = String.valueOf(model.getValueAt(modelRow, 4));
+        int stock = 0;
+        try {
+            stock = Integer.parseInt(String.valueOf(model.getValueAt(modelRow, 6)));
+        } catch (Exception ignored) {
+        }
+
+        // 1) Cantidad
+        Integer cantidad = null;
+        while (true) {
+            String s = JOptionPane.showInputDialog(this,
+                    "Producto: " + nombre + " (" + sku + ")\n"
+                    + "Tipo: " + tipo + " | Categoría: " + cat + "\n"
+                    + "Stock actual: " + stock + "\n\n"
+                    + "Ingresa la cantidad a solicitar:",
+                    "Solicitud de Producto", JOptionPane.QUESTION_MESSAGE);
+            if (s == null) {
+                return; // Canceló
+            }
+            s = s.trim();
+            if (s.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "La cantidad es obligatoria.", "Dato requerido", JOptionPane.WARNING_MESSAGE);
+                continue;
+            }
+            try {
+                int c = Integer.parseInt(s);
+                if (c <= 0) {
+                    JOptionPane.showMessageDialog(this, "La cantidad debe ser mayor que 0.", "Cantidad inválida", JOptionPane.WARNING_MESSAGE);
+                    continue;
+                }
+                cantidad = c;
+                break;
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Ingresa un número entero válido.", "Cantidad inválida", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
+        // 2) Prioridad
+        String[] opcionesPrioridad = {"BAJA", "MEDIA", "ALTA"};
+        String prioridad = (String) JOptionPane.showInputDialog(
+                this,
+                "Selecciona la prioridad:",
+                "Prioridad",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionesPrioridad,
+                "MEDIA"
+        );
+        if (prioridad == null) {
+            return;
+        }
+        // 3) Comentarios 
+        String comentarios = JOptionPane.showInputDialog(this,
+                "Comentarios para el administrador (opcional):",
+                "Comentarios", JOptionPane.QUESTION_MESSAGE);
+        if (comentarios == null) {
+            comentarios = "";
+        }
+
+        // 4) Confirmación
+        String resumen
+                = "¿Confirmar solicitud?\n\n"
+                + "Producto: " + nombre + " (" + sku + ")\n"
+                + "Cantidad: " + cantidad + "\n"
+                + "Prioridad: " + prioridad + "\n"
+                + "Comentarios: " + (comentarios.isBlank() ? "(sin comentarios)" : comentarios);
+        int conf = JOptionPane.showConfirmDialog(this, resumen, "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (conf != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // 5) Ejecutar en DAO
+        try {
+            pck_dao.PrestamoDAO dao = new pck_dao.PrestamoDAO();
+            String folio = dao.crearSolicitudConDetalle(
+                    u.getIdUsuario(), // solicitante
+                    idProducto,
+                    cantidad,
+                    prioridad, // BAJA|MEDIA|ALTA
+                    comentarios
+            );
+
+            if (folio != null) {
+                JOptionPane.showMessageDialog(this,
+                        "Solicitud enviada exitosamente.\nFolio: " + folio,
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo crear la solicitud. Inténtalo de nuevo.",
+                        "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error al procesar la solicitud:\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void onFiltroTipoChanged() {

@@ -505,7 +505,8 @@ public class NewUserView extends javax.swing.JFrame {
         if (!requerirRolPorId(1, 2)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+        new RequestsView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_solicitudesActionPerformed
 
     private void btn_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_usuariosActionPerformed
@@ -706,7 +707,7 @@ public class NewUserView extends javax.swing.JFrame {
     }
 
     private int rolSeleccionadoId() {
-       
+
         String rolSel = (String) cb_rol.getSelectedItem();
         if (rolSel == null) {
             return 3; // por defecto técnico
@@ -731,7 +732,7 @@ public class NewUserView extends javax.swing.JFrame {
             }
             return sb.toString();
         } catch (Exception e) {
-            return texto; 
+            return texto;
         }
     }
 

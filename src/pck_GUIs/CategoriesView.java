@@ -413,7 +413,8 @@ public class CategoriesView extends javax.swing.JFrame {
         if (!requerirRolPorId(1, 2)) {
             return;
         }
-
+        new RequestsView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_solicitudesActionPerformed
 
     private void btn_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_usuariosActionPerformed
@@ -651,7 +652,7 @@ public class CategoriesView extends javax.swing.JFrame {
 
         try {
             CategoriaDAO dao = new CategoriaDAO();
-            boolean ok = dao.deleteHard(idCategoria); 
+            boolean ok = dao.deleteHard(idCategoria);
             if (ok) {
                 ((DefaultTableModel) jtable_categorias.getModel()).removeRow(modelRow);
                 JOptionPane.showMessageDialog(this, "Categoría eliminada.");

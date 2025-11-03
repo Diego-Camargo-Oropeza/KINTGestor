@@ -411,7 +411,8 @@ public class EditCategoryView extends javax.swing.JFrame {
         if (!requerirRolPorId(1, 2)) {
             return;
         }
-        JOptionPane.showMessageDialog(this, "Redirigiendo a gestión de usuarios.");
+        new RequestsView().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_solicitudesActionPerformed
 
     private void btn_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_usuariosActionPerformed

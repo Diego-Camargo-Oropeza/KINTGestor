@@ -6,7 +6,6 @@ import pck_model.PrestamoRow;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 public class PrestamoDAO {
 
@@ -143,32 +142,164 @@ public class PrestamoDAO {
     /**
      * Inserta encabezado de solicitud. Devuelve true si insertó 1 fila.
      */
-    public boolean crearSolicitud(int idUsuario, String folio, String prioridad, String comentarios) {
+    public String crearSolicitudConDetalle(int idUsuario, int idProducto, int cantidad, String prioridad, String comentarios) {
+        String folioGenerado = null;
+
+        String SQL_INSERT_SOLICITUD
+                = "INSERT INTO solicitud (id_usuario, folio, estado, prioridad, comentarios, fecha_solicitud) "
+                + "VALUES (?, ?, 'ENVIADA', ?, ?, NOW())";
+
+        String SQL_INSERT_DETALLE
+                = "INSERT INTO detalle (id_solicitud, id_producto, cantidad) VALUES (?, ?, ?)";
+
         Connection cn = null;
-        PreparedStatement ps = null;
-        int rows = 0;
+        PreparedStatement psSol = null;
+        PreparedStatement psDet = null;
+        ResultSet rsKeys = null;
 
         try {
             cn = DbConnection.getConnection();
             if (cn == null) {
+                return null;
+            }
+
+            cn.setAutoCommit(false);
+
+            // 1) Generar folio simple (puedes reemplazarlo por tu generador real)
+            String folio = generarFolioSolicitud(cn); // e.g. "SOL20251102-000123"
+
+            // 2) Insert encabezado
+            psSol = cn.prepareStatement(SQL_INSERT_SOLICITUD, Statement.RETURN_GENERATED_KEYS);
+            psSol.setInt(1, idUsuario);
+            psSol.setString(2, folio);
+            psSol.setString(3, safe(prioridad));
+            psSol.setString(4, safe(comentarios));
+            int rows1 = psSol.executeUpdate();
+
+            if (rows1 != 1) {
+                cn.rollback();
+                return null;
+            }
+
+            rsKeys = psSol.getGeneratedKeys();
+            int idSolicitud;
+            if (rsKeys.next()) {
+                idSolicitud = rsKeys.getInt(1);
+            } else {
+                cn.rollback();
+                return null;
+            }
+
+            // 3) Insert detalle
+            psDet = cn.prepareStatement(SQL_INSERT_DETALLE);
+            psDet.setInt(1, idSolicitud);
+            psDet.setInt(2, idProducto);
+            psDet.setInt(3, cantidad);
+            int rows2 = psDet.executeUpdate();
+
+            if (rows2 != 1) {
+                cn.rollback();
+                return null;
+            }
+
+            cn.commit();
+            folioGenerado = folio;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            try {
+                if (cn != null) {
+                    cn.rollback();
+                }
+            } catch (Exception ignored) {
+            }
+        } finally {
+            try {
+                if (rsKeys != null) {
+                    rsKeys.close();
+                }
+            } catch (Exception ignored) {
+            }
+            try {
+                if (psDet != null) {
+                    psDet.close();
+                }
+            } catch (Exception ignored) {
+            }
+            try {
+                if (psSol != null) {
+                    psSol.close();
+                }
+            } catch (Exception ignored) {
+            }
+            try {
+                if (cn != null) {
+                    cn.setAutoCommit(true);
+                }
+            } catch (Exception ignored) {
+            }
+            DbConnection.close(cn);
+        }
+
+        return folioGenerado;
+    }
+
+    public boolean actualizarEstadoSolicitud(int idSolicitud, String nuevoEstado, int idAdmin, String comentarioAdmin) {
+        // Si aprueba, marca fecha_aprobacion = NOW(); si rechaza, también puedes marcarla (o dejar null).
+        final String SQL
+                = "UPDATE solicitud "
+                + "SET estado = ?, "
+                + "    comentarios = CONCAT(IFNULL(comentarios,''), "
+                + "        CASE WHEN ? IS NULL OR ? = '' THEN '' ELSE CONCAT('\n[ADMIN ', ?, '] ', ?) END), "
+                + "    fecha_aprobacion = CASE WHEN ? = 'APROBADA' OR ? = 'RECHAZADA' THEN NOW() ELSE fecha_aprobacion END "
+                + "WHERE id_solicitud = ?";
+
+        java.sql.Connection cn = null;
+        java.sql.PreparedStatement ps = null;
+        try {
+            cn = pck_connection.DbConnection.getConnection();
+            if (cn == null) {
                 return false;
             }
 
-            ps = cn.prepareStatement(SQL_INSERT_SOLICITUD);
-            ps.setInt(1, idUsuario);
-            ps.setString(2, n(folio));
-            ps.setString(3, "ENVIADA");
-            ps.setString(4, n(prioridad));   // BAJA | MEDIA | ALTA
-            ps.setString(5, n(comentarios));
+            ps = cn.prepareStatement(SQL);
+            ps.setString(1, nuevoEstado);
+            ps.setString(2, comentarioAdmin);
+            ps.setString(3, comentarioAdmin);
+            ps.setInt(4, idAdmin);
+            ps.setString(5, comentarioAdmin);
+            ps.setString(6, nuevoEstado);
+            ps.setString(7, nuevoEstado);
+            ps.setInt(8, idSolicitud);
 
-            rows = ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return ps.executeUpdate() == 1;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
         } finally {
-            closeQuiet(ps);
-            DbConnection.close(cn);
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception ignored) {
+            }
+            pck_connection.DbConnection.close(cn);
         }
-        return rows == 1;
+    }
+
+    private static String safe(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    /**
+     * Genera un folio único. Puedes cambiarlo por un SP o lógica propia. Aquí
+     * solo usa timestamp + un pequeño sufijo incremental para minimizar
+     * colisiones.
+     */
+    private String generarFolioSolicitud(Connection cn) {
+        // Simple y suficiente: SOLyyyyMMddHHmmssSSS
+        java.time.format.DateTimeFormatter f = java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        String base = java.time.LocalDateTime.now().format(f);
+        return "SOL" + base;
     }
 
     /**
